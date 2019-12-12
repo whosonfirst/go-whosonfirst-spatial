@@ -1,11 +1,11 @@
 # github.com/aaronland/go-http-bootstrap v0.0.5
 github.com/aaronland/go-http-bootstrap
 github.com/aaronland/go-http-bootstrap/resources
-# github.com/aaronland/go-http-leaflet v0.0.1
+# github.com/aaronland/go-http-leaflet v0.0.2
 github.com/aaronland/go-http-leaflet
 # github.com/aaronland/go-http-rewrite v0.0.4
 github.com/aaronland/go-http-rewrite
-# github.com/aaronland/go-http-tangramjs v0.0.4
+# github.com/aaronland/go-http-tangramjs v0.0.5
 github.com/aaronland/go-http-tangramjs
 # github.com/aaronland/go-roster v0.0.1
 github.com/aaronland/go-roster
