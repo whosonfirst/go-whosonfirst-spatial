@@ -4,14 +4,15 @@ import (
 	"context"
 	"github.com/dhconnelly/rtreego"
 	"github.com/skelterjohn/geom"
+	"github.com/whosonfirst/go-cache"
 	"github.com/whosonfirst/go-spatial"
-	"github.com/whosonfirst/go-spatial/cache"
 	"github.com/whosonfirst/go-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	// golog "log"
+	"net/url"
 	"sync"
 )
 
@@ -47,7 +48,7 @@ func (r *RTreeResults) Results() []spr.StandardPlacesResult {
 	return r.Places
 }
 
-func NewRTreeIndex(c cache.Cache) (Index, error) {
+func NewRTreeIndex() Index {
 
 	logger := log.SimpleWOFLogger("index")
 
@@ -58,14 +59,30 @@ func NewRTreeIndex(c cache.Cache) (Index, error) {
 	index := &RTreeIndex{
 		Logger: logger,
 		rtree:  rtree,
-		cache:  c,
 		mu:     mu,
 	}
 
-	return index, nil
+	return index
 }
 
-func (r *RTreeIndex) Open() error {
+func (r *RTreeIndex) Open(ctx context.Context, uri string) error {
+
+	u, err := url.Parse(uri)
+
+	if err != nil {
+		return err
+	}
+
+	q := u.Query()
+
+	c_uri := q.Get("cache")
+	c, err := cache.NewCache(ctx, c_uri)
+
+	if err != nil {
+		return err
+	}
+
+	r.cache = c
 	return nil
 }
 

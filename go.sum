@@ -112,6 +112,8 @@ github.com/twpayne/go-polyline v1.0.0/go.mod h1:ICh24bcLYBX8CknfvNPKqoTbe+eg+MX1
 github.com/whosonfirst/go-bindata v0.1.0/go.mod h1:qaBkVepgCeknoVuYsUXTJpnlxqrEcZzaIaqZ6XaK+Hk=
 github.com/whosonfirst/go-bindata-assetfs v1.0.1 h1:AA328GrND8/uDkf5+5U9Fakgr7QkzET/a6uuXDYpQp0=
 github.com/whosonfirst/go-bindata-assetfs v1.0.1/go.mod h1:ZCQnq9roYYk19IAwLQyMnDPSmE+lns9K85+85JSQ4DI=
+github.com/whosonfirst/go-cache v0.0.2 h1:O6DxFeSkHPSCxmXSmsTX5tXCY8m/FStEPgglR/Z8q5M=
+github.com/whosonfirst/go-cache v0.0.2/go.mod h1:SUK9m5/Dh2WvYGCtlu1Uxo1h+6VUaRra1QHaPSOF+gI=
 github.com/whosonfirst/go-http-mapzenjs v0.0.0-20180429000000-3d9284bd66cec0b6a0fe54af8b25a7be25a9ce89 h1:CEUUmRkAgXdqnwZcudXIGmjnyWGB0nd082gfrEm2U8U=
 github.com/whosonfirst/go-http-mapzenjs v0.0.0-20180429000000-3d9284bd66cec0b6a0fe54af8b25a7be25a9ce89/go.mod h1:Ddv2HnfmdSK3USFdfCzR1fEQ2eqwjeyZeS11N+sAELM=
 github.com/whosonfirst/go-http-mapzenjs v0.0.0-20190722193037-4ed59e932ab4 h1:KuQwMMm9BfyfSqlyL6i88t9oArjQk7jgw+aNmz399MA=

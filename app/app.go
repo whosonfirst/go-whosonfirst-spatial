@@ -2,7 +2,7 @@ package app
 
 import (
 	"flag"
-	"github.com/whosonfirst/go-spatial/cache"
+	"github.com/whosonfirst/go-cache"
 	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-spatial/index"
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"

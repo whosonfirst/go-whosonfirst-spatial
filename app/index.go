@@ -3,33 +3,17 @@ package app
 import (
 	"errors"
 	"flag"
-	"github.com/whosonfirst/go-spatial/cache"
 	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-spatial/index"
 )
 
-func NewApplicationIndex(fl *flag.FlagSet, appcache cache.Cache) (index.Index, error) {
+func NewApplicationIndex(fl *flag.FlagSet) (index.Index, error) {
 
-	pip_index, err := flags.StringVar(fl, "index")
+	index_uri, err := flags.StringVar(fl, "index")
 
 	if err != nil {
 		return nil, err
 	}
 
-	switch pip_index {
-	case "rtree":
-		return index.NewRTreeIndex(appcache)
-	case "spatialite":
-
-		db, err := NewSpatialiteDB(fl)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return index.NewSpatialiteIndex(db, appcache)
-
-	default:
-		return nil, errors.New("Invalid engine")
-	}
+	return index.NewIndex(index_uri)
 }
