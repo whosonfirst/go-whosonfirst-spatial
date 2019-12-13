@@ -14,13 +14,13 @@ import (
 
 type Index interface {
 	Open(context.Context, string) error
-	Close() error
-	Cache() cache.Cache
-	IndexFeature(geojson.Feature) error
-	GetIntersectsWithCoord(geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
-	GetIntersectsWithCoordCandidates(geom.Coord) (*spatial.GeoJSONFeatureCollection, error)
+	Close(context.Context) error
+	IndexFeature(context.Context, geojson.Feature) error
+	GetIntersectsWithCoord(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
+	GetIntersectsWithCoordCandidates(context.Context, geom.Coord) (*spatial.GeoJSONFeatureCollection, error)
 	// GetNearbyWithCoord(geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
 	// GetNearbyWithCoordCandidates(geom.Coord) (*spatial.GeoJSONFeatureCollection, error)
+	Cache() cache.Cache
 }
 
 type Candidate interface{} // mmmmmaybe?

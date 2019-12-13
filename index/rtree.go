@@ -4,8 +4,9 @@ import (
 	"context"
 	"github.com/dhconnelly/rtreego"
 	"github.com/skelterjohn/geom"
-	"github.com/whosonfirst/go-cache"
+	wof_cache "github.com/whosonfirst/go-cache"
 	"github.com/whosonfirst/go-spatial"
+	"github.com/whosonfirst/go-spatial/cache"
 	"github.com/whosonfirst/go-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
@@ -26,7 +27,7 @@ type RTreeIndex struct {
 	Index
 	Logger *log.WOFLogger
 	rtree  *rtreego.Rtree
-	cache  cache.Cache
+	cache  wof_cache.Cache
 	mu     *sync.RWMutex
 }
 
@@ -76,7 +77,7 @@ func (r *RTreeIndex) Open(ctx context.Context, uri string) error {
 	q := u.Query()
 
 	c_uri := q.Get("cache")
-	c, err := cache.NewCache(ctx, c_uri)
+	c, err := wof_cache.NewCache(ctx, c_uri)
 
 	if err != nil {
 		return err
@@ -86,15 +87,15 @@ func (r *RTreeIndex) Open(ctx context.Context, uri string) error {
 	return nil
 }
 
-func (r *RTreeIndex) Close() error {
+func (r *RTreeIndex) Close(ctx context.Context) error {
 	return nil
 }
 
-func (r *RTreeIndex) Cache() cache.Cache {
+func (r *RTreeIndex) Cache() wof_cache.Cache {
 	return r.cache
 }
 
-func (r *RTreeIndex) IndexFeature(f geojson.Feature) error {
+func (r *RTreeIndex) IndexFeature(ctx context.Context, f geojson.Feature) error {
 
 	str_id := f.Id()
 
@@ -110,7 +111,7 @@ func (r *RTreeIndex) IndexFeature(f geojson.Feature) error {
 		return err
 	}
 
-	err = r.cache.Set(str_id, fc)
+	_, err = r.cache.Set(ctx, str_id, fc)
 
 	if err != nil {
 		return err
@@ -146,7 +147,7 @@ func (r *RTreeIndex) IndexFeature(f geojson.Feature) error {
 	return nil
 }
 
-func (r *RTreeIndex) GetIntersectsWithCoord(coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
+func (r *RTreeIndex) GetIntersectsWithCoord(ctx context.Context, coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
 
 	// to do: timings that don't slow everything down the way
 	// go-whosonfirst-timer does now (20170915/thisisaaronland)
@@ -166,7 +167,7 @@ func (r *RTreeIndex) GetIntersectsWithCoord(coord geom.Coord, filters filter.Fil
 	return rsp, err
 }
 
-func (r *RTreeIndex) GetIntersectsWithCoordCandidates(coord geom.Coord) (*spatial.GeoJSONFeatureCollection, error) {
+func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*spatial.GeoJSONFeatureCollection, error) {
 
 	intersects, err := r.getIntersectsByCoord(coord)
 
