@@ -7,10 +7,10 @@ import (
 	"github.com/dhconnelly/rtreego"
 	"github.com/skelterjohn/geom"
 	wof_cache "github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial"
+	"github.com/whosonfirst/go-spatial/geojson"
 	"github.com/whosonfirst/go-spatial/cache"
 	"github.com/whosonfirst/go-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spr"
@@ -98,7 +98,7 @@ func (r *RTreeIndex) Cache() wof_cache.Cache {
 	return r.cache
 }
 
-func (r *RTreeIndex) IndexFeature(ctx context.Context, f geojson.Feature) error {
+func (r *RTreeIndex) IndexFeature(ctx context.Context, f wof_geojson.Feature) error {
 
 	str_id := f.Id()
 
@@ -179,7 +179,7 @@ func (r *RTreeIndex) GetIntersectsWithCoord(ctx context.Context, coord geom.Coor
 	return rsp, err
 }
 
-func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*spatial.GeoJSONFeatureCollection, error) {
+func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
 
 	intersects, err := r.getIntersectsByCoord(coord)
 
@@ -187,7 +187,7 @@ func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord
 		return nil, err
 	}
 
-	features := make([]spatial.GeoJSONFeature, 0)
+	features := make([]geojson.GeoJSONFeature, 0)
 
 	for _, raw := range intersects {
 
@@ -206,21 +206,21 @@ func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord
 		nelon := swlon + b.LengthsCoord(0)
 		nelat := swlat + b.LengthsCoord(1)
 
-		sw := spatial.GeoJSONPoint{swlon, swlat}
-		nw := spatial.GeoJSONPoint{swlon, nelat}
-		ne := spatial.GeoJSONPoint{nelon, nelat}
-		se := spatial.GeoJSONPoint{nelon, swlat}
+		sw := geojson.GeoJSONPoint{swlon, swlat}
+		nw := geojson.GeoJSONPoint{swlon, nelat}
+		ne := geojson.GeoJSONPoint{nelon, nelat}
+		se := geojson.GeoJSONPoint{nelon, swlat}
 
-		ring := spatial.GeoJSONRing{sw, nw, ne, se, sw}
-		poly := spatial.GeoJSONPolygon{ring}
-		multi := spatial.GeoJSONMultiPolygon{poly}
+		ring := geojson.GeoJSONRing{sw, nw, ne, se, sw}
+		poly := geojson.GeoJSONPolygon{ring}
+		multi := geojson.GeoJSONMultiPolygon{poly}
 
-		geom := spatial.GeoJSONGeometry{
+		geom := geojson.GeoJSONGeometry{
 			Type:        "MultiPolygon",
 			Coordinates: multi,
 		}
 
-		feature := spatial.GeoJSONFeature{
+		feature := geojson.GeoJSONFeature{
 			Type:       "Feature",
 			Properties: props,
 			Geometry:   geom,
@@ -229,7 +229,7 @@ func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord
 		features = append(features, feature)
 	}
 
-	fc := spatial.GeoJSONFeatureCollection{
+	fc := geojson.GeoJSONFeatureCollection{
 		Type:     "FeatureCollection",
 		Features: features,
 	}

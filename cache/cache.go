@@ -1,16 +1,16 @@
 package cache
 
 import (
-	"github.com/whosonfirst/go-spatial"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-spatial/geojson"	
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 )
 
 type CacheItem interface {
 	SPR() spr.StandardPlacesResult
-	Polygons() []geojson.Polygon
-	Geometry() spatial.GeoJSONGeometry
+	Polygons() []wof_geojson.Polygon
+	Geometry() geojson.GeoJSONGeometry
 }
 
 // see the way we're storing a geojson.Geometry but returning a
@@ -21,10 +21,10 @@ type CacheItem interface {
 type FeatureCache struct {
 	CacheItem       `json:",omitempty"`
 	FeatureSPR      spr.StandardPlacesResult `json:"spr"`
-	FeaturePolygons []geojson.Polygon        `json:"polygons"`
+	FeaturePolygons []wof_geojson.Polygon        `json:"polygons"`
 }
 
-func NewFeatureCache(f geojson.Feature) (CacheItem, error) {
+func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
 
 	s, err := f.SPR()
 
@@ -50,21 +50,21 @@ func (fc *FeatureCache) SPR() spr.StandardPlacesResult {
 	return fc.FeatureSPR
 }
 
-func (fc *FeatureCache) Geometry() spatial.GeoJSONGeometry {
+func (fc *FeatureCache) Geometry() geojson.GeoJSONGeometry {
 
-	multi_poly := make([]spatial.GeoJSONPolygon, 0)
+	multi_poly := make([]geojson.GeoJSONPolygon, 0)
 
 	for _, p := range fc.Polygons() {
 
-		poly := make([]spatial.GeoJSONRing, 0)
+		poly := make([]geojson.GeoJSONRing, 0)
 
 		ext := p.ExteriorRing()
 
-		ext_ring := make([]spatial.GeoJSONPoint, 0)
+		ext_ring := make([]geojson.GeoJSONPoint, 0)
 
 		for _, coord := range ext.Vertices() {
 
-			pt := spatial.GeoJSONPoint{coord.X, coord.Y}
+			pt := geojson.GeoJSONPoint{coord.X, coord.Y}
 			ext_ring = append(ext_ring, pt)
 		}
 
@@ -72,11 +72,11 @@ func (fc *FeatureCache) Geometry() spatial.GeoJSONGeometry {
 
 		for _, int := range p.InteriorRings() {
 
-			int_ring := make([]spatial.GeoJSONPoint, 0)
+			int_ring := make([]geojson.GeoJSONPoint, 0)
 
 			for _, coord := range int.Vertices() {
 
-				pt := spatial.GeoJSONPoint{coord.X, coord.Y}
+				pt := geojson.GeoJSONPoint{coord.X, coord.Y}
 				int_ring = append(int_ring, pt)
 			}
 
@@ -86,7 +86,7 @@ func (fc *FeatureCache) Geometry() spatial.GeoJSONGeometry {
 		multi_poly = append(multi_poly, poly)
 	}
 
-	geom := spatial.GeoJSONGeometry{
+	geom := geojson.GeoJSONGeometry{
 		Type:        "MultiPolygon",
 		Coordinates: multi_poly,
 	}
@@ -94,7 +94,7 @@ func (fc *FeatureCache) Geometry() spatial.GeoJSONGeometry {
 	return geom
 }
 
-func (fc *FeatureCache) Polygons() []geojson.Polygon {
+func (fc *FeatureCache) Polygons() []wof_geojson.Polygon {
 
 	return fc.FeaturePolygons
 }

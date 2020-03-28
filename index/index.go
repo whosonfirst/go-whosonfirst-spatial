@@ -5,9 +5,9 @@ import (
 	"github.com/aaronland/go-roster"
 	"github.com/skelterjohn/geom"
 	"github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial"
+	"github.com/whosonfirst/go-spatial/geojson"
 	"github.com/whosonfirst/go-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
 )
@@ -15,11 +15,9 @@ import (
 type Index interface {
 	Open(context.Context, string) error
 	Close(context.Context) error
-	IndexFeature(context.Context, geojson.Feature) error
+	IndexFeature(context.Context, wof_geojson.Feature) error
 	GetIntersectsWithCoord(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
-	GetIntersectsWithCoordCandidates(context.Context, geom.Coord) (*spatial.GeoJSONFeatureCollection, error)
-	// GetNearbyWithCoord(geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
-	// GetNearbyWithCoordCandidates(geom.Coord) (*spatial.GeoJSONFeatureCollection, error)
+	GetIntersectsWithCoordCandidates(context.Context, geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
 	Cache() cache.Cache
 }
 

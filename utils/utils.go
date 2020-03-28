@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"github.com/whosonfirst/go-spatial"
+	"github.com/whosonfirst/go-spatial/geojson"
 	"github.com/whosonfirst/go-spatial/cache"
 	pip_index "github.com/whosonfirst/go-spatial/index"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
@@ -71,11 +71,11 @@ func IsValidRecord(fh io.Reader, ctx context.Context) (bool, error) {
 	return true, nil
 }
 
-func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults, idx pip_index.Index) (*spatial.GeoJSONFeatureCollection, error) {
+func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults, idx pip_index.Index) (*geojson.GeoJSONFeatureCollection, error) {
 
 	c := idx.Cache()
 
-	features := make([]spatial.GeoJSONFeature, 0)
+	features := make([]geojson.GeoJSONFeature, 0)
 
 	for _, r := range results.Results() {
 
@@ -99,7 +99,7 @@ func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesR
 			return nil, err
 		}
 
-		f := spatial.GeoJSONFeature{
+		f := geojson.GeoJSONFeature{
 			Type:       "Feature",
 			Properties: fc.SPR(),
 			Geometry:   fc.Geometry(),
@@ -108,7 +108,7 @@ func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesR
 		features = append(features, f)
 	}
 
-	collection := spatial.GeoJSONFeatureCollection{
+	collection := geojson.GeoJSONFeatureCollection{
 		Type:     "FeatureCollection",
 		Features: features,
 	}
