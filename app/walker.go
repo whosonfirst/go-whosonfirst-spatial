@@ -23,7 +23,7 @@ import (
 	"sync"
 )
 
-func NewApplicationIndexer(fl *flag.FlagSet, appindex index.Index, appextras *database.SQLiteDatabase) (*wof_index.Indexer, error) {
+func NewApplicationWalker(ctx context.Context, fl *flag.FlagSet, appindex index.Index, appextras *database.SQLiteDatabase) (*wof_index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
@@ -91,7 +91,7 @@ func NewApplicationIndexer(fl *flag.FlagSet, appindex index.Index, appextras *da
 		mu = new(sync.Mutex)
 	}
 
-	cb := func(fh io.Reader, ctx context.Context, args ...interface{}) error {
+	cb := func(ctx context.Context, fh io.Reader, args ...interface{}) error {
 
 		var f geojson.Feature
 
@@ -196,7 +196,7 @@ func NewApplicationIndexer(fl *flag.FlagSet, appindex index.Index, appextras *da
 			return nil
 		}
 
-		err := appindex.IndexFeature(f)
+		err := appindex.IndexFeature(ctx, f)
 
 		if err != nil {
 

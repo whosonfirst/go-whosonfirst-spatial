@@ -2,9 +2,9 @@ package utils
 
 import (
 	"context"
-	"errors"
-	"github.com/skelterjohn/geom"
+	"encoding/json"
 	"github.com/whosonfirst/go-spatial"
+	"github.com/whosonfirst/go-spatial/cache"
 	pip_index "github.com/whosonfirst/go-spatial/index"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-index"
@@ -13,7 +13,6 @@ import (
 	"io"
 	"io/ioutil"
 	_ "log"
-	"strconv"
 )
 
 func IsWOFRecord(fh io.Reader) (bool, error) {
@@ -72,15 +71,29 @@ func IsValidRecord(fh io.Reader, ctx context.Context) (bool, error) {
 	return true, nil
 }
 
-func ResultsToFeatureCollection(results spr.StandardPlacesResults, idx pip_index.Index) (*spatial.GeoJSONFeatureCollection, error) {
+func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults, idx pip_index.Index) (*spatial.GeoJSONFeatureCollection, error) {
 
-	cache := idx.Cache()
+	c := idx.Cache()
 
 	features := make([]spatial.GeoJSONFeature, 0)
 
 	for _, r := range results.Results() {
 
-		fc, err := cache.Get(r.Id())
+		cr, err := c.Get(ctx, r.Id())
+
+		if err != nil {
+			return nil, err
+		}
+
+		body, err := ioutil.ReadAll(cr)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var fc *cache.FeatureCache
+
+		err = json.Unmarshal(body, &fc)
 
 		if err != nil {
 			return nil, err

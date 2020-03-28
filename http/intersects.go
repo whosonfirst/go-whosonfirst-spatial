@@ -36,13 +36,12 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 			return
 		}
 
+		ctx := req.Context()
 		query := req.URL.Query()
 
 		str_lat := query.Get("latitude")
 		str_lon := query.Get("longitude")
 		str_format := query.Get("format")
-
-		v1 := query.Get("v1")
 
 		if str_format == "geojson" && !opts.EnableGeoJSON {
 			gohttp.Error(rsp, "Invalid format", gohttp.StatusBadRequest)
@@ -87,7 +86,7 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 			return
 		}
 
-		results, err := i.GetIntersectsByCoord(coord, filters)
+		results, err := i.GetIntersectsWithCoord(ctx, coord, filters)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -97,20 +96,9 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 		var final interface{}
 		final = results
 
-		if v1 != "" {
+		if str_format == "geojson" {
 
-			v1_results, err := utils.ResultsToV1Results(results)
-
-			if err != nil {
-				gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
-				return
-			}
-
-			final = v1_results
-
-		} else if str_format == "geojson" {
-
-			collection, err := utils.ResultsToFeatureCollection(results, i)
+			collection, err := utils.ResultsToFeatureCollection(ctx, results, i)
 
 			if err != nil {
 				gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -161,7 +149,7 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 	return h, nil
 }
 
-func IntersectsCandidatesHandler(i pip.Index, idx *wof.Indexer) (gohttp.Handler, error) {
+func IntersectsCandidatesHandler(i index.Index, idx *wof_index.Indexer) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
@@ -170,6 +158,7 @@ func IntersectsCandidatesHandler(i pip.Index, idx *wof.Indexer) (gohttp.Handler,
 			return
 		}
 
+		ctx := req.Context()
 		query := req.URL.Query()
 
 		str_lat := query.Get("latitude")
@@ -199,14 +188,14 @@ func IntersectsCandidatesHandler(i pip.Index, idx *wof.Indexer) (gohttp.Handler,
 			return
 		}
 
-		coord, err := utils.NewCoordinateFromLatLons(lat, lon)
+		coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
 			return
 		}
 
-		candidates, err := i.GetCandidatesByCoord(coord)
+		candidates, err := i.GetIntersectsWithCoordCandidates(ctx, coord)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)

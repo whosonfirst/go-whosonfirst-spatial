@@ -1,7 +1,9 @@
 package index
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"github.com/dhconnelly/rtreego"
 	"github.com/skelterjohn/geom"
 	wof_cache "github.com/whosonfirst/go-cache"
@@ -13,6 +15,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	// golog "log"
+	"io/ioutil"
 	"net/url"
 	"sync"
 )
@@ -36,8 +39,8 @@ type RTreeSpatialIndex struct {
 	Id     string
 }
 
-func (sp RTreeSpatialIndex) Close() error {
-	return nil
+func (sp RTreeSpatialIndex) Bounds() *rtreego.Rect {
+	return sp.bounds
 }
 
 type RTreeResults struct {
@@ -111,7 +114,16 @@ func (r *RTreeIndex) IndexFeature(ctx context.Context, f geojson.Feature) error 
 		return err
 	}
 
-	_, err = r.cache.Set(ctx, str_id, fc)
+	enc, err := json.Marshal(fc)
+
+	if err != nil {
+		return err
+	}
+
+	br := bytes.NewReader(enc)
+	cr := ioutil.NopCloser(br)
+
+	_, err = r.cache.Set(ctx, str_id, cr)
 
 	if err != nil {
 		return err
@@ -158,7 +170,7 @@ func (r *RTreeIndex) GetIntersectsWithCoord(ctx context.Context, coord geom.Coor
 		return nil, err
 	}
 
-	rsp, err := r.inflateResults(coord, filters, rows)
+	rsp, err := r.inflateResults(ctx, coord, filters, rows)
 
 	if err != nil {
 		return nil, err
@@ -179,14 +191,14 @@ func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord
 
 	for _, raw := range intersects {
 
-		spatial := raw.(*RTreeSpatialIndex)
-		str_id := spatial.Id
+		sp := raw.(*RTreeSpatialIndex)
+		str_id := sp.Id
 
 		props := map[string]interface{}{
 			"id": str_id,
 		}
 
-		b := spatial.Bounds()
+		b := sp.Bounds()
 
 		swlon := b.PointCoord(0)
 		swlat := b.PointCoord(1)
@@ -249,7 +261,7 @@ func (r *RTreeIndex) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial,
 	return results, nil
 }
 
-func (r *RTreeIndex) inflateResults(c geom.Coord, f filter.Filter, possible []rtreego.Spatial) (spr.StandardPlacesResults, error) {
+func (r *RTreeIndex) inflateResults(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial) (spr.StandardPlacesResults, error) {
 
 	// to do: timings that don't slow everything down the way
 	// go-whosonfirst-timer does now (20170915/thisisaaronland)
@@ -269,6 +281,13 @@ func (r *RTreeIndex) inflateResults(c geom.Coord, f filter.Filter, possible []rt
 
 			defer wg.Done()
 
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				// pass
+			}
+
 			str_id := sp.Id
 
 			mu.RLock()
@@ -283,10 +302,26 @@ func (r *RTreeIndex) inflateResults(c geom.Coord, f filter.Filter, possible []rt
 			seen[str_id] = true
 			mu.Unlock()
 
-			fc, err := r.cache.Get(str_id)
+			cr, err := r.cache.Get(ctx, str_id)
 
 			if err != nil {
 				r.Logger.Error("failed to retrieve cache for %s, because %s", str_id, err)
+				return
+			}
+
+			body, err := ioutil.ReadAll(cr)
+
+			if err != nil {
+				r.Logger.Error("failed to read cache for %s, because %s", str_id, err)
+				return
+			}
+
+			var fc *cache.FeatureCache
+
+			err = json.Unmarshal(body, &fc)
+
+			if err != nil {
+				r.Logger.Error("failed to unmarshal cache for %s, because %s", str_id, err)
 				return
 			}
 

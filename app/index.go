@@ -1,13 +1,13 @@
 package app
 
 import (
-	"errors"
+	"context"
 	"flag"
 	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-spatial/index"
 )
 
-func NewApplicationIndex(fl *flag.FlagSet) (index.Index, error) {
+func NewApplicationIndex(ctx context.Context, fl *flag.FlagSet) (index.Index, error) {
 
 	index_uri, err := flags.StringVar(fl, "index")
 
@@ -15,5 +15,5 @@ func NewApplicationIndex(fl *flag.FlagSet) (index.Index, error) {
 		return nil, err
 	}
 
-	return index.NewIndex(index_uri)
+	return index.NewIndex(ctx, index_uri)
 }

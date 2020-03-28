@@ -1,13 +1,13 @@
 package app
 
 import (
-	"errors"
+	"context"
 	"flag"
 	"github.com/whosonfirst/go-cache"
 	"github.com/whosonfirst/go-spatial/flags"
 )
 
-func NewApplicationCache(fl *flag.FlagSet) (cache.Cache, error) {
+func NewApplicationCache(ctx context.Context, fl *flag.FlagSet) (cache.Cache, error) {
 
 	cache_uri, err := flags.StringVar(fl, "cache")
 
@@ -15,5 +15,5 @@ func NewApplicationCache(fl *flag.FlagSet) (cache.Cache, error) {
 		return nil, err
 	}
 
-	return cache.NewCache(cache_uri)
+	return cache.NewCache(ctx, cache_uri)
 }

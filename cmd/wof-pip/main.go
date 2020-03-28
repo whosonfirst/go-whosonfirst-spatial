@@ -2,12 +2,12 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/whosonfirst/go-spatial/app"
 	"github.com/whosonfirst/go-spatial/filter"
 	"github.com/whosonfirst/go-spatial/flags"
-	"github.com/whosonfirst/go-spatial/utils"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	log "log"
 	"os"
@@ -31,7 +31,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pip, err := app.NewPIPApplication(fl)
+	ctx := context.Background()
+
+	pip, err := app.NewPIPApplication(ctx, fl)
 
 	if err != nil {
 		log.Fatal("Failed to create new PIP application, because", err)
@@ -120,7 +122,7 @@ func main() {
 
 			if command == "pip" {
 
-				intersects, err := appindex.GetIntersectsByCoord(c, f)
+				intersects, err := appindex.GetIntersectsWithCoord(ctx, c, f)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get intersects, because %s", err)
@@ -131,7 +133,7 @@ func main() {
 
 			} else {
 
-				candidates, err := appindex.GetCandidatesByCoord(c)
+				candidates, err := appindex.GetIntersectsWithCoordCandidates(ctx, c)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get candidates, because %s", err)
@@ -140,39 +142,6 @@ func main() {
 
 				results = candidates
 			}
-
-		} else if command == "polyline" {
-
-			poly := parts[1]
-			factor := 1.0e5
-
-			if len(parts) > 2 {
-
-				f, err := utils.StringPrecisionToFactor(parts[2])
-
-				if err != nil {
-					pip.Logger.Warning("Unable to parse precision because %s", err)
-					continue
-				}
-
-				factor = f
-			}
-
-			path, err := utils.DecodePolyline(poly, factor)
-
-			if err != nil {
-				pip.Logger.Warning("Unable to decode polyline because %s", err)
-				continue
-			}
-
-			intersects, err := appindex.GetIntersectsByPath(*path, f)
-
-			if err != nil {
-				pip.Logger.Warning("Unable to get candidates, because %s", err)
-				continue
-			}
-
-			results = intersects
 
 		} else {
 			pip.Logger.Warning("Invalid command")

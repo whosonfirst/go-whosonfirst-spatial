@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"flag"
 	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-log"
@@ -8,7 +9,7 @@ import (
 	"os"
 )
 
-func NewApplicationLogger(fl *flag.FlagSet) (*log.WOFLogger, error) {
+func NewApplicationLogger(ctx context.Context, fl *flag.FlagSet) (*log.WOFLogger, error) {
 
 	verbose, _ := flags.BoolVar(fl, "verbose")
 

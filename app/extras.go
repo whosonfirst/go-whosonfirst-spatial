@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -13,7 +14,7 @@ import (
 	"os/signal"
 )
 
-func NewApplicationExtras(fl *flag.FlagSet) (*database.SQLiteDatabase, error) {
+func NewApplicationExtras(ctx context.Context, fl *flag.FlagSet) (*database.SQLiteDatabase, error) {
 
 	enable_extras, _ := flags.BoolVar(fl, "enable-extras")
 	extras_dsn, _ := flags.StringVar(fl, "extras-dsn")

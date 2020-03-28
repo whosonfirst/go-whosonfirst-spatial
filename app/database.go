@@ -1,12 +1,13 @@
 package app
 
 import (
+	"context"
 	"flag"
 	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
 )
 
-func NewSpatialiteDB(fl *flag.FlagSet) (*database.SQLiteDatabase, error) {
+func NewSpatialiteDB(ctx context.Context, fl *flag.FlagSet) (*database.SQLiteDatabase, error) {
 
 	dsn, err := flags.StringVar(fl, "spatialite-dsn")
 

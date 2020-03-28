@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"flag"
 	"github.com/whosonfirst/go-cache"
 	"github.com/whosonfirst/go-spatial/flags"
@@ -13,41 +14,41 @@ import (
 )
 
 type PIPApplication struct {
-	mode    string
-	Index   index.Index
-	Cache   cache.Cache
-	Extras  *database.SQLiteDatabase
-	Indexer *wof_index.Indexer
-	Logger  *log.WOFLogger
+	mode   string
+	Index  index.Index
+	Cache  cache.Cache
+	Extras *database.SQLiteDatabase
+	Walker *wof_index.Indexer
+	Logger *log.WOFLogger
 }
 
-func NewPIPApplication(fl *flag.FlagSet) (*PIPApplication, error) {
+func NewPIPApplication(ctx context.Context, fl *flag.FlagSet) (*PIPApplication, error) {
 
-	logger, err := NewApplicationLogger(fl)
-
-	if err != nil {
-		return nil, err
-	}
-
-	appcache, err := NewApplicationCache(fl)
+	logger, err := NewApplicationLogger(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	appindex, err := NewApplicationIndex(fl, appcache)
+	appcache, err := NewApplicationCache(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	appextras, err := NewApplicationExtras(fl)
+	appindex, err := NewApplicationIndex(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	indexer, err := NewApplicationIndexer(fl, appindex, appextras)
+	appextras, err := NewApplicationExtras(ctx, fl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	walker, err := NewApplicationWalker(ctx, fl, appindex, appextras)
 
 	if err != nil {
 		return nil, err
@@ -56,21 +57,21 @@ func NewPIPApplication(fl *flag.FlagSet) (*PIPApplication, error) {
 	mode, _ := flags.StringVar(fl, "mode")
 
 	p := PIPApplication{
-		mode:    mode,
-		Cache:   appcache,
-		Index:   appindex,
-		Extras:  appextras,
-		Indexer: indexer,
-		Logger:  logger,
+		mode:   mode,
+		Cache:  appcache,
+		Index:  appindex,
+		Extras: appextras,
+		Walker: walker,
+		Logger: logger,
 	}
 
 	return &p, nil
 }
 
-func (p *PIPApplication) Close() error {
+func (p *PIPApplication) Close(ctx context.Context) error {
 
-	p.Cache.Close()
-	p.Index.Close()
+	p.Cache.Close(ctx)
+	p.Index.Close(ctx)
 
 	if p.Extras != nil {
 		p.Extras.Close()
@@ -90,7 +91,7 @@ func (p *PIPApplication) IndexPaths(paths []string) error {
 
 			t1 := time.Now()
 
-			err := p.Indexer.IndexPaths(paths)
+			err := p.Walker.IndexPaths(paths)
 
 			if err != nil {
 				p.Logger.Fatal("failed to index paths because %s", err)
@@ -110,11 +111,11 @@ func (p *PIPApplication) IndexPaths(paths []string) error {
 
 			for _ = range c {
 
-				if !p.Indexer.IsIndexing() {
+				if !p.Walker.IsIndexing() {
 					continue
 				}
 
-				p.Logger.Status("indexing %d records indexed", p.Indexer.Indexed)
+				p.Logger.Status("indexing %d records indexed", p.Walker.Indexed)
 			}
 		}()
 	}
