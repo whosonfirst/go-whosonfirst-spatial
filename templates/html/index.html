@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-    		<title>go-whosonfirst-pip</title>		
-		<script src="/javascript/slippymap.crosshairs.js"></script>
-		
-		<link rel="stylesheet" href="/css/mapzen.whosonfirst.pip.css">
-		<script src="/javascript/mapzen.whosonfirst.pip.js"></script>
-	</head>
-	<body>
+{{ define "index" }}
+{{ template "inc_head" . }}
 		<div id="map"></div>
 		<div id="status"><span id="coords"></span></div>
 		<div id="jump-to-form">
@@ -20,5 +12,4 @@
 		  <ul id="candidates-list"></ul>
 		  <ul id="intersecting-list"></ul>
 		</div>
-	</body>
-</html>	
+{{ template "inc_foot" . }}
