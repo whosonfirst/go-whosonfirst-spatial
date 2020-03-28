@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/whosonfirst/go-spatial/geojson"	
+	"github.com/whosonfirst/go-spatial/geojson"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-spr"
@@ -21,7 +21,7 @@ type CacheItem interface {
 type FeatureCache struct {
 	CacheItem       `json:",omitempty"`
 	FeatureSPR      spr.StandardPlacesResult `json:"spr"`
-	FeaturePolygons []wof_geojson.Polygon        `json:"polygons"`
+	FeaturePolygons []wof_geojson.Polygon    `json:"polygons"`
 }
 
 func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {

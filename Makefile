@@ -1,0 +1,24 @@
+CWD=$(shell pwd)
+
+go-bindata:
+	mkdir -p cmd/go-bindata
+	mkdir -p cmd/go-bindata-assetfs
+	curl -s -o cmd/go-bindata/main.go https://raw.githubusercontent.com/whosonfirst/go-bindata/master/cmd/go-bindata/main.go
+	curl -s -o cmd/go-bindata-assetfs/main.go https://raw.githubusercontent.com/whosonfirst/go-bindata-assetfs/master/cmd/go-bindata-assetfs/main.go
+
+debug:
+	@make bake
+	go run -mod vendor cmd/server/main.go -nextzen-apikey $(APIKEY) -api
+
+bake: bake-static
+
+bake-static:
+	go build -o bin/go-bindata cmd/go-bindata/main.go
+	go build -o bin/go-bindata-assetfs cmd/go-bindata-assetfs/main.go
+	rm -f www/static/*~ www/static/css/*~ www/static/javascript/*~
+	@PATH=$(PATH):$(CWD)/bin bin/go-bindata-assetfs -pkg http static/www/javascript static/www/css
+
+bake-templates:
+	mv bindata.go http/assetfs.go
+	rm -rf templates/html/*~
+	bin/go-bindata -pkg templates -o assets/templates/html.go templates/html

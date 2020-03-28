@@ -3,8 +3,8 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"github.com/whosonfirst/go-spatial/geojson"
 	"github.com/whosonfirst/go-spatial/cache"
+	"github.com/whosonfirst/go-spatial/geojson"
 	pip_index "github.com/whosonfirst/go-spatial/index"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-index"
