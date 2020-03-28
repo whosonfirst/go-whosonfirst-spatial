@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
@@ -11,7 +12,6 @@ import (
 	gohttp "net/http"
 	"os"
 	"runtime"
-	"strings"
 	"time"
 )
 
@@ -39,7 +39,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pip, err := app.NewPIPApplication(fs)
+	ctx := context.Background()
+
+	pip, err := app.NewPIPApplication(ctx, fs)
 
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Failed to create new PIP application, because %s", err))
@@ -77,7 +79,7 @@ func main() {
 	intersects_opts := http.NewDefaultIntersectsHandlerOptions()
 	intersects_opts.EnableGeoJSON = enable_geojson
 
-	intersects_handler, err := http.IntersectsHandler(pip.Index, pip.Indexer, pip.Extras, intersects_opts)
+	intersects_handler, err := http.IntersectsHandler(pip.Index, pip.Walker, pip.Extras, intersects_opts)
 
 	if err != nil {
 		pip.Logger.Fatal("failed to create PIP handler because %s", err)
@@ -96,13 +98,12 @@ func main() {
 
 	enable_www, _ := flags.BoolVar(fs, "enable-www")
 	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
-	enable_polylines, _ := flags.BoolVar(fs, "enable-polylines")
 
 	if enable_candidates {
 
 		pip.Logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := http.CandidatesHandler(pip.Index, pip.Indexer)
+		candidateshandler, err := http.IntersectsCandidatesHandler(pip.Index, pip.Walker)
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create Spatial handler because %s", err)
@@ -113,28 +114,32 @@ func main() {
 
 	if enable_www {
 
+		nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
+		nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
+		nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
+
+		static_prefix, _ := flags.StringVar(fs, "static-prefix")
+
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
 		tangramjs_opts := tangramjs.DefaultTangramJSOptions()
-		tangramjs_opts.Nextzen.APIKey = *nextzen_apikey
-		tangramjs_opts.Nextzen.StyleURL = *nextzen_style_url
-		tangramjs_opts.Nextzen.TileURL = *nextzen_tile_url
+		tangramjs_opts.Nextzen.APIKey = nextzen_apikey
+		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
+		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = bootstrap.AppendAssetHandlersWithPrefix(mux, *static_prefix)
+		err = bootstrap.AppendAssetHandlersWithPrefix(mux, static_prefix)
 
 		www_path, _ := flags.StringVar(fs, "www-path")
-		api_key, _ := flags.StringVar(fs, "www-api-key")
-
 		www_handler, err := http.BundledWWWHandler()
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create (bundled) www handler because %s", err)
 		}
 
-		www_handler = bootstrap.AppendResourcesHandlerWithPrefix(www_handler, bootstrap_opts, *static_prefix)
-		www_handler = tangramjs.AppendResourcesHandlerWithPrefix(www_handler, tangramjs_opts, *static_prefix)
+		www_handler = bootstrap.AppendResourcesHandlerWithPrefix(www_handler, bootstrap_opts, static_prefix)
+		www_handler = tangramjs.AppendResourcesHandlerWithPrefix(www_handler, tangramjs_opts, static_prefix)
 
-		mux.Handle(search_path, search_handler)
+		mux.Handle(www_path, www_handler)
 	}
 
 	host, _ := flags.StringVar(fs, "host")

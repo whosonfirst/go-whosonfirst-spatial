@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/aaronland/go-http-tangramjs"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"log"
 	"os"
@@ -415,6 +416,12 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String("www-local", "", "This flag is DEPRECATED and doesn't do anything anymore.")
 	fs.String("www-local-root", "", "This flag is DEPRECATED and doesn't do anything anymore.")
+
+	fs.String("static-prefix", "", "Prepend this prefix to URLs for static assets.")
+
+	fs.String("nextzen-apikey", "", "A valid Nextzen API key")
+	fs.String("nextzen-style-url", "/tangram/refill-style.zip", "...")
+	fs.String("nextzen-tile-url", tangramjs.NEXTZEN_MVT_ENDPOINT, "...")
 
 	return nil
 }
