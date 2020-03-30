@@ -91,11 +91,14 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 }
 
 func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
-	return nil
-}
 
-func (r *RTreeSpatialDatabase) Cache() wof_cache.Cache {
-	return r.cache
+	err := r.cache.Close(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.Feature) error {
@@ -108,24 +111,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		return err
 	}
 
-	fc, err := cache.NewFeatureCache(f)
-
-	if err != nil {
-		return err
-	}
-
-	enc, err := json.Marshal(fc)
-
-	if err != nil {
-		return err
-	}
-
-	golog.Println("CACHE", string(enc))
-
-	br := bytes.NewReader(enc)
-	cr := ioutil.NopCloser(br)
-
-	_, err = r.cache.Set(ctx, str_id, cr)
+	err = r.setFeatureCache(ctx, f)
 
 	if err != nil {
 		return err
@@ -306,28 +292,10 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 
 			golog.Println("FIND", str_id)
 
-			cr, err := r.cache.Get(ctx, str_id)
+			fc, err := r.retrieveFeatureCache(ctx, str_id)
 
 			if err != nil {
-				r.Logger.Error("failed to retrieve cache for %s, because %s", str_id, err)
-				return
-			}
-
-			body, err := ioutil.ReadAll(cr)
-
-			if err != nil {
-				r.Logger.Error("failed to read cache for %s, because %s", str_id, err)
-				return
-			}
-
-			golog.Println("BODY", string(body))
-
-			var fc *cache.FeatureCache
-
-			err = json.Unmarshal(body, &fc)
-
-			if err != nil {
-				r.Logger.Error("failed to unmarshal cache for %s, because %s", str_id, err)
+				r.Logger.Error("Failed to retrieve feature cache for %s, %v", str_id, err)
 				return
 			}
 
@@ -372,9 +340,7 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 	return &rs, nil
 }
 
-func (s *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {
-
-	c := s.cache
+func (db *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {
 
 	features := make([]geojson.GeoJSONFeature, 0)
 
@@ -387,21 +353,7 @@ func (s *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, r
 			// pass
 		}
 
-		cr, err := c.Get(ctx, r.Id())
-
-		if err != nil {
-			return nil, err
-		}
-
-		body, err := ioutil.ReadAll(cr)
-
-		if err != nil {
-			return nil, err
-		}
-
-		var fc *cache.FeatureCache
-
-		err = json.Unmarshal(body, &fc)
+		fc, err := db.retrieveFeatureCache(ctx, r.Id())
 
 		if err != nil {
 			return nil, err
@@ -422,4 +374,59 @@ func (s *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, r
 	}
 
 	return &collection, nil
+}
+
+func (r *RTreeSpatialDatabase) setFeatureCache(ctx context.Context, f wof_geojson.Feature) error {
+
+	fc, err := cache.NewFeatureCache(f)
+
+	if err != nil {
+		return err
+	}
+
+	enc, err := json.Marshal(fc)
+
+	if err != nil {
+		return err
+	}
+
+	golog.Println("CACHE", string(enc))
+
+	br := bytes.NewReader(enc)
+	cr := ioutil.NopCloser(br)
+
+	_, err = r.cache.Set(ctx, f.Id(), cr)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id string) (*cache.FeatureCache, error) {
+
+	cr, err := r.cache.Get(ctx, str_id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(cr)
+
+	if err != nil {
+		return nil, err
+	}
+
+	golog.Println("BODY", string(body))
+
+	var fc *cache.FeatureCache
+
+	err = json.Unmarshal(body, &fc)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fc, nil
 }
