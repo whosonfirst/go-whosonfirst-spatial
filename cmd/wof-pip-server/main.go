@@ -41,7 +41,7 @@ func main() {
 
 	ctx := context.Background()
 
-	pip, err := app.NewPIPApplication(ctx, fs)
+	pip, err := app.NewSpatialApplication(ctx, fs)
 
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Failed to create new PIP application, because %s", err))
@@ -79,7 +79,7 @@ func main() {
 	intersects_opts := http.NewDefaultIntersectsHandlerOptions()
 	intersects_opts.EnableGeoJSON = enable_geojson
 
-	intersects_handler, err := http.IntersectsHandler(pip.Index, pip.Walker, pip.Extras, intersects_opts)
+	intersects_handler, err := http.IntersectsHandler(pip.SpatialDatabase, pip.Walker, pip.ExtrasDatabase, intersects_opts)
 
 	if err != nil {
 		pip.Logger.Fatal("failed to create PIP handler because %s", err)
@@ -103,7 +103,7 @@ func main() {
 
 		pip.Logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := http.IntersectsCandidatesHandler(pip.Index, pip.Walker)
+		candidateshandler, err := http.IntersectsCandidatesHandler(pip.SpatialDatabase, pip.Walker)
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create Spatial handler because %s", err)

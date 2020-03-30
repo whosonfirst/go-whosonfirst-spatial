@@ -33,7 +33,7 @@ func main() {
 
 	ctx := context.Background()
 
-	pip, err := app.NewPIPApplication(ctx, fl)
+	pip, err := app.NewSpatialApplication(ctx, fl)
 
 	if err != nil {
 		log.Fatal("Failed to create new PIP application, because", err)
@@ -61,7 +61,7 @@ func main() {
 
 	fmt.Println("ready to query")
 
-	appindex := pip.Index
+	spatial_db := pip.SpatialDatabase
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -84,8 +84,6 @@ func main() {
 		case "candidates":
 			command = parts[0]
 		case "pip":
-			command = parts[0]
-		case "polyline":
 			command = parts[0]
 		default:
 			pip.Logger.Warning("Invalid command")
@@ -122,7 +120,7 @@ func main() {
 
 			if command == "pip" {
 
-				intersects, err := appindex.GetIntersectsWithCoord(ctx, c, f)
+				intersects, err := spatial_db.GetIntersectsWithCoord(ctx, c, f)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get intersects, because %s", err)
@@ -133,7 +131,7 @@ func main() {
 
 			} else {
 
-				candidates, err := appindex.GetIntersectsWithCoordCandidates(ctx, c)
+				candidates, err := spatial_db.GetIntersectsWithCoordCandidates(ctx, c)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get candidates, because %s", err)

@@ -18,7 +18,7 @@ import (
 func NewExtrasDatabase(ctx context.Context, fl *flag.FlagSet) (database.ExtrasDatabase, error) {
 
 	enable_extras, _ := flags.BoolVar(fl, "enable-extras")
-	extras_dsn, _ := flags.StringVar(fl, "extras-dsn")
+	// extras_dsn, _ := flags.StringVar(fl, "extras-dsn")
 
 	if !enable_extras {
 		return nil, nil

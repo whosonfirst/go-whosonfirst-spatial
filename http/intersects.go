@@ -151,7 +151,7 @@ func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Index
 	return h, nil
 }
 
-func IntersectsCandidatesHandler(i index.Index, idx *wof_index.Indexer) (gohttp.Handler, error) {
+func IntersectsCandidatesHandler(spatial_db database.SpatialDatabase, idx *wof_index.Indexer) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
@@ -197,7 +197,7 @@ func IntersectsCandidatesHandler(i index.Index, idx *wof_index.Indexer) (gohttp.
 			return
 		}
 
-		candidates, err := i.GetIntersectsWithCoordCandidates(ctx, coord)
+		candidates, err := spatial_db.GetIntersectsWithCoordCandidates(ctx, coord)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
