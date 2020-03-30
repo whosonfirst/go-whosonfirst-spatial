@@ -63,12 +63,6 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	pip_cache, err := StringVar(fs, "cache")
-
-	if err != nil {
-		return err
-	}
-
 	spatialite_dsn, err := StringVar(fs, "spatialite-dsn")
 
 	if err != nil {
@@ -79,10 +73,6 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 
 		if pip_index != "spatialite" {
 			return errors.New("-mode is spatialite but -index is not")
-		}
-
-		if pip_cache != "sqlite" && pip_cache != "spatialite" {
-			return errors.New("-mode is spatialite but -cache is neither 'sqlite' or 'spatialite'")
 		}
 
 		if spatialite_dsn == "" || spatialite_dsn == ":memory:" {
@@ -221,7 +211,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 	fs := NewFlagSet("common")
 
 	fs.String("index", "rtree", "Valid options are: rtree, spatialite.")
-	fs.String("cache", "gocache", "Valid options are: gocache, fs, spatialite, sqlite. Note that the spatalite option is just a convenience to mirror the '-index spatialite' option.")
 
 	modes := index.Modes()
 	modes = append(modes, "spatialite")

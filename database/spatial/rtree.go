@@ -8,7 +8,7 @@ import (
 	"github.com/dhconnelly/rtreego"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/skelterjohn/geom"
-	wof_cache "github.com/whosonfirst/go-cache"
+	// wof_cache "github.com/whosonfirst/go-cache"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-log"
@@ -18,8 +18,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	// "io/ioutil"
-	golog "log"
 	"net/url"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -31,9 +31,9 @@ func init() {
 
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
-	Logger  *log.WOFLogger
-	rtree   *rtreego.Rtree
-	cache   wof_cache.Cache
+	Logger *log.WOFLogger
+	rtree  *rtreego.Rtree
+	// cache   wof_cache.Cache
 	gocache *gocache.Cache
 	mu      *sync.RWMutex
 }
@@ -66,19 +66,49 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	q := u.Query()
 
-	c_uri := q.Get("cache")
+	/*
+		c_uri := q.Get("cache")
 
-	if c_uri == "" {
-		c_uri = "gocache://"
+		if c_uri == "" {
+			c_uri = "gocache://"
+		}
+
+		c, err := wof_cache.NewCache(ctx, c_uri)
+
+		if err != nil {
+			return nil, err
+		}
+	*/
+
+	expires := 0 * time.Second
+	cleanup := 0 * time.Second
+
+	str_exp := q.Get("default_expiration")
+	str_cleanup := q.Get("cleanup_interval")
+
+	if str_exp != "" {
+
+		int_expires, err := strconv.Atoi(str_exp)
+
+		if err != nil {
+			return nil, err
+		}
+
+		expires = time.Duration(int_expires) * time.Second
 	}
 
-	c, err := wof_cache.NewCache(ctx, c_uri)
+	if str_cleanup != "" {
 
-	if err != nil {
-		return nil, err
+		int_cleanup, err := strconv.Atoi(str_cleanup)
+
+		if err != nil {
+			return nil, err
+		}
+
+		cleanup = time.Duration(int_cleanup) * time.Second
 	}
 
-	gc := gocache.New(5*time.Minute, 10*time.Minute)
+	gc := gocache.New(expires, cleanup)
 
 	logger := log.SimpleWOFLogger("index")
 
@@ -87,9 +117,9 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	mu := new(sync.RWMutex)
 
 	db := &RTreeSpatialDatabase{
-		Logger:  logger,
-		rtree:   rtree,
-		cache:   c,
+		Logger: logger,
+		rtree:  rtree,
+		// cache:   c,
 		gocache: gc,
 		mu:      mu,
 	}
@@ -99,11 +129,13 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
 
-	err := r.cache.Close(ctx)
+	/*
+		err := r.cache.Close(ctx)
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
+	*/
 
 	return nil
 }
@@ -296,8 +328,6 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 			mu.Lock()
 			seen[str_id] = true
 			mu.Unlock()
-
-			golog.Println("FIND", str_id)
 
 			fc, err := r.retrieveFeatureCache(ctx, str_id)
 
