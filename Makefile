@@ -12,7 +12,7 @@ bake-static:
 	go build -mod vendor -o bin/go-bindata cmd/go-bindata/main.go
 	go build -mod vendor -o bin/go-bindata-assetfs cmd/go-bindata-assetfs/main.go
 	rm -f static/*~ static/css/*~ static/javascript/*~
-	@PATH=$(PATH):$(CWD)/bin bin/go-bindata-assetfs -prefix static -pkg http static/javascript static/css
+	@PATH=$(PATH):$(CWD)/bin bin/go-bindata-assetfs -pkg http static/javascript static/css
 
 bake-templates:
 	mv bindata.go http/assetfs.go

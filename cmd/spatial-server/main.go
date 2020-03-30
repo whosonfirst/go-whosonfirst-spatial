@@ -158,6 +158,12 @@ func main() {
 			logger.Fatal("Failed to append bootstrap assets, %v", err)
 		}
 
+		err = http.AppendStaticAssetHandlers(mux)
+
+		if err != nil {
+			logger.Fatal("Failed to append static assets, %v", err)
+		}
+
 		intersects_www_opts := &http.IntersectsWWWHandlerOptions{
 			Templates: t,
 		}
