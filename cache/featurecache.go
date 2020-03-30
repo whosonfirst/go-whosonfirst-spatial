@@ -16,6 +16,8 @@ type FeatureCache struct {
 	CacheItem       `json:",omitempty"`
 	FeatureSPR      spr.StandardPlacesResult `json:"spr"`
 	FeaturePolygons []wof_geojson.Polygon    `json:"polygons"`
+	// FeatureSPR      *feature.WOFStandardPlacesResult  `json:"spr"`
+	// FeaturePolygons []geometry.Polygon    `json:"polygons"`
 }
 
 func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
@@ -33,6 +35,7 @@ func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
 	}
 
 	fc := FeatureCache{
+		// FeatureSPR:      s.(*feature.WOFStandardPlacesResult),
 		FeatureSPR:      s,
 		FeaturePolygons: polys,
 	}

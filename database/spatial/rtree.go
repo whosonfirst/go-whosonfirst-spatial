@@ -1,10 +1,12 @@
 package spatial
 
 import (
-	"bytes"
+	// "bytes"
 	"context"
-	"encoding/json"
+	// "encoding/json"
+	"errors"
 	"github.com/dhconnelly/rtreego"
+	gocache "github.com/patrickmn/go-cache"
 	"github.com/skelterjohn/geom"
 	wof_cache "github.com/whosonfirst/go-cache"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
@@ -15,10 +17,11 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	"io/ioutil"
+	// "io/ioutil"
 	golog "log"
 	"net/url"
 	"sync"
+	"time"
 )
 
 func init() {
@@ -28,10 +31,11 @@ func init() {
 
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
-	Logger *log.WOFLogger
-	rtree  *rtreego.Rtree
-	cache  wof_cache.Cache
-	mu     *sync.RWMutex
+	Logger  *log.WOFLogger
+	rtree   *rtreego.Rtree
+	cache   wof_cache.Cache
+	gocache *gocache.Cache
+	mu      *sync.RWMutex
 }
 
 type RTreeSpatialIndex struct {
@@ -74,6 +78,8 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 		return nil, err
 	}
 
+	gc := gocache.New(5*time.Minute, 10*time.Minute)
+
 	logger := log.SimpleWOFLogger("index")
 
 	rtree := rtreego.NewTree(2, 25, 50)
@@ -81,10 +87,11 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	mu := new(sync.RWMutex)
 
 	db := &RTreeSpatialDatabase{
-		Logger: logger,
-		rtree:  rtree,
-		cache:  c,
-		mu:     mu,
+		Logger:  logger,
+		rtree:   rtree,
+		cache:   c,
+		gocache: gc,
+		mu:      mu,
 	}
 
 	return db, nil
@@ -384,49 +391,60 @@ func (r *RTreeSpatialDatabase) setFeatureCache(ctx context.Context, f wof_geojso
 		return err
 	}
 
-	enc, err := json.Marshal(fc)
-
-	if err != nil {
-		return err
-	}
-
-	golog.Println("CACHE", string(enc))
-
-	br := bytes.NewReader(enc)
-	cr := ioutil.NopCloser(br)
-
-	_, err = r.cache.Set(ctx, f.Id(), cr)
-
-	if err != nil {
-		return err
-	}
-
+	r.gocache.Set(f.Id(), fc, -1)
 	return nil
+
+	/*
+		enc, err := json.Marshal(fc)
+
+		if err != nil {
+			return err
+		}
+
+		br := bytes.NewReader(enc)
+		cr := ioutil.NopCloser(br)
+
+		_, err = r.cache.Set(ctx, f.Id(), cr)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	*/
 }
 
 func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id string) (*cache.FeatureCache, error) {
 
-	cr, err := r.cache.Get(ctx, str_id)
+	fc, ok := r.gocache.Get(str_id)
 
-	if err != nil {
-		return nil, err
+	if !ok {
+		return nil, errors.New("Invalid cache ID")
 	}
 
-	body, err := ioutil.ReadAll(cr)
+	return fc.(*cache.FeatureCache), nil
 
-	if err != nil {
-		return nil, err
-	}
+	/*
+		cr, err := r.cache.Get(ctx, str_id)
 
-	golog.Println("BODY", string(body))
+		if err != nil {
+			return nil, err
+		}
 
-	var fc *cache.FeatureCache
+		body, err := ioutil.ReadAll(cr)
 
-	err = json.Unmarshal(body, &fc)
+		if err != nil {
+			return nil, err
+		}
 
-	if err != nil {
-		return nil, err
-	}
+		var fc *cache.FeatureCache
 
-	return fc, nil
+		err = json.Unmarshal(body, &fc)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return fc, nil
+	*/
 }
