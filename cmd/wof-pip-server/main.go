@@ -6,8 +6,10 @@ import (
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http"
+	"html/template"
 	"log"
 	gohttp "net/http"
 	"os"
@@ -114,6 +116,40 @@ func main() {
 
 	if enable_www {
 
+		path_templates, _ := flags.StringVar(fs, "path-templates")
+
+		t := template.New("spatial").Funcs(template.FuncMap{
+			//
+		})
+
+		if path_templates != "" {
+
+			t, err = t.ParseGlob(path_templates)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+		} else {
+
+			for _, name := range templates.AssetNames() {
+
+				body, err := templates.Asset(name)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				t, err = t.Parse(string(body))
+
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
+
+		intersects_opts.Templates = t
+
 		nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 		nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
 		nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
@@ -130,7 +166,7 @@ func main() {
 		err = bootstrap.AppendAssetHandlersWithPrefix(mux, static_prefix)
 
 		www_path, _ := flags.StringVar(fs, "www-path")
-		www_handler, err := http.BundledWWWHandler()
+		www_handler, err := http.IntersectsWWWHandler(pip.Walker, intersects_opts)
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create (bundled) www handler because %s", err)

@@ -423,5 +423,7 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String("nextzen-style-url", "/tangram/refill-style.zip", "...")
 	fs.String("nextzen-tile-url", tangramjs.NEXTZEN_MVT_ENDPOINT, "...")
 
+	fs.String("templates", "", "An optional string for local templates. This is anything that can be read by the 'templates.ParseGlob' method.")
+
 	return nil
 }

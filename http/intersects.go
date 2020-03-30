@@ -2,11 +2,14 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
+	"html/template"
+	"log"
 	gohttp "net/http"
 	"strconv"
 	"strings"
@@ -14,6 +17,7 @@ import (
 
 type IntersectsHandlerOptions struct {
 	EnableGeoJSON bool
+	Templates     *template.Template
 }
 
 func NewDefaultIntersectsHandlerOptions() *IntersectsHandlerOptions {
@@ -23,6 +27,41 @@ func NewDefaultIntersectsHandlerOptions() *IntersectsHandlerOptions {
 	}
 
 	return &opts
+}
+
+func IntersectsWWWHandler(idx *wof_index.Indexer, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+
+	t := opts.Templates.Lookup("intersects")
+
+	if t == nil {
+		return nil, errors.New("Missing intersects template")
+	}
+
+	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
+
+		if idx.IsIndexing() {
+			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
+			return
+		}
+
+		log.Println("PLEASE IMPLEMENT ME")
+
+		// important if we're trying to use this in a Lambda/API Gateway context
+
+		rsp.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		err := t.Execute(rsp, nil)
+
+		if err != nil {
+			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			return
+		}
+
+		return
+	}
+
+	h := gohttp.HandlerFunc(fn)
+	return h, nil
 }
 
 func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Indexer, extras_db database.ExtrasDatabase, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
