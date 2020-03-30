@@ -5,17 +5,17 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-spatial/flags"
-	"github.com/whosonfirst/go-spatial/index"
-	"github.com/whosonfirst/go-spatial/utils"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
 	"github.com/whosonfirst/go-whosonfirst-sqlite"
 	"github.com/whosonfirst/go-whosonfirst-sqlite-features/tables"
-	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
+	// "github.com/whosonfirst/go-whosonfirst-sqlite/database"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"
@@ -23,7 +23,7 @@ import (
 	"sync"
 )
 
-func NewApplicationWalker(ctx context.Context, fl *flag.FlagSet, appindex index.Index, appextras *database.SQLiteDatabase) (*wof_index.Indexer, error) {
+func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.Spatial, extras_db database.ExtrasDatabase) (*wof_index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
@@ -34,7 +34,7 @@ func NewApplicationWalker(ctx context.Context, fl *flag.FlagSet, appindex index.
 
 	index_extras := false
 
-	if appextras != nil {
+	if extras_db != nil {
 
 		if mode != "spatialite" {
 			index_extras = true
@@ -196,7 +196,7 @@ func NewApplicationWalker(ctx context.Context, fl *flag.FlagSet, appindex index.
 			return nil
 		}
 
-		err := appindex.IndexFeature(ctx, f)
+		err := spatial_db.IndexFeature(ctx, f)
 
 		if err != nil {
 

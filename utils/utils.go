@@ -3,11 +3,11 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"github.com/whosonfirst/go-spatial/cache"
-	"github.com/whosonfirst/go-spatial/geojson"
-	pip_index "github.com/whosonfirst/go-spatial/index"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-spatial/cache"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
@@ -71,9 +71,9 @@ func IsValidRecord(fh io.Reader, ctx context.Context) (bool, error) {
 	return true, nil
 }
 
-func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults, idx pip_index.Index) (*geojson.GeoJSONFeatureCollection, error) {
+func ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults, spatial_database database.SpatialDatabase) (*geojson.GeoJSONFeatureCollection, error) {
 
-	c := idx.Cache()
+	c := spatial_database.Cache()
 
 	features := make([]geojson.GeoJSONFeature, 0)
 

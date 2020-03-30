@@ -4,25 +4,24 @@ import (
 	"context"
 	"flag"
 	"github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial/flags"
-	"github.com/whosonfirst/go-spatial/index"
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-log"
-	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"runtime/debug"
 	"time"
 )
 
-type PIPApplication struct {
-	mode   string
-	Index  index.Index
-	Cache  cache.Cache
-	Extras *database.SQLiteDatabase
-	Walker *wof_index.Indexer
-	Logger *log.WOFLogger
+type SpatialApplication struct {
+	mode            string
+	SpatialDatabase database.SpatialDatabase
+	Cache           cache.Cache
+	ExtrasDatabase  database.ExtrasDatabase
+	Walker          *wof_index.Indexer
+	Logger          *log.WOFLogger
 }
 
-func NewPIPApplication(ctx context.Context, fl *flag.FlagSet) (*PIPApplication, error) {
+func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
 
 	logger, err := NewApplicationLogger(ctx, fl)
 
@@ -30,25 +29,25 @@ func NewPIPApplication(ctx context.Context, fl *flag.FlagSet) (*PIPApplication, 
 		return nil, err
 	}
 
-	appcache, err := NewApplicationCache(ctx, fl)
+	appcache, err := NewCache(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	appindex, err := NewApplicationIndex(ctx, fl)
+	spatial_db, err := NewSpatialDatabase(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	appextras, err := NewApplicationExtras(ctx, fl)
+	extras_db, err := NewExtrasDatabase(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	walker, err := NewApplicationWalker(ctx, fl, appindex, appextras)
+	walker, err := NewWalker(ctx, fl, spatial_db, extras_db)
 
 	if err != nil {
 		return nil, err
@@ -56,31 +55,31 @@ func NewPIPApplication(ctx context.Context, fl *flag.FlagSet) (*PIPApplication, 
 
 	mode, _ := flags.StringVar(fl, "mode")
 
-	p := PIPApplication{
-		mode:   mode,
-		Cache:  appcache,
-		Index:  appindex,
-		Extras: appextras,
-		Walker: walker,
-		Logger: logger,
+	sp := SpatialApplication{
+		mode:            mode,
+		Cache:           appcache,
+		SpatialDatabase: spatial_db,
+		ExtrasDatabase:  extras_db,
+		Walker:          walker,
+		Logger:          logger,
 	}
 
-	return &p, nil
+	return &sp, nil
 }
 
-func (p *PIPApplication) Close(ctx context.Context) error {
+func (p *SpatialApplication) Close(ctx context.Context) error {
 
 	p.Cache.Close(ctx)
-	p.Index.Close(ctx)
+	p.SpatialDatabase.Close(ctx)
 
-	if p.Extras != nil {
-		p.Extras.Close()
+	if p.ExtrasDatabase != nil {
+		p.ExtrasDatabase.Close(ctx)
 	}
 
 	return nil
 }
 
-func (p *PIPApplication) IndexPaths(paths []string) error {
+func (p *SpatialApplication) IndexPaths(paths []string) error {
 
 	if p.mode != "spatialite" {
 

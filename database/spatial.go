@@ -5,15 +5,14 @@ import (
 	"github.com/aaronland/go-roster"
 	"github.com/skelterjohn/geom"
 	"github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial/filter"
-	"github.com/whosonfirst/go-spatial/geojson"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
 )
 
 type SpatialDatabase interface {
-	Open(context.Context, string) error
 	Close(context.Context) error
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	GetIntersectsWithCoord(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
@@ -21,13 +20,13 @@ type SpatialDatabase interface {
 	Cache() cache.Cache
 }
 
-// PLEASE FIX ME TO HAVE AN OPENER FUNCTION
+type SpatialDatabaseInitializeFunc func(ctx context.Context, uri string) (SpatialDatabase, error)
 
-var indices roster.Roster
+var spatial_databases roster.Roster
 
 func ensureRoster() error {
 
-	if indices == nil {
+	if spatial_databases == nil {
 
 		r, err := roster.NewDefaultRoster()
 
@@ -35,13 +34,13 @@ func ensureRoster() error {
 			return err
 		}
 
-		indices = r
+		spatial_databases = r
 	}
 
 	return nil
 }
 
-func RegisterSpatialDatabase(ctx context.Context, name string, pr SpatialDatabase) error {
+func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDatabaseInitializeFunc) error {
 
 	err := ensureRoster()
 
@@ -49,7 +48,7 @@ func RegisterSpatialDatabase(ctx context.Context, name string, pr SpatialDatabas
 		return err
 	}
 
-	return indices.Register(ctx, name, pr)
+	return spatial_databases.Register(ctx, scheme, f)
 }
 
 func NewSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error) {
@@ -62,19 +61,12 @@ func NewSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error
 
 	scheme := u.Scheme
 
-	i, err := indices.Driver(ctx, scheme)
+	i, err := spatial_databases.Driver(ctx, scheme)
 
 	if err != nil {
 		return nil, err
 	}
 
-	pr := i.(SpatialDatabase)
-
-	err = pr.Open(ctx, uri)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return pr, nil
+	f := i.(SpatialDatabaseInitializeFunc)
+	return f(ctx, uri)
 }

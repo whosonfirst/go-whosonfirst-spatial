@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
-func NewApplicationCache(ctx context.Context, fl *flag.FlagSet) (cache.Cache, error) {
+func NewCache(ctx context.Context, fl *flag.FlagSet) (cache.Cache, error) {
 
 	cache_uri, err := flags.StringVar(fl, "cache")
 

@@ -2,13 +2,11 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/whosonfirst/go-spatial/extras"
-	"github.com/whosonfirst/go-spatial/filter"
-	"github.com/whosonfirst/go-spatial/index"
-	"github.com/whosonfirst/go-spatial/utils"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
-	"github.com/whosonfirst/go-whosonfirst-sqlite/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
 	gohttp "net/http"
 	"strconv"
 	"strings"
@@ -27,7 +25,7 @@ func NewDefaultIntersectsHandlerOptions() *IntersectsHandlerOptions {
 	return &opts
 }
 
-func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *database.SQLiteDatabase, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Indexer, extras_db database.ExtrasDatabase, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
@@ -86,7 +84,7 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 			return
 		}
 
-		results, err := i.GetIntersectsWithCoord(ctx, coord, filters)
+		results, err := spatial_db.GetIntersectsWithCoord(ctx, coord, filters)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -98,7 +96,7 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 
 		if str_format == "geojson" {
 
-			collection, err := utils.ResultsToFeatureCollection(ctx, results, i)
+			collection, err := utils.ResultsToFeatureCollection(ctx, results, spatial_db)
 
 			if err != nil {
 				gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -130,12 +128,16 @@ func IntersectsHandler(i index.Index, idx *wof_index.Indexer, extras_db *databas
 
 			if len(extras_paths) > 0 {
 
-				js, err = extras.AppendExtrasWithSPRResults(js, results, extras_paths, extras_db)
+				// FIX ME
 
-				if err != nil {
-					gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
-					return
-				}
+				/*
+					js, err = extras.AppendExtrasWithSPRResults(js, results, extras_paths, extras_db)
+
+					if err != nil {
+						gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+						return
+					}
+				*/
 			}
 		}
 

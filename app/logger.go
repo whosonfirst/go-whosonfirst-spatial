@@ -3,8 +3,8 @@ package app
 import (
 	"context"
 	"flag"
-	"github.com/whosonfirst/go-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-log"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"io"
 	"os"
 )

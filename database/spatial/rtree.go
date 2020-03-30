@@ -1,4 +1,4 @@
-package index
+package spatial
 
 import (
 	"bytes"
@@ -7,12 +7,13 @@ import (
 	"github.com/dhconnelly/rtreego"
 	"github.com/skelterjohn/geom"
 	wof_cache "github.com/whosonfirst/go-cache"
-	"github.com/whosonfirst/go-spatial/cache"
-	"github.com/whosonfirst/go-spatial/filter"
-	"github.com/whosonfirst/go-spatial/geojson"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-log"
+	"github.com/whosonfirst/go-whosonfirst-spatial/cache"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	// golog "log"
 	"io/ioutil"
@@ -22,12 +23,11 @@ import (
 
 func init() {
 	ctx := context.Background()
-	idx := NewRTreeIndex()
-	RegisterIndex(ctx, "rtree", idx)
+	database.RegisterSpatialDatabase(ctx, "rtree", NewRTreeSpatialDatabase)
 }
 
-type RTreeIndex struct {
-	Index
+type RTreeSpatialDatabase struct {
+	database.SpatialDatabase
 	Logger *log.WOFLogger
 	rtree  *rtreego.Rtree
 	cache  wof_cache.Cache
@@ -52,29 +52,12 @@ func (r *RTreeResults) Results() []spr.StandardPlacesResult {
 	return r.Places
 }
 
-func NewRTreeIndex() Index {
-
-	logger := log.SimpleWOFLogger("index")
-
-	rtree := rtreego.NewTree(2, 25, 50)
-
-	mu := new(sync.RWMutex)
-
-	index := &RTreeIndex{
-		Logger: logger,
-		rtree:  rtree,
-		mu:     mu,
-	}
-
-	return index
-}
-
-func (r *RTreeIndex) Open(ctx context.Context, uri string) error {
+func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialDatabase, error) {
 
 	u, err := url.Parse(uri)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	q := u.Query()
@@ -83,22 +66,34 @@ func (r *RTreeIndex) Open(ctx context.Context, uri string) error {
 	c, err := wof_cache.NewCache(ctx, c_uri)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	r.cache = c
+	logger := log.SimpleWOFLogger("index")
+
+	rtree := rtreego.NewTree(2, 25, 50)
+
+	mu := new(sync.RWMutex)
+
+	db := &RTreeSpatialDatabase{
+		Logger: logger,
+		rtree:  rtree,
+		cache:  c,
+		mu:     mu,
+	}
+
+	return db, nil
+}
+
+func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
 	return nil
 }
 
-func (r *RTreeIndex) Close(ctx context.Context) error {
-	return nil
-}
-
-func (r *RTreeIndex) Cache() wof_cache.Cache {
+func (r *RTreeSpatialDatabase) Cache() wof_cache.Cache {
 	return r.cache
 }
 
-func (r *RTreeIndex) IndexFeature(ctx context.Context, f wof_geojson.Feature) error {
+func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.Feature) error {
 
 	str_id := f.Id()
 
@@ -159,7 +154,7 @@ func (r *RTreeIndex) IndexFeature(ctx context.Context, f wof_geojson.Feature) er
 	return nil
 }
 
-func (r *RTreeIndex) GetIntersectsWithCoord(ctx context.Context, coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) GetIntersectsWithCoord(ctx context.Context, coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
 
 	// to do: timings that don't slow everything down the way
 	// go-whosonfirst-timer does now (20170915/thisisaaronland)
@@ -179,7 +174,7 @@ func (r *RTreeIndex) GetIntersectsWithCoord(ctx context.Context, coord geom.Coor
 	return rsp, err
 }
 
-func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
+func (r *RTreeSpatialDatabase) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
 
 	intersects, err := r.getIntersectsByCoord(coord)
 
@@ -237,7 +232,7 @@ func (r *RTreeIndex) GetIntersectsWithCoordCandidates(ctx context.Context, coord
 	return &fc, nil
 }
 
-func (r *RTreeIndex) getIntersectsByCoord(coord geom.Coord) ([]rtreego.Spatial, error) {
+func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord geom.Coord) ([]rtreego.Spatial, error) {
 
 	lat := coord.Y
 	lon := coord.X
@@ -252,7 +247,7 @@ func (r *RTreeIndex) getIntersectsByCoord(coord geom.Coord) ([]rtreego.Spatial, 
 	return r.getIntersectsByRect(rect)
 }
 
-func (r *RTreeIndex) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
+func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
 
 	// to do: timings that don't slow everything down the way
 	// go-whosonfirst-timer does now (20170915/thisisaaronland)
@@ -261,7 +256,7 @@ func (r *RTreeIndex) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial,
 	return results, nil
 }
 
-func (r *RTreeIndex) inflateResults(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial) (spr.StandardPlacesResults, error) {
 
 	// to do: timings that don't slow everything down the way
 	// go-whosonfirst-timer does now (20170915/thisisaaronland)
