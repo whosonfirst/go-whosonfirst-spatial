@@ -196,20 +196,27 @@ func (r *RTreeSpatialDatabase) GetIntersectsWithCoord(ctx context.Context, coord
 	done_ch := make(chan bool)
 
 	results := make([]spr.StandardPlacesResult, 0)
+	working := true
 
 	go r.GetIntersectsWithCoordWithChannels(ctx, coord, filters, rsp_ch, err_ch, done_ch)
 
-	select {
-	case <-ctx.Done():
-		return nil, nil
-	case <-done_ch:
-		break
-	case rsp := <-rsp_ch:
-		results = append(results, rsp)
-	case err := <-err_ch:
-		return nil, err
-	default:
-		// pass
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, nil
+		case <-done_ch:
+			working = false
+		case rsp := <-rsp_ch:
+			results = append(results, rsp)
+		case err := <-err_ch:
+			return nil, err
+		default:
+			// pass
+		}
+
+		if !working {
+			break
+		}
 	}
 
 	spr_results := &RTreeResults{
@@ -246,20 +253,27 @@ func (r *RTreeSpatialDatabase) GetIntersectsWithCoordCandidates(ctx context.Cont
 	done_ch := make(chan bool)
 
 	features := make([]geojson.GeoJSONFeature, 0)
+	working := true
 
 	go r.GetIntersectsWithCoordCandidatesWithChannels(ctx, coord, rsp_ch, err_ch, done_ch)
 
-	select {
-	case <-ctx.Done():
-		return nil, nil
-	case <-done_ch:
-		break
-	case rsp := <-rsp_ch:
-		features = append(features, rsp)
-	case err := <-err_ch:
-		return nil, err
-	default:
-		// pass
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, nil
+		case <-done_ch:
+			working = false
+		case rsp := <-rsp_ch:
+			features = append(features, rsp)
+		case err := <-err_ch:
+			return nil, err
+		default:
+			// pass
+		}
+
+		if !working {
+			break
+		}
 	}
 
 	fc := &geojson.GeoJSONFeatureCollection{
@@ -418,7 +432,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c
 			}
 
 			rsp_ch <- s
-
 		}(sp)
 	}
 
