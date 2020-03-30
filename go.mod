@@ -20,7 +20,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-log v0.1.0
 	github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 	github.com/whosonfirst/go-whosonfirst-sqlite v0.1.5
-	github.com/whosonfirst/go-whosonfirst-sqlite-features v0.2.7 // indirect
 	github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 	github.com/whosonfirst/warning v0.1.0
 )
