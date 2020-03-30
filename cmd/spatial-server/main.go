@@ -11,10 +11,11 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http"
+	"github.com/whosonfirst/go-whosonfirst-spatial/server"
 	"html/template"
 	"log"
 	gohttp "net/http"
-	"os"
+	gourl "net/url"
 )
 
 func main() {
@@ -145,7 +146,17 @@ func main() {
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
+		err = tangramjs.AppendAssetHandlers(mux)
+
+		if err != nil {
+			logger.Fatal("Failed to append tangram.js assets, %v", err)
+		}
+
 		err = bootstrap.AppendAssetHandlers(mux)
+
+		if err != nil {
+			logger.Fatal("Failed to append bootstrap assets, %v", err)
+		}
 
 		intersects_www_opts := &http.IntersectsWWWHandlerOptions{
 			Templates: t,
@@ -166,15 +177,27 @@ func main() {
 
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
+	proto := "http" // FIX ME
 
-	endpoint := fmt.Sprintf("%s:%d", host, port)
-	logger.Status("listening for requests on %s", endpoint)
+	address := fmt.Sprintf("spatial://%s:%d", host, port)
 
-	err = gohttp.ListenAndServe(endpoint, mux)
+	u, err := gourl.Parse(address)
 
 	if err != nil {
-		logger.Fatal("failed to start server because %s", err)
+		logger.Fatal("Failed to parse address '%s', %v", address, err)
 	}
 
-	os.Exit(0)
+	s, err := server.NewStaticServer(proto, u)
+
+	if err != nil {
+		logger.Fatal("Failed to create new server for '%s' (%s), %v", u, proto, err)
+	}
+
+	logger.Info("Listening on %s", s.Address())
+
+	err = s.ListenAndServe(mux)
+
+	if err != nil {
+		logger.Fatal("Failed to start server, %v", err)
+	}
 }

@@ -58,7 +58,7 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 	}
 
 	_, err = StringVar(fs, "spatial-database")
-	
+
 	if err != nil {
 		return err
 	}
