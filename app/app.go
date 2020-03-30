@@ -6,8 +6,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	golog "log"
 	"runtime/debug"
 	"time"
 )
@@ -20,40 +18,33 @@ type SpatialApplication struct {
 	Logger          *log.WOFLogger
 }
 
-func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
+func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
 
 	logger, err := NewApplicationLogger(ctx, fl)
 
 	if err != nil {
-		golog.Println("SAD LOG")
 		return nil, err
 	}
 
 	spatial_db, err := NewSpatialDatabase(ctx, fl)
 
 	if err != nil {
-		golog.Println("SAD SPATIAL DB")
 		return nil, err
 	}
 
 	extras_db, err := NewExtrasDatabase(ctx, fl)
 
 	if err != nil {
-		golog.Println("SAD EXTRAS DB")
 		return nil, err
 	}
 
 	walker, err := NewWalker(ctx, fl, spatial_db, extras_db)
 
 	if err != nil {
-		golog.Println("SAD WALKER")
 		return nil, err
 	}
 
-	mode, _ := flags.StringVar(fl, "mode")
-
 	sp := SpatialApplication{
-		mode:            mode,
 		SpatialDatabase: spatial_db,
 		ExtrasDatabase:  extras_db,
 		Walker:          walker,
@@ -116,3 +107,18 @@ func (p *SpatialApplication) IndexPaths(paths []string) error {
 
 	return nil
 }
+
+/*
+
+	go func() {
+
+		tick := time.Tick(1 * time.Minute)
+
+		for _ = range tick {
+			var ms runtime.MemStats
+			runtime.ReadMemStats(&ms)
+			pip.Logger.Status("memstats system: %8d inuse: %8d released: %8d objects: %6d", ms.HeapSys, ms.HeapInuse, ms.HeapReleased, ms.HeapObjects)
+		}
+	}()
+
+*/

@@ -35,7 +35,7 @@ func main() {
 
 	ctx := context.Background()
 
-	pip, err := app.NewSpatialApplication(ctx, fl)
+	pip, err := app.NewSpatialApplicationWithFlagSet(ctx, fl)
 
 	if err != nil {
 		log.Fatal("Failed to create new PIP application, because", err)

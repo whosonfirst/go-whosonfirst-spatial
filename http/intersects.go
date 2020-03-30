@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
-	wof_index "github.com/whosonfirst/go-whosonfirst-index"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"html/template"
 	_ "log"
@@ -28,7 +27,7 @@ func NewDefaultIntersectsHandlerOptions() *IntersectsHandlerOptions {
 	return &opts
 }
 
-func IntersectsWWWHandler(idx *wof_index.Indexer, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+func IntersectsWWWHandler(spatial_app *app.SpatialApplication, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
 
 	t := opts.Templates.Lookup("intersects")
 
@@ -36,9 +35,11 @@ func IntersectsWWWHandler(idx *wof_index.Indexer, opts *IntersectsHandlerOptions
 		return nil, errors.New("Missing intersects template")
 	}
 
+	walker := spatial_app.Walker
+
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
-		if idx.IsIndexing() {
+		if walker.IsIndexing() {
 			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
 			return
 		}
@@ -61,11 +62,15 @@ func IntersectsWWWHandler(idx *wof_index.Indexer, opts *IntersectsHandlerOptions
 	return h, nil
 }
 
-func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Indexer, extras_db database.ExtrasDatabase, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+func IntersectsHandler(spatial_app *app.SpatialApplication, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+
+	spatial_db := spatial_app.SpatialDatabase
+	extras_db := spatial_app.ExtrasDatabase
+	walker := spatial_app.Walker
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
-		if idx.IsIndexing() {
+		if walker.IsIndexing() {
 			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
 			return
 		}
@@ -187,11 +192,14 @@ func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Index
 	return h, nil
 }
 
-func IntersectsCandidatesHandler(spatial_db database.SpatialDatabase, idx *wof_index.Indexer) (gohttp.Handler, error) {
+func IntersectsCandidatesHandler(spatial_app *app.SpatialApplication) (gohttp.Handler, error) {
+
+	walker := spatial_app.Walker
+	spatial_db := spatial_app.SpatialDatabase
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
-		if idx.IsIndexing() {
+		if walker.IsIndexing() {
 			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
 			return
 		}

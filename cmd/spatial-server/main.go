@@ -1,5 +1,7 @@
 package main
 
+// go run -mod vendor cmd/wof-pip-server/main.go -index 'rtree://' -mode repo:// /usr/local/data/sfomuseum-data-maps/
+
 import (
 	"context"
 	"fmt"
@@ -13,8 +15,6 @@ import (
 	"log"
 	gohttp "net/http"
 	"os"
-	"runtime"
-	"time"
 )
 
 func main() {
@@ -29,6 +29,8 @@ func main() {
 
 	flags.Parse(fs)
 
+	ctx := context.Background()
+
 	err = flags.ValidateCommonFlags(fs)
 
 	if err != nil {
@@ -41,38 +43,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ctx := context.Background()
-
-	pip, err := app.NewSpatialApplication(ctx, fs)
+	pip, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Failed to create new PIP application, because %s", err))
 	}
-
-	pip_index, _ := flags.StringVar(fs, "index")
-	pip_cache, _ := flags.StringVar(fs, "cache")
-	mode, _ := flags.StringVar(fs, "mode")
-
-	pip.Logger.Info("index is %s cache is %s mode is %s", pip_index, pip_cache, mode)
 
 	err = pip.IndexPaths(fs.Args())
 
 	if err != nil {
 		pip.Logger.Fatal("Failed to index paths, because %s", err)
 	}
-
-	go func() {
-
-		tick := time.Tick(1 * time.Minute)
-
-		for _ = range tick {
-			var ms runtime.MemStats
-			runtime.ReadMemStats(&ms)
-			pip.Logger.Status("memstats system: %8d inuse: %8d released: %8d objects: %6d", ms.HeapSys, ms.HeapInuse, ms.HeapReleased, ms.HeapObjects)
-		}
-	}()
-
-	// set up the HTTP endpoint
 
 	pip.Logger.Debug("setting up intersects handler")
 
@@ -81,16 +62,16 @@ func main() {
 	intersects_opts := http.NewDefaultIntersectsHandlerOptions()
 	intersects_opts.EnableGeoJSON = enable_geojson
 
-	intersects_handler, err := http.IntersectsHandler(pip.SpatialDatabase, pip.Walker, pip.ExtrasDatabase, intersects_opts)
+	intersects_handler, err := http.IntersectsHandler(pip, intersects_opts)
 
 	if err != nil {
-		pip.Logger.Fatal("failed to create PIP handler because %s", err)
+		pip.Logger.Fatal("failed to create intersects handler because %s", err)
 	}
 
 	ping_handler, err := http.PingHandler()
 
 	if err != nil {
-		pip.Logger.Fatal("failed to create Ping handler because %s", err)
+		pip.Logger.Fatal("failed to create ping handler because %s", err)
 	}
 
 	mux := gohttp.NewServeMux()
@@ -105,7 +86,7 @@ func main() {
 
 		pip.Logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := http.IntersectsCandidatesHandler(pip.SpatialDatabase, pip.Walker)
+		candidateshandler, err := http.IntersectsCandidatesHandler(pip)
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create Spatial handler because %s", err)
@@ -166,7 +147,8 @@ func main() {
 		err = bootstrap.AppendAssetHandlersWithPrefix(mux, static_prefix)
 
 		www_path, _ := flags.StringVar(fs, "www-path")
-		www_handler, err := http.IntersectsWWWHandler(pip.Walker, intersects_opts)
+
+		www_handler, err := http.IntersectsWWWHandler(pip, intersects_opts)
 
 		if err != nil {
 			pip.Logger.Fatal("failed to create (bundled) www handler because %s", err)
