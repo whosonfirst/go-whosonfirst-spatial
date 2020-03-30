@@ -1,5 +1,7 @@
 package main
 
+// go run -mod vendor cmd/wof-pip/main.go -index 'rtree:///?cache=gocache://' -cache gocache:// -mode repo:// /usr/local/data/sfomuseum-data-maps/
+
 import (
 	"bufio"
 	"context"

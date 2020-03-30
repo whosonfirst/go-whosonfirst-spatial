@@ -9,6 +9,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
+	"log"
 	"net/url"
 )
 
@@ -48,6 +49,8 @@ func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDataba
 		return err
 	}
 
+	log.Println("REGISTER", scheme)
+
 	return spatial_databases.Register(ctx, scheme, f)
 }
 
@@ -60,6 +63,8 @@ func NewSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error
 	}
 
 	scheme := u.Scheme
+
+	log.Println("SPATIAL", uri, scheme)
 
 	i, err := spatial_databases.Driver(ctx, scheme)
 

@@ -8,6 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	golog "log"
 	"runtime/debug"
 	"time"
 )
@@ -26,30 +27,35 @@ func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialAppli
 	logger, err := NewApplicationLogger(ctx, fl)
 
 	if err != nil {
+		golog.Println("SAD LOG")
 		return nil, err
 	}
 
 	appcache, err := NewCache(ctx, fl)
 
 	if err != nil {
+		golog.Println("SAD CACHE")
 		return nil, err
 	}
 
 	spatial_db, err := NewSpatialDatabase(ctx, fl)
 
 	if err != nil {
+		golog.Println("SAD SPATIAL DB")
 		return nil, err
 	}
 
 	extras_db, err := NewExtrasDatabase(ctx, fl)
 
 	if err != nil {
+		golog.Println("SAD EXTRAS DB")
 		return nil, err
 	}
 
 	walker, err := NewWalker(ctx, fl, spatial_db, extras_db)
 
 	if err != nil {
+		golog.Println("SAD WALKER")
 		return nil, err
 	}
 

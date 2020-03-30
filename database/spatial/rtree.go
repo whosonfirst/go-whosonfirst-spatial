@@ -62,6 +62,8 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	q := u.Query()
 
+	// PLEASE REMOVE ALL THE CACHE STUFF...
+
 	c_uri := q.Get("cache")
 	c, err := wof_cache.NewCache(ctx, c_uri)
 

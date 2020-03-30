@@ -1,6 +1,10 @@
 package app
 
 import (
+	_ "github.com/whosonfirst/go-whosonfirst-index/fs"
+)
+
+import (
 	"context"
 	"errors"
 	"flag"
@@ -9,7 +13,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
-	wof_index "github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
@@ -20,7 +24,7 @@ import (
 	"sync"
 )
 
-func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_db database.ExtrasDatabase) (*wof_index.Indexer, error) {
+func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_db database.ExtrasDatabase) (*index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
@@ -228,7 +232,7 @@ func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.Spatia
 		return nil
 	}
 
-	idx, err := wof_index.NewIndexer(mode, cb)
+	idx, err := index.NewIndexer(mode, cb)
 
 	if index_extras {
 		wg.Wait()
