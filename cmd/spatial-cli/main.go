@@ -41,13 +41,9 @@ func main() {
 		log.Fatal("Failed to create new PIP application, because", err)
 	}
 
-	pip_index, _ := flags.StringVar(fl, "index")
-	pip_cache, _ := flags.StringVar(fl, "cache")
-	mode, _ := flags.StringVar(fl, "mode")
+	paths := fl.Args()
 
-	pip.Logger.Info("index is %s cache is %s mode is %s", pip_index, pip_cache, mode)
-
-	err = pip.IndexPaths(fl.Args())
+	err = pip.IndexPaths(ctx, paths...)
 
 	if err != nil {
 		pip.Logger.Fatal("Failed to index paths, because %s", err)
@@ -58,8 +54,6 @@ func main() {
 	if err != nil {
 		pip.Logger.Fatal("Failed to create SPR filter, because %s", err)
 	}
-
-	// ADD WAIT FOR INDEXER CODE HERE
 
 	fmt.Println("ready to query")
 

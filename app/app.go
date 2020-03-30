@@ -65,7 +65,7 @@ func (p *SpatialApplication) Close(ctx context.Context) error {
 	return nil
 }
 
-func (p *SpatialApplication) IndexPaths(paths []string) error {
+func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) error {
 
 	if p.mode != "spatialite" {
 

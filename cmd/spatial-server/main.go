@@ -46,10 +46,12 @@ func main() {
 	pip, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Failed to create new PIP application, because %s", err))
+		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because %s", err))
 	}
 
-	err = pip.IndexPaths(fs.Args())
+	paths := fs.Args()
+
+	err = pip.IndexPaths(ctx, paths...)
 
 	if err != nil {
 		pip.Logger.Fatal("Failed to index paths, because %s", err)

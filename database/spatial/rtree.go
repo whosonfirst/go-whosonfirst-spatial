@@ -188,33 +188,100 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 
 func (r *RTreeSpatialDatabase) GetIntersectsWithCoord(ctx context.Context, coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
 
-	// to do: timings that don't slow everything down the way
-	// go-whosonfirst-timer does now (20170915/thisisaaronland)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	rsp_ch := make(chan spr.StandardPlacesResult)
+	err_ch := make(chan error)
+	done_ch := make(chan bool)
+
+	results := make([]spr.StandardPlacesResult, 0)
+
+	go r.GetIntersectsWithCoordWithChannels(ctx, coord, filters, rsp_ch, err_ch, done_ch)
+
+	select {
+	case <-ctx.Done():
+		return nil, nil
+	case <-done_ch:
+		break
+	case rsp := <-rsp_ch:
+		results = append(results, rsp)
+	case err := <-err_ch:
+		return nil, err
+	default:
+		// pass
+	}
+
+	spr_results := &RTreeResults{
+		Places: results,
+	}
+
+	return spr_results, nil
+}
+
+func (r *RTreeSpatialDatabase) GetIntersectsWithCoordWithChannels(ctx context.Context, coord geom.Coord, filters filter.Filter, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool) {
+
+	defer func() {
+		done_ch <- true
+	}()
 
 	rows, err := r.getIntersectsByCoord(coord)
 
 	if err != nil {
-		return nil, err
+		err_ch <- err
+		return
 	}
 
-	rsp, err := r.inflateResults(ctx, coord, filters, rows)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return rsp, err
+	r.inflateResultsWithChannels(ctx, coord, filters, rows, rsp_ch, err_ch)
+	return
 }
 
 func (r *RTreeSpatialDatabase) GetIntersectsWithCoordCandidates(ctx context.Context, coord geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
 
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	rsp_ch := make(chan geojson.GeoJSONFeature)
+	err_ch := make(chan error)
+	done_ch := make(chan bool)
+
+	features := make([]geojson.GeoJSONFeature, 0)
+
+	go r.GetIntersectsWithCoordCandidatesWithChannels(ctx, coord, rsp_ch, err_ch, done_ch)
+
+	select {
+	case <-ctx.Done():
+		return nil, nil
+	case <-done_ch:
+		break
+	case rsp := <-rsp_ch:
+		features = append(features, rsp)
+	case err := <-err_ch:
+		return nil, err
+	default:
+		// pass
+	}
+
+	fc := &geojson.GeoJSONFeatureCollection{
+		Type:     "FeatureCollection",
+		Features: features,
+	}
+
+	return fc, nil
+}
+
+func (r *RTreeSpatialDatabase) GetIntersectsWithCoordCandidatesWithChannels(ctx context.Context, coord geom.Coord, rsp_ch chan geojson.GeoJSONFeature, err_ch chan error, done_ch chan bool) {
+
+	defer func() {
+		done_ch <- true
+	}()
+
 	intersects, err := r.getIntersectsByCoord(coord)
 
 	if err != nil {
-		return nil, err
+		err_ch <- err
+		return
 	}
-
-	features := make([]geojson.GeoJSONFeature, 0)
 
 	for _, raw := range intersects {
 
@@ -253,15 +320,10 @@ func (r *RTreeSpatialDatabase) GetIntersectsWithCoordCandidates(ctx context.Cont
 			Geometry:   geom,
 		}
 
-		features = append(features, feature)
+		rsp_ch <- feature
 	}
 
-	fc := geojson.GeoJSONFeatureCollection{
-		Type:     "FeatureCollection",
-		Features: features,
-	}
-
-	return &fc, nil
+	return
 }
 
 func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord geom.Coord) ([]rtreego.Spatial, error) {
@@ -288,12 +350,8 @@ func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreeg
 	return results, nil
 }
 
-func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial, rsp_ch chan spr.StandardPlacesResult, err_ch chan error) {
 
-	// to do: timings that don't slow everything down the way
-	// go-whosonfirst-timer does now (20170915/thisisaaronland)
-
-	rows := make([]spr.StandardPlacesResult, 0)
 	seen := make(map[string]bool)
 
 	mu := new(sync.RWMutex)
@@ -359,22 +417,12 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 				return
 			}
 
-			// r.Logger.Status("APPEND %s to result set", str_id)
-
-			mu.Lock()
-			rows = append(rows, s)
-			mu.Unlock()
+			rsp_ch <- s
 
 		}(sp)
 	}
 
 	wg.Wait()
-
-	rs := RTreeResults{
-		Places: rows,
-	}
-
-	return &rs, nil
 }
 
 func (db *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {

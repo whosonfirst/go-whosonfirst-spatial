@@ -17,6 +17,8 @@ type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	GetIntersectsWithCoord(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
 	GetIntersectsWithCoordCandidates(context.Context, geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
+	GetIntersectsWithCoordWithChannels(context.Context, geom.Coord, filter.Filter, chan spr.StandardPlacesResult, chan error, chan bool)
+	GetIntersectsWithCoordCandidatesWithChannels(context.Context, geom.Coord, chan geojson.GeoJSONFeature, chan error, chan bool)
 	ResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error)
 }
 
