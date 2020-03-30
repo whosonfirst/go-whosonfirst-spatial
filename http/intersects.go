@@ -18,16 +18,11 @@ type IntersectsHandlerOptions struct {
 	Templates     *template.Template
 }
 
-func NewDefaultIntersectsHandlerOptions() *IntersectsHandlerOptions {
-
-	opts := IntersectsHandlerOptions{
-		EnableGeoJSON: false,
-	}
-
-	return &opts
+type IntersectsWWWHandlerOptions struct {
+	Templates *template.Template
 }
 
-func IntersectsWWWHandler(spatial_app *app.SpatialApplication, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+func IntersectsWWWHandler(spatial_app *app.SpatialApplication, opts *IntersectsWWWHandlerOptions) (gohttp.Handler, error) {
 
 	t := opts.Templates.Lookup("intersects")
 
@@ -169,16 +164,14 @@ func IntersectsHandler(spatial_app *app.SpatialApplication, opts *IntersectsHand
 
 			if len(extras_paths) > 0 {
 
-				// FIX ME
+				// FIX ME - WRITE TO JS OR ... ?
 
-				/*
-					js, err = extras.AppendExtrasWithSPRResults(js, results, extras_paths, extras_db)
+				err := extras_db.AppendExtrasWithSPRResults(ctx, results, extras_paths...)
 
-					if err != nil {
-						gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
-						return
-					}
-				*/
+				if err != nil {
+					gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+					return
+				}
 			}
 		}
 

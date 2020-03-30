@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func NewApplicationLogger(ctx context.Context, fl *flag.FlagSet) (*log.WOFLogger, error) {
+func NewApplicationLoggerWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*log.WOFLogger, error) {
 
 	verbose, _ := flags.BoolVar(fl, "verbose")
 

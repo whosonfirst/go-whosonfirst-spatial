@@ -24,7 +24,7 @@ import (
 	"sync"
 )
 
-func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_db database.ExtrasDatabase) (*index.Indexer, error) {
+func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_db database.ExtrasDatabase) (*index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")

@@ -51,69 +51,22 @@ func SetFromEnv(fs *flag.FlagSet) {
 
 func ValidateCommonFlags(fs *flag.FlagSet) error {
 
-	mode, err := StringVar(fs, "mode")
+	_, err := StringVar(fs, "mode")
 
 	if err != nil {
 		return err
 	}
 
-	pip_index, err := StringVar(fs, "index")
-
+	_, err = StringVar(fs, "spatial-database")
+	
 	if err != nil {
 		return err
-	}
-
-	spatialite_dsn, err := StringVar(fs, "spatialite-dsn")
-
-	if err != nil {
-		return err
-	}
-
-	if mode == "spatialite" {
-
-		if pip_index != "spatialite" {
-			return errors.New("-mode is spatialite but -index is not")
-		}
-
-		if spatialite_dsn == "" || spatialite_dsn == ":memory:" {
-			return errors.New("-spatialite-dsn needs to be an actual file on disk")
-		}
-
-		enable_extras, err := BoolVar(fs, "enable-extras")
-
-		if err != nil {
-			return err
-		}
-
-		if enable_extras {
-
-			extras_dsn, err := StringVar(fs, "extras-dsn")
-
-			if err != nil {
-				return err
-			}
-
-			if extras_dsn == ":tmpfile:" {
-				log.Println("-mode is spatialite so assigning the value of -spatialite-dsn to -extras-dsn")
-				fs.Set("extras-dsn", spatialite_dsn)
-			} else if extras_dsn != spatialite_dsn {
-				return errors.New("-mode is spatialite so -extras-dsn needs to be the same as -spatialite-dsn")
-			} else {
-				// pass
-			}
-		}
 	}
 
 	return nil
 }
 
 func ValidateWWWFlags(fs *flag.FlagSet) error {
-
-	strict, err := BoolVar(fs, "strict")
-
-	if err != nil {
-		return err
-	}
 
 	enable_www, err := BoolVar(fs, "enable-www")
 
@@ -127,23 +80,6 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 		fs.Set("enable-geojson", "true")
 		fs.Set("enable-candidates", "true")
-
-		key, err := StringVar(fs, "www-api-key")
-
-		if err != nil {
-			return err
-		}
-
-		if key == "xxxxxx" {
-
-			warning := "-enable-www flag is set but -www-api-key is empty"
-
-			if strict {
-				return errors.New(warning)
-			}
-
-			log.Printf("[WARNING] %s\n", warning)
-		}
 	}
 
 	return nil
@@ -210,7 +146,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs := NewFlagSet("common")
 
-	fs.String("index", "rtree", "Valid options are: rtree, spatialite.")
+	fs.String("spatial-database", "rtree://", "Valid options are: rtree://")
 
 	modes := index.Modes()
 	modes = append(modes, "spatialite")
@@ -221,9 +157,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 	desc_modes := fmt.Sprintf("Valid modes are: %s.", valid_modes)
 
 	fs.String("mode", "files", desc_modes)
-
-	fs.String("spatialite-dsn", "", "A valid SQLite DSN for the '-cache spatialite/sqlite' or '-index spatialite' option. As of this writing for the '-index' and '-cache' options share the same '-spatailite' DSN.")
-	fs.String("fs-path", "", "The root directory to look for features if '-cache fs'.")
 
 	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
@@ -250,16 +183,12 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.Int("port", 8080, "The port number to listen for requests on.")
 
 	fs.Bool("enable-extras", false, "Enable support for 'extras' parameters in queries.")
-	fs.String("extras-dsn", ":tmpfile:", "A valid SQLite DSN for your 'extras' database - if ':tmpfile:' then a temporary database will be created during indexing and deleted when the program exits.")
 
 	fs.Bool("enable-geojson", false, "Allow users to request GeoJSON FeatureCollection formatted responses.")
 	fs.Bool("enable-candidates", false, "Enable the /candidates endpoint to return candidate bounding boxes (as GeoJSON) for requests.")
-	fs.Bool("enable-polylines", false, "Enable the /polylines endpoint to return hierarchies intersecting a path.")
 	fs.Bool("enable-www", false, "Enable the interactive /debug endpoint to query points and display results.")
 
-	fs.Int("polylines-max-coords", 100, "The maximum number of points a (/polylines) path may contain before it is automatically paginated.")
 	fs.String("www-path", "/debug", "The URL path for the interactive debug endpoint.")
-	fs.String("www-api-key", "xxxxxx", "A valid Nextzen Map Tiles API key (https://developers.nextzen.org).")
 
 	fs.String("static-prefix", "", "Prepend this prefix to URLs for static assets.")
 

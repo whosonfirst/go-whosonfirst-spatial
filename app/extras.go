@@ -15,7 +15,7 @@ import (
 	// "os/signal"
 )
 
-func NewExtrasDatabase(ctx context.Context, fl *flag.FlagSet) (database.ExtrasDatabase, error) {
+func NewExtrasDatabaseWithFlagSet(ctx context.Context, fl *flag.FlagSet) (database.ExtrasDatabase, error) {
 
 	enable_extras, _ := flags.BoolVar(fl, "enable-extras")
 	// extras_dsn, _ := flags.StringVar(fl, "extras-dsn")

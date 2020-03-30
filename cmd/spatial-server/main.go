@@ -1,6 +1,6 @@
 package main
 
-// go run -mod vendor cmd/wof-pip-server/main.go -index 'rtree://' -mode repo:// /usr/local/data/sfomuseum-data-maps/
+// go run -mod vendor cmd/spatial-server/main.go -index 'rtree://' -mode repo:// /usr/local/data/sfomuseum-data-maps/
 
 import (
 	"context"
@@ -43,37 +43,40 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pip, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
+	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because %s", err))
 	}
 
+	logger := spatial_app.Logger
+
 	paths := fs.Args()
 
-	err = pip.IndexPaths(ctx, paths...)
+	err = spatial_app.IndexPaths(ctx, paths...)
 
 	if err != nil {
-		pip.Logger.Fatal("Failed to index paths, because %s", err)
+		logger.Fatal("Failed to index paths, because %s", err)
 	}
 
-	pip.Logger.Debug("setting up intersects handler")
+	logger.Debug("setting up intersects handler")
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
 
-	intersects_opts := http.NewDefaultIntersectsHandlerOptions()
-	intersects_opts.EnableGeoJSON = enable_geojson
+	intersects_opts := &http.IntersectsHandlerOptions{
+		EnableGeoJSON: enable_geojson,
+	}
 
-	intersects_handler, err := http.IntersectsHandler(pip, intersects_opts)
+	intersects_handler, err := http.IntersectsHandler(spatial_app, intersects_opts)
 
 	if err != nil {
-		pip.Logger.Fatal("failed to create intersects handler because %s", err)
+		logger.Fatal("failed to create intersects handler because %s", err)
 	}
 
 	ping_handler, err := http.PingHandler()
 
 	if err != nil {
-		pip.Logger.Fatal("failed to create ping handler because %s", err)
+		logger.Fatal("failed to create ping handler because %s", err)
 	}
 
 	mux := gohttp.NewServeMux()
@@ -86,12 +89,12 @@ func main() {
 
 	if enable_candidates {
 
-		pip.Logger.Debug("setting up candidates handler")
+		logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := http.IntersectsCandidatesHandler(pip)
+		candidateshandler, err := http.IntersectsCandidatesHandler(spatial_app)
 
 		if err != nil {
-			pip.Logger.Fatal("failed to create Spatial handler because %s", err)
+			logger.Fatal("failed to create Spatial handler because %s", err)
 		}
 
 		mux.Handle("/intersects/candidates", candidateshandler)
@@ -110,7 +113,7 @@ func main() {
 			t, err = t.ParseGlob(path_templates)
 
 			if err != nil {
-				log.Fatal(err)
+				logger.Fatal("Unable to parse templates, %v", err)
 			}
 
 		} else {
@@ -120,24 +123,20 @@ func main() {
 				body, err := templates.Asset(name)
 
 				if err != nil {
-					log.Fatal(err)
+					logger.Fatal("Unable to load template '%s', %v", name, err)
 				}
 
 				t, err = t.Parse(string(body))
 
 				if err != nil {
-					log.Fatal(err)
+					logger.Fatal("Unable to parse template '%s', %v", name, err)
 				}
 			}
 		}
 
-		intersects_opts.Templates = t
-
 		nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 		nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
 		nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
-
-		static_prefix, _ := flags.StringVar(fs, "static-prefix")
 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
@@ -146,32 +145,35 @@ func main() {
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = bootstrap.AppendAssetHandlersWithPrefix(mux, static_prefix)
+		err = bootstrap.AppendAssetHandlers(mux)
 
-		www_path, _ := flags.StringVar(fs, "www-path")
-
-		www_handler, err := http.IntersectsWWWHandler(pip, intersects_opts)
-
-		if err != nil {
-			pip.Logger.Fatal("failed to create (bundled) www handler because %s", err)
+		intersects_www_opts := &http.IntersectsWWWHandlerOptions{
+			Templates: t,
 		}
 
-		www_handler = bootstrap.AppendResourcesHandlerWithPrefix(www_handler, bootstrap_opts, static_prefix)
-		www_handler = tangramjs.AppendResourcesHandlerWithPrefix(www_handler, tangramjs_opts, static_prefix)
+		intersects_www_handler, err := http.IntersectsWWWHandler(spatial_app, intersects_www_opts)
 
-		mux.Handle(www_path, www_handler)
+		if err != nil {
+			logger.Fatal("failed to create (bundled) www handler because %s", err)
+		}
+
+		intersects_www_handler = bootstrap.AppendResourcesHandler(intersects_www_handler, bootstrap_opts)
+		intersects_www_handler = tangramjs.AppendResourcesHandler(intersects_www_handler, tangramjs_opts)
+
+		www_path, _ := flags.StringVar(fs, "www-path")
+		mux.Handle(www_path, intersects_www_handler)
 	}
 
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
 
 	endpoint := fmt.Sprintf("%s:%d", host, port)
-	pip.Logger.Status("listening for requests on %s", endpoint)
+	logger.Status("listening for requests on %s", endpoint)
 
 	err = gohttp.ListenAndServe(endpoint, mux)
 
 	if err != nil {
-		pip.Logger.Fatal("failed to start server because %s", err)
+		logger.Fatal("failed to start server because %s", err)
 	}
 
 	os.Exit(0)

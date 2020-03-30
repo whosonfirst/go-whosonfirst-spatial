@@ -20,25 +20,25 @@ type SpatialApplication struct {
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
 
-	logger, err := NewApplicationLogger(ctx, fl)
+	logger, err := NewApplicationLoggerWithFlagSet(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	spatial_db, err := NewSpatialDatabase(ctx, fl)
+	spatial_db, err := NewSpatialDatabaseWithFlagSet(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	extras_db, err := NewExtrasDatabase(ctx, fl)
+	extras_db, err := NewExtrasDatabaseWithFlagSet(ctx, fl)
 
 	if err != nil {
 		return nil, err
 	}
 
-	walker, err := NewWalker(ctx, fl, spatial_db, extras_db)
+	walker, err := NewWalkerWithFlagSet(ctx, fl, spatial_db, extras_db)
 
 	if err != nil {
 		return nil, err
