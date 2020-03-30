@@ -8,7 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"html/template"
-	"log"
+	_ "log"
 	gohttp "net/http"
 	"strconv"
 	"strings"
@@ -42,8 +42,6 @@ func IntersectsWWWHandler(idx *wof_index.Indexer, opts *IntersectsHandlerOptions
 			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
 			return
 		}
-
-		log.Println("PLEASE IMPLEMENT ME")
 
 		// important if we're trying to use this in a Lambda/API Gateway context
 

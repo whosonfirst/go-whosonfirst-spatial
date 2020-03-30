@@ -14,9 +14,9 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
 	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-uri"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"
@@ -89,7 +89,7 @@ func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.Spatia
 
 		if is_wof {
 
-			ok, err := utils.IsValidRecord(fh, ctx)
+			ok, err := isValidRecord(fh, ctx)
 
 			if err != nil {
 				return err
@@ -239,4 +239,39 @@ func NewWalker(ctx context.Context, fl *flag.FlagSet, spatial_db database.Spatia
 	}
 
 	return idx, err
+}
+
+func isValidRecord(fh io.Reader, ctx context.Context) (bool, error) {
+
+	path, err := index.PathForContext(ctx)
+
+	if err != nil {
+		return false, err
+	}
+
+	if path == index.STDIN {
+		return true, nil
+	}
+
+	is_wof, err := uri.IsWOFFile(path)
+
+	if err != nil {
+		return false, err
+	}
+
+	if !is_wof {
+		return false, nil
+	}
+
+	is_alt, err := uri.IsAltFile(path)
+
+	if err != nil {
+		return false, err
+	}
+
+	if is_alt {
+		return false, nil
+	}
+
+	return true, nil
 }
