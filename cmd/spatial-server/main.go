@@ -1,6 +1,6 @@
 package main
 
-// go run -mod vendor cmd/spatial-server/main.go -index 'rtree://' -mode repo:// /usr/local/data/sfomuseum-data-maps/
+// go run -mod vendor cmd/spatial-server/main.go -enable-www -mode repo:// /usr/local/data/sfomuseum-data-maps/
 
 import (
 	"context"
@@ -158,7 +158,7 @@ func main() {
 			logger.Fatal("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlers(mux)
+		err = http.AppendStaticAssetHandlersWithPrefix(mux, "static")
 
 		if err != nil {
 			logger.Fatal("Failed to append static assets, %v", err)

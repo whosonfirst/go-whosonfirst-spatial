@@ -5,6 +5,7 @@ import (
 	gohttp "net/http"
 	"path/filepath"
 	"strings"
+	_ "log"
 )
 
 func StaticFileSystem() (gohttp.FileSystem, error) {
@@ -55,7 +56,7 @@ func AppendStaticAssetHandlersWithPrefix(mux *gohttp.ServeMux, prefix string) er
 
 	for _, path := range AssetNames() {
 
-		path := strings.Replace(path, "static", "", 1)
+		path := strings.Replace(path, prefix, "", 1)
 
 		if prefix != "" {
 			path = appendPrefix(prefix, path)

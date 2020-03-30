@@ -1,16 +1,23 @@
 {{ define "intersects" }}
 {{ template "inc_head" . }}
+<div class="container">
+    <div class="row">
+	
 		<div id="map"></div>
 		<div id="status"><span id="coords"></span></div>
 		<div id="jump-to-form">
 		  <form>
 		    <input type="text" name="jump-to-latlon" id="jump-to-latlon" placeholder="jump to lat,lon" value="" />
-		    <button type="submit" id="jump-to-button">jump</button>
+		    <button class="btn btn-primary" type="submit" id="jump-to-button">jump</button>
 		  </form>
 		</div>
 		<div id="results">
 		  <ul id="candidates-list"></ul>
 		  <ul id="intersecting-list"></ul>
 		</div>
+
+    </div>
+</div>
+
 {{ template "inc_foot" . }}
 {{ end }}
