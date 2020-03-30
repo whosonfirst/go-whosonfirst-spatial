@@ -3,8 +3,7 @@ package app
 import (
 	"context"
 	"flag"
-	"github.com/whosonfirst/go-cache"
-	wof_index "github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
@@ -16,9 +15,8 @@ import (
 type SpatialApplication struct {
 	mode            string
 	SpatialDatabase database.SpatialDatabase
-	Cache           cache.Cache
 	ExtrasDatabase  database.ExtrasDatabase
-	Walker          *wof_index.Indexer
+	Walker          *index.Indexer
 	Logger          *log.WOFLogger
 }
 
@@ -28,13 +26,6 @@ func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialAppli
 
 	if err != nil {
 		golog.Println("SAD LOG")
-		return nil, err
-	}
-
-	appcache, err := NewCache(ctx, fl)
-
-	if err != nil {
-		golog.Println("SAD CACHE")
 		return nil, err
 	}
 
@@ -63,7 +54,6 @@ func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialAppli
 
 	sp := SpatialApplication{
 		mode:            mode,
-		Cache:           appcache,
 		SpatialDatabase: spatial_db,
 		ExtrasDatabase:  extras_db,
 		Walker:          walker,
@@ -75,7 +65,6 @@ func NewSpatialApplication(ctx context.Context, fl *flag.FlagSet) (*SpatialAppli
 
 func (p *SpatialApplication) Close(ctx context.Context) error {
 
-	p.Cache.Close(ctx)
 	p.SpatialDatabase.Close(ctx)
 
 	if p.ExtrasDatabase != nil {

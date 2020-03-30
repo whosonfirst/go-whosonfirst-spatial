@@ -7,7 +7,6 @@ import (
 	wof_index "github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spatial/utils"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -135,7 +134,7 @@ func IntersectsHandler(spatial_db database.SpatialDatabase, idx *wof_index.Index
 
 		if str_format == "geojson" {
 
-			collection, err := utils.ResultsToFeatureCollection(ctx, results, spatial_db)
+			collection, err := spatial_db.ResultsToFeatureCollection(ctx, results)
 
 			if err != nil {
 				gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)

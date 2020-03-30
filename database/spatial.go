@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/aaronland/go-roster"
 	"github.com/skelterjohn/geom"
-	"github.com/whosonfirst/go-cache"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
@@ -18,7 +17,7 @@ type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	GetIntersectsWithCoord(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
 	GetIntersectsWithCoordCandidates(context.Context, geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
-	Cache() cache.Cache
+	ResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error)
 }
 
 type SpatialDatabaseInitializeFunc func(ctx context.Context, uri string) (SpatialDatabase, error)

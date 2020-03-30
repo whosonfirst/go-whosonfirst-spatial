@@ -15,8 +15,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	// golog "log"
 	"io/ioutil"
+	golog "log"
 	"net/url"
 	"sync"
 )
@@ -62,9 +62,12 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	q := u.Query()
 
-	// PLEASE REMOVE ALL THE CACHE STUFF...
-
 	c_uri := q.Get("cache")
+
+	if c_uri == "" {
+		c_uri = "gocache://"
+	}
+
 	c, err := wof_cache.NewCache(ctx, c_uri)
 
 	if err != nil {
@@ -116,6 +119,8 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 	if err != nil {
 		return err
 	}
+
+	golog.Println("CACHE", string(enc))
 
 	br := bytes.NewReader(enc)
 	cr := ioutil.NopCloser(br)
@@ -299,6 +304,8 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 			seen[str_id] = true
 			mu.Unlock()
 
+			golog.Println("FIND", str_id)
+
 			cr, err := r.cache.Get(ctx, str_id)
 
 			if err != nil {
@@ -312,6 +319,8 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 				r.Logger.Error("failed to read cache for %s, because %s", str_id, err)
 				return
 			}
+
+			golog.Println("BODY", string(body))
 
 			var fc *cache.FeatureCache
 
@@ -361,4 +370,56 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, c geom.Coord,
 	}
 
 	return &rs, nil
+}
+
+func (s *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {
+
+	c := s.cache
+
+	features := make([]geojson.GeoJSONFeature, 0)
+
+	for _, r := range results.Results() {
+
+		select {
+		case <-ctx.Done():
+			return nil, nil
+		default:
+			// pass
+		}
+
+		cr, err := c.Get(ctx, r.Id())
+
+		if err != nil {
+			return nil, err
+		}
+
+		body, err := ioutil.ReadAll(cr)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var fc *cache.FeatureCache
+
+		err = json.Unmarshal(body, &fc)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f := geojson.GeoJSONFeature{
+			Type:       "Feature",
+			Properties: fc.SPR(),
+			Geometry:   fc.Geometry(),
+		}
+
+		features = append(features, f)
+	}
+
+	collection := geojson.GeoJSONFeatureCollection{
+		Type:     "FeatureCollection",
+		Features: features,
+	}
+
+	return &collection, nil
 }
