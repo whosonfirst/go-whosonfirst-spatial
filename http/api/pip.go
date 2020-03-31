@@ -138,7 +138,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			if len(extras_paths) > 0 {
 
 				feature_collection := final.(*geojson.GeoJSONFeatureCollection)
-				final_extras, err := extras_db.AppendExtrasWithFeatureCollection(ctx, feature_collection, extras_paths)
+				final_extras, err := extras_db.AppendExtras(ctx, feature_collection, extras_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)

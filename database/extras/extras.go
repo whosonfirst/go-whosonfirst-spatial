@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"strings"
 )
 
 func AppendExtrasWithBytes(ctx context.Context, source []byte, target []byte, extras []string) ([]byte, error) {
@@ -13,19 +14,47 @@ func AppendExtrasWithBytes(ctx context.Context, source []byte, target []byte, ex
 
 	for _, e := range extras {
 
-		// TO DO: CHECK FOR WILDCARDS
+		paths := make([]string, 0)
 
-		path := fmt.Sprintf("properties.%s", e)
-		e_rsp := gjson.GetBytes(source, path)
+		if strings.HasSuffix(e, "*") || strings.HasSuffix(e, ":") {
 
-		if !e_rsp.Exists() {
-			continue
+			e = strings.Replace(e, "*", "", -1)
+
+			props := gjson.GetBytes(source, "properties")
+
+			for k, _ := range props.Map() {
+
+				if strings.HasPrefix(k, e) {
+					paths = append(paths, k)
+				}
+			}
+
+		} else {
+			paths = append(paths, e)
 		}
 
-		target, err = sjson.SetBytes(target, path, e_rsp.Value())
+		for _, p := range paths {
 
-		if err != nil {
-			return nil, err
+			get_path := fmt.Sprintf("properties.%s", p)
+			set_path := fmt.Sprintf("properties.%s", p) // FIX ME
+
+			v := gjson.GetBytes(source, get_path)
+
+			/*
+				log.Println("GET", id, get_path)
+				log.Println("SET", id, set_path)
+				log.Println("VALUE", v.Value())
+			*/
+
+			if !v.Exists() {
+				continue
+			}
+
+			target, err = sjson.SetBytes(target, set_path, v.Value())
+
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 

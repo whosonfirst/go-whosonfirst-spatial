@@ -86,6 +86,17 @@ func (db *ReaderExtrasDatabase) IndexFeature(context.Context, wof_geojson.Featur
 	return nil
 }
 
+func (db *ReaderExtrasDatabase) AppendExtras(ctx context.Context, i interface{}, extras []string) (interface{}, error) {
+
+	switch i.(type) {
+	case *geojson.GeoJSONFeatureCollection:
+		return db.AppendExtrasWithFeatureCollection(ctx, i.(*geojson.GeoJSONFeatureCollection), extras)
+	default:
+		return nil, errors.New("Unsupported interface type")
+	}
+
+}
+
 func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) (*geojson.GeoJSONFeatureCollection, error) {
 
 	rsp_ch := make(chan ExtrasResponse)

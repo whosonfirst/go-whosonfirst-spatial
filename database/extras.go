@@ -5,12 +5,13 @@ import (
 	"github.com/aaronland/go-roster"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
-	"log"
+	_ "log"
 	"net/url"
 )
 
 type ExtrasDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
+	AppendExtras(context.Context, interface{}, []string) (interface{}, error)
 	AppendExtrasWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) (*geojson.GeoJSONFeatureCollection, error)
 	Close(context.Context) error
 }
@@ -43,7 +44,6 @@ func RegisterExtrasDatabase(ctx context.Context, scheme string, f ExtrasDatabase
 		return err
 	}
 
-	log.Println("REGISTER", scheme, f)
 	return extras_databases.Register(ctx, scheme, f)
 }
 
