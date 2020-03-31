@@ -63,6 +63,25 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
+	enable_extras, err := BoolVar(fs, "enable-extras")
+
+	if err != nil {
+		return err
+	}
+
+	if enable_extras {
+
+		extras_uri, err := StringVar(fs, "extras-database")
+
+		if err != nil {
+			return err
+		}
+
+		if extras_uri == "" {
+			return errors.New("Invalid or missing -extras-database flag")
+		}
+	}
+
 	return nil
 }
 
@@ -147,6 +166,8 @@ func CommonFlags() (*flag.FlagSet, error) {
 	fs := NewFlagSet("common")
 
 	fs.String("spatial-database", "rtree://", "Valid options are: rtree://")
+
+	fs.String("extras-database", "", "...")
 
 	modes := index.Modes()
 	modes = append(modes, "spatialite")

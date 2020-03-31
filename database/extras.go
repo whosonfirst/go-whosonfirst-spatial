@@ -2,9 +2,10 @@ package database
 
 import (
 	"context"
-	"github.com/aaronland/go-roster"	
+	"github.com/aaronland/go-roster"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spr"
+	"log"
 	"net/url"
 )
 
@@ -42,6 +43,7 @@ func RegisterExtrasDatabase(ctx context.Context, scheme string, f ExtrasDatabase
 		return err
 	}
 
+	log.Println("REGISTER", scheme, f)
 	return extras_databases.Register(ctx, scheme, f)
 }
 

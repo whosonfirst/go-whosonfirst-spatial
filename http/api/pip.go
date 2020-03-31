@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/aaronland/go-http-sanitize"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/aaronland/go-http-sanitize"
 	_ "log"
 	"net/http"
 	"strconv"
@@ -38,21 +38,21 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		
+
 		str_lon, err := sanitize.GetString(req, "longitude")
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		
+
 		str_format, err := sanitize.GetString(req, "format")
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		
+
 		if str_format == "geojson" && !opts.EnableGeoJSON {
 			http.Error(rsp, "Invalid format", http.StatusBadRequest)
 			return
@@ -181,14 +181,14 @@ func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (http.
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		
+
 		str_lon, err := sanitize.GetString(req, "longitude")
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		
+
 		if str_lat == "" {
 			http.Error(rsp, "Missing 'latitude' parameter", http.StatusBadRequest)
 			return
