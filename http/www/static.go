@@ -1,4 +1,4 @@
-package http
+package www
 
 import (
 	"github.com/aaronland/go-http-rewrite"

@@ -1,4 +1,4 @@
-package http
+package api
 
 import (
 	"encoding/json"
@@ -13,51 +13,12 @@ import (
 	"strings"
 )
 
-type IntersectsHandlerOptions struct {
+type PointInPolygonHandlerOptions struct {
 	EnableGeoJSON bool
 	Templates     *template.Template
 }
 
-type IntersectsWWWHandlerOptions struct {
-	Templates *template.Template
-}
-
-func IntersectsWWWHandler(spatial_app *app.SpatialApplication, opts *IntersectsWWWHandlerOptions) (gohttp.Handler, error) {
-
-	t := opts.Templates.Lookup("intersects")
-
-	if t == nil {
-		return nil, errors.New("Missing intersects template")
-	}
-
-	walker := spatial_app.Walker
-
-	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
-
-		if walker.IsIndexing() {
-			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
-			return
-		}
-
-		// important if we're trying to use this in a Lambda/API Gateway context
-
-		rsp.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		err := t.Execute(rsp, nil)
-
-		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
-			return
-		}
-
-		return
-	}
-
-	h := gohttp.HandlerFunc(fn)
-	return h, nil
-}
-
-func IntersectsHandler(spatial_app *app.SpatialApplication, opts *IntersectsHandlerOptions) (gohttp.Handler, error) {
+func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
 
 	spatial_db := spatial_app.SpatialDatabase
 	extras_db := spatial_app.ExtrasDatabase
@@ -120,7 +81,7 @@ func IntersectsHandler(spatial_app *app.SpatialApplication, opts *IntersectsHand
 			return
 		}
 
-		results, err := spatial_db.GetIntersectsWithCoord(ctx, coord, filters)
+		results, err := spatial_db.PointInPolygonWithCoord(ctx, coord, filters)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -185,7 +146,7 @@ func IntersectsHandler(spatial_app *app.SpatialApplication, opts *IntersectsHand
 	return h, nil
 }
 
-func IntersectsCandidatesHandler(spatial_app *app.SpatialApplication) (gohttp.Handler, error) {
+func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (gohttp.Handler, error) {
 
 	walker := spatial_app.Walker
 	spatial_db := spatial_app.SpatialDatabase
@@ -234,7 +195,7 @@ func IntersectsCandidatesHandler(spatial_app *app.SpatialApplication) (gohttp.Ha
 			return
 		}
 
-		candidates, err := spatial_db.GetIntersectsWithCoordCandidates(ctx, coord)
+		candidates, err := spatial_db.PointInPolygonWithCoordCandidates(ctx, coord)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)

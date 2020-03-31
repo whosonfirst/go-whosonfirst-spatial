@@ -5,6 +5,7 @@ whosonfirst.spatial.pip = (function(){
 
     var self = {
 
+	
     };
 
     return self;

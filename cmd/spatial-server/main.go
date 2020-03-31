@@ -10,7 +10,9 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"github.com/whosonfirst/go-whosonfirst-spatial/http"
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/api"
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/health"
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/www"		
 	"github.com/whosonfirst/go-whosonfirst-spatial/server"
 	"html/template"
 	"log"
@@ -44,6 +46,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
+	enable_www, _ := flags.BoolVar(fs, "enable-www")
+	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
+
+	path_templates, _ := flags.StringVar(fs, "path-templates")
+	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
+	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
+	nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
+	
+	host, _ := flags.StringVar(fs, "host")
+	port, _ := flags.IntVar(fs, "port")
+	proto := "http" // FIX ME
+	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
@@ -60,50 +75,42 @@ func main() {
 		logger.Fatal("Failed to index paths, because %s", err)
 	}
 
-	logger.Debug("setting up intersects handler")
-
-	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
-
-	intersects_opts := &http.IntersectsHandlerOptions{
-		EnableGeoJSON: enable_geojson,
-	}
-
-	intersects_handler, err := http.IntersectsHandler(spatial_app, intersects_opts)
-
-	if err != nil {
-		logger.Fatal("failed to create intersects handler because %s", err)
-	}
-
-	ping_handler, err := http.PingHandler()
+	mux := gohttp.NewServeMux()
+	
+	ping_handler, err := health.PingHandler()
 
 	if err != nil {
 		logger.Fatal("failed to create ping handler because %s", err)
 	}
 
-	mux := gohttp.NewServeMux()
+	mux.Handle("/health/ping", ping_handler)
 
-	mux.Handle("/ping", ping_handler)
-	mux.Handle("/intersects", intersects_handler)
+	api_pip_opts := &api.PointInPolygonHandlerOptions{
+		EnableGeoJSON: enable_geojson,
+	}
 
-	enable_www, _ := flags.BoolVar(fs, "enable-www")
-	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
+	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)
+
+	if err != nil {
+		logger.Fatal("failed to create point-in-polygon handler because %s", err)
+	}
+
+	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	if enable_candidates {
 
 		logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := http.IntersectsCandidatesHandler(spatial_app)
+		candidateshandler, err := api.PointInPolygonCandidatesHandler(spatial_app)
 
 		if err != nil {
 			logger.Fatal("failed to create Spatial handler because %s", err)
 		}
 
-		mux.Handle("/intersects/candidates", candidateshandler)
+		mux.Handle("/api/point-in-polygon/candidates", candidateshandler)
 	}
 
 	if enable_www {
-
-		path_templates, _ := flags.StringVar(fs, "path-templates")
 
 		t := template.New("spatial").Funcs(template.FuncMap{
 			//
@@ -135,10 +142,6 @@ func main() {
 			}
 		}
 
-		nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
-		nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
-		nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
-
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
 		tangramjs_opts := tangramjs.DefaultTangramJSOptions()
@@ -158,32 +161,27 @@ func main() {
 			logger.Fatal("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlers(mux)
+		err = www.AppendStaticAssetHandlers(mux)
 
 		if err != nil {
 			logger.Fatal("Failed to append static assets, %v", err)
 		}
 
-		intersects_www_opts := &http.IntersectsWWWHandlerOptions{
+		www_pip_opts := &www.PointInPolygonHandlerOptions{
 			Templates: t,
 		}
 
-		intersects_www_handler, err := http.IntersectsWWWHandler(spatial_app, intersects_www_opts)
+		www_pip_handler, err := www.PointInPolygonHandler(spatial_app, www_pip_opts)
 
 		if err != nil {
 			logger.Fatal("failed to create (bundled) www handler because %s", err)
 		}
 
-		intersects_www_handler = bootstrap.AppendResourcesHandler(intersects_www_handler, bootstrap_opts)
-		intersects_www_handler = tangramjs.AppendResourcesHandler(intersects_www_handler, tangramjs_opts)
+		www_pip_handler = bootstrap.AppendResourcesHandler(www_pip_handler, bootstrap_opts)
+		www_pip_handler = tangramjs.AppendResourcesHandler(www_pip_handler, tangramjs_opts)
 
-		www_path, _ := flags.StringVar(fs, "www-path")
-		mux.Handle(www_path, intersects_www_handler)
+		mux.Handle("/point-in-polygon", www_pip_handler)
 	}
-
-	host, _ := flags.StringVar(fs, "host")
-	port, _ := flags.IntVar(fs, "port")
-	proto := "http" // FIX ME
 
 	address := fmt.Sprintf("spatial://%s:%d", host, port)
 

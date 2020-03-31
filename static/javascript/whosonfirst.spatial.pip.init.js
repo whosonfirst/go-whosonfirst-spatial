@@ -55,22 +55,25 @@ window.addEventListener("load", function load(event){
 	};
 
 	var on_success = function(rsp){
-	    
-	    console.log("OKAY", rsp);
 
+	    console.log(rsp);
+	    
+	    /*
 	    if (candidates_layer){
 		map.removeLayer(candidates_layer);
 	    }
 
 	    candidates_layer = L.geoJSON(rsp);
 	    candidates_layer.addTo(map);
+	    */
+	    
 	};
 
 	var on_error = function(err){
 	    console.log("SAD", err);
 	}
 
-	whosonfirst.spatial.api.point_in_polygon_candidates(args, on_success, on_error);
+	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
     });
     
     map.setView([37.604, -122.405], 13);
