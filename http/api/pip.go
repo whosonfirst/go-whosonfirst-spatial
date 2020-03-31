@@ -6,7 +6,7 @@ import (
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	_ "log"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"net/http"
 	"strconv"
 	"strings"
@@ -118,20 +118,17 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			final = collection
 		}
 
-		js, err := json.Marshal(final)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// experimental - see notes in extras/extras.go (20180303/thisisaaronland)
-
 		if extras_db != nil {
 
 			var extras_paths []string
 
-			str_extras := query.Get("extras")
+			str_extras, err := sanitize.GetString(req, "extras")
+
+			if err != nil {
+				http.Error(rsp, err.Error(), http.StatusBadRequest)
+				return
+			}
+
 			str_extras = strings.Trim(str_extras, " ")
 
 			if str_extras != "" {
@@ -140,15 +137,23 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 			if len(extras_paths) > 0 {
 
-				// FIX ME - WRITE TO JS OR ... ?
-
-				err := extras_db.AppendExtrasWithSPRResults(ctx, results, extras_paths...)
+				feature_collection := final.(*geojson.GeoJSONFeatureCollection)
+				final_extras, err := extras_db.AppendExtrasWithFeatureCollection(ctx, feature_collection, extras_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)
 					return
 				}
+
+				final = final_extras
 			}
+		}
+
+		js, err := json.Marshal(final)
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		rsp.Header().Set("Content-Type", "application/json")

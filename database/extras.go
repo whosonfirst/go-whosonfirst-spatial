@@ -3,15 +3,15 @@ package database
 import (
 	"context"
 	"github.com/aaronland/go-roster"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-spr"
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"log"
 	"net/url"
 )
 
 type ExtrasDatabase interface {
-	IndexFeature(context.Context, geojson.Feature) error
-	AppendExtrasWithSPRResults(context.Context, spr.StandardPlacesResults, ...string) error
+	IndexFeature(context.Context, wof_geojson.Feature) error
+	AppendExtrasWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) (*geojson.GeoJSONFeatureCollection, error)
 	Close(context.Context) error
 }
 

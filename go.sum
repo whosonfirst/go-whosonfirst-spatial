@@ -136,6 +136,7 @@ github.com/whosonfirst/go-http-rewrite v0.0.0-20170922000000-18b1c50538dd054132a
 github.com/whosonfirst/go-http-rewrite v0.0.0-20170922000000-18b1c50538dd054132aaf1c02a79287553e69100/go.mod h1:HiatHp1b4eW0qGx53qzvaWHaUDMTIpXG0Lrld13adrU=
 github.com/whosonfirst/go-http-rewrite v0.0.0-20170922163152-18b1c50538dd h1:vGbzgG281gm3uLaGdhN7h3a78wrBPBssH+ndibd+Qmg=
 github.com/whosonfirst/go-http-rewrite v0.0.0-20170922163152-18b1c50538dd/go.mod h1:HiatHp1b4eW0qGx53qzvaWHaUDMTIpXG0Lrld13adrU=
+github.com/whosonfirst/go-reader v0.0.2/go.mod h1:k/U2jXarXsFWC2yh63kYgKIJzTEmc60lN/ipyrdT3W4=
 github.com/whosonfirst/go-reader v0.1.1 h1:0fXoYQR/Yyh3PKk+9Huwoc6dCAt8l1tjg2dEShjqcFI=
 github.com/whosonfirst/go-reader v0.1.1/go.mod h1:w0AeU+Ojyfmxb7r+rcSYyxpCxrhxlHv+D9EgEwQsqcM=
 github.com/whosonfirst/go-reader-cachereader v0.0.0-20200228003730-10ce58b401b3 h1:ecL1aAJKYsJ53WI5aL89LuPOkxvJ2+0+EzXMRM/640s=
@@ -183,6 +184,9 @@ github.com/whosonfirst/go-whosonfirst-pip-v2 v0.9.3 h1:y4Ib8EiG0ugj2xG14rbreydQo
 github.com/whosonfirst/go-whosonfirst-pip-v2 v0.9.3/go.mod h1:9yU+E8sccewY9NbCVqO8NIxPAY8GL3boDknxIjzYsqM=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.1.0 h1:zuSk8eqeEkg42sIZ4EF71IMtphdTbG80qJsXhuZXXbM=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.1.0/go.mod h1:Jdmug2QQLbrmg+UcYGz8k575GnrOEg63vZVS46e5fMs=
+github.com/whosonfirst/go-whosonfirst-reader v0.0.0-20191122203133-047f20452865/go.mod h1:xYzBn6llLD/uS6Zhh0H4LAqddEJHXdQSUIxywTnhpOU=
+github.com/whosonfirst/go-whosonfirst-reader v0.0.1 h1:8OC0/iOtElJXg6W/P3mROuNK2sZqQBDtvMN30sKfq5U=
+github.com/whosonfirst/go-whosonfirst-reader v0.0.1/go.mod h1:SNGLXBF9h8mmf2S3CYKPBtO9d4D8n1TohSKSmoRmvqo=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0 h1:JuKLa6KWke22jBfJ1pM9WQHoz1/3pbDv2C+aR+THPPQ=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0/go.mod h1:EUMHyGzUmqPPxlMmOp+28BFeoBdxxE0HCKRd67lkqGM=
 github.com/whosonfirst/go-whosonfirst-spr v0.1.0 h1:5qE629nCiucF2upy5NjPOEl9cFatsljykYY0l2JKgAk=
