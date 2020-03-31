@@ -1,14 +1,18 @@
 package www
 
 import (
-
+	"errors"
+	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	"html/template"
+	_ "log"
+	gohttp "net/http"
 )
 
-type PointInPolygonWWWHandlerOptions struct {
+type PointInPolygonHandlerOptions struct {
 	Templates *template.Template
 }
 
-func PointInPolygonWWWHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonWWWHandlerOptions) (gohttp.Handler, error) {
+func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
 
 	t := opts.Templates.Lookup("pointinpolygon")
 
@@ -42,4 +46,3 @@ func PointInPolygonWWWHandler(spatial_app *app.SpatialApplication, opts *PointIn
 	h := gohttp.HandlerFunc(fn)
 	return h, nil
 }
-

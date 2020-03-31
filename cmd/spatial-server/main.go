@@ -12,7 +12,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http/health"
-	"github.com/whosonfirst/go-whosonfirst-spatial/http/www"		
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial/server"
 	"html/template"
 	"log"
@@ -54,11 +54,11 @@ func main() {
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
 	nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
-	
+
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
-	
+
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
@@ -76,7 +76,7 @@ func main() {
 	}
 
 	mux := gohttp.NewServeMux()
-	
+
 	ping_handler, err := health.PingHandler()
 
 	if err != nil {

@@ -56,11 +56,11 @@ func AppendStaticAssetHandlersWithPrefix(mux *gohttp.ServeMux, prefix string) er
 	for _, path := range AssetNames() {
 
 		path = strings.Replace(path, "static", "", 1)
-		
+
 		if prefix != "" {
 			path = appendPrefix(prefix, path)
 		}
-		
+
 		mux.Handle(path, asset_handler)
 	}
 

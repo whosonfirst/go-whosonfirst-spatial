@@ -2,11 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"html/template"
 	_ "log"
 	gohttp "net/http"
 	"strconv"
@@ -15,7 +13,6 @@ import (
 
 type PointInPolygonHandlerOptions struct {
 	EnableGeoJSON bool
-	Templates     *template.Template
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
@@ -81,7 +78,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			return
 		}
 
-		results, err := spatial_db.PointInPolygonWithCoord(ctx, coord, filters)
+		results, err := spatial_db.PointInPolygon(ctx, coord, filters)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
@@ -195,7 +192,7 @@ func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (gohtt
 			return
 		}
 
-		candidates, err := spatial_db.PointInPolygonWithCoordCandidates(ctx, coord)
+		candidates, err := spatial_db.PointInPolygonCandidates(ctx, coord)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)

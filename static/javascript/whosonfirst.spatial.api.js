@@ -10,7 +10,7 @@ whosonfirst.spatial.api = (function(){
 	    var lat = args['latitude'];
 	    var lon = args['longitude'];
 
-	    var rel_url = "/intersects?latitude=" + lat + "&longitude=" + lon;
+	    var rel_url = "/point-in-polygon?latitude=" + lat + "&longitude=" + lon;
 	    return self.get(rel_url, on_success, on_error);
 	},
 
@@ -19,7 +19,7 @@ whosonfirst.spatial.api = (function(){
 	    var lat = args['latitude'];
 	    var lon = args['longitude'];
 
-	    var rel_url = "/intersects/candidates?latitude=" + lat + "&longitude=" + lon;
+	    var rel_url = "/point-in-polygon/candidates?latitude=" + lat + "&longitude=" + lon;
 	    return self.get(rel_url, on_success, on_error);
 	},
 	
@@ -52,7 +52,7 @@ whosonfirst.spatial.api = (function(){
 
 	'abs_url': function(rel_url) {
 
-	    return location.protocol + "//" + location.host + rel_url;
+	    return location.protocol + "//" + location.host + '/api' + rel_url;	// READ ME FROM A DATA ATTRIBUTE...
 	}
     };
 
