@@ -11,6 +11,8 @@ github.com/aaronland/go-http-leaflet v0.0.2/go.mod h1:jUzEnGKezjceuNtQJIZWy2nXMh
 github.com/aaronland/go-http-rewrite v0.0.3/go.mod h1:g62jjXpsArD0lzJLs9bVLR9Locdt3f4OmqFkkJL2rQU=
 github.com/aaronland/go-http-rewrite v0.0.4 h1:lI8cDF/nINjuSPrYpwvlJLa1cC32h1nvmBwRRHs9sow=
 github.com/aaronland/go-http-rewrite v0.0.4/go.mod h1:g62jjXpsArD0lzJLs9bVLR9Locdt3f4OmqFkkJL2rQU=
+github.com/aaronland/go-http-sanitize v0.0.4 h1:oAYe5DbtbDS6x5Rygv5II6fDHzATGIAyY4/ZDZ63G2w=
+github.com/aaronland/go-http-sanitize v0.0.4/go.mod h1:qUi4rzUPcpMntpUFnHK00yQI5vd/Q7x9MFYwX91/ygI=
 github.com/aaronland/go-http-tangramjs v0.0.4 h1:qcopY0Y2pywL7fOpmynZq/brBG6MBASHcgxMP/CRkno=
 github.com/aaronland/go-http-tangramjs v0.0.4/go.mod h1:1LuOmRRx+5P4uCHVe0ZwzNs3gBI7f3lYv7fFz9yik9w=
 github.com/aaronland/go-http-tangramjs v0.0.5 h1:SXRuPD2qgPQ9goCz4dezY3imq1zOZZy9EiCzo8c5szU=
@@ -136,6 +138,8 @@ github.com/whosonfirst/go-http-rewrite v0.0.0-20170922163152-18b1c50538dd h1:vGb
 github.com/whosonfirst/go-http-rewrite v0.0.0-20170922163152-18b1c50538dd/go.mod h1:HiatHp1b4eW0qGx53qzvaWHaUDMTIpXG0Lrld13adrU=
 github.com/whosonfirst/go-rfc-5646 v0.1.0 h1:HNFPAem6v5De61PXLgbGzx9tfNOP83AAkVvm9WAddJY=
 github.com/whosonfirst/go-rfc-5646 v0.1.0/go.mod h1:JZj//FV9YeV3fkyOY/82V53EMLQXwRwNPuQIGs8BUmo=
+github.com/whosonfirst/go-sanitize v0.1.0 h1:ygSqCnakwdzH/m8UEa15zXGDsoo5/JJeRkgmAjXZrBU=
+github.com/whosonfirst/go-sanitize v0.1.0/go.mod h1:p/emgbafMM0p5iVAz2XWwecYPl06Tw4Jos9rhTKIrt8=
 github.com/whosonfirst/go-spatialite v0.0.0-20180220171945-cb1d9ed624a8 h1:5dtYgPS6su1QqwUfVnyEL9V7GvMWX+60VRkUX5RvJsc=
 github.com/whosonfirst/go-spatialite v0.0.0-20180220171945-cb1d9ed624a8/go.mod h1:JnzadIex2v6ZyX6pLrjJ5CJ69e/ljYBCqxarHDMkMJ4=
 github.com/whosonfirst/go-spatialite v0.1.0 h1:jKbVmIeUSsDfPX4DWTeiSR9zGJFETIF1A3YdK6IShBY=

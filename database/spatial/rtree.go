@@ -451,9 +451,17 @@ func (db *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, 
 		features = append(features, f)
 	}
 
+	pg := geojson.Pagination{
+		TotalCount: len(features),
+		Page: 1,
+		PerPage: len(features),
+		PageCount: 1,
+	}
+	
 	collection := geojson.GeoJSONFeatureCollection{
 		Type:     "FeatureCollection",
 		Features: features,
+		Pagination: pg,
 	}
 
 	return &collection, nil

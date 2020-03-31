@@ -5,8 +5,9 @@ import (
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/aaronland/go-http-sanitize"
 	_ "log"
-	gohttp "net/http"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -15,73 +16,90 @@ type PointInPolygonHandlerOptions struct {
 	EnableGeoJSON bool
 }
 
-func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
+func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
 
 	spatial_db := spatial_app.SpatialDatabase
 	extras_db := spatial_app.ExtrasDatabase
 	walker := spatial_app.Walker
 
-	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
+	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
 		if walker.IsIndexing() {
-			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
+			http.Error(rsp, "indexing records", http.StatusServiceUnavailable)
 			return
 		}
 
 		ctx := req.Context()
 		query := req.URL.Query()
 
-		str_lat := query.Get("latitude")
-		str_lon := query.Get("longitude")
-		str_format := query.Get("format")
+		str_lat, err := sanitize.GetString(req, "latitude")
 
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
+		str_lon, err := sanitize.GetString(req, "longitude")
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
+		str_format, err := sanitize.GetString(req, "format")
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
 		if str_format == "geojson" && !opts.EnableGeoJSON {
-			gohttp.Error(rsp, "Invalid format", gohttp.StatusBadRequest)
+			http.Error(rsp, "Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if str_lat == "" {
-			gohttp.Error(rsp, "Missing 'latitude' parameter", gohttp.StatusBadRequest)
+			http.Error(rsp, "Missing 'latitude' parameter", http.StatusBadRequest)
 			return
 		}
 
 		if str_lon == "" {
-			gohttp.Error(rsp, "Missing 'longitude' parameter", gohttp.StatusBadRequest)
+			http.Error(rsp, "Missing 'longitude' parameter", http.StatusBadRequest)
 			return
 		}
 
 		lat, err := strconv.ParseFloat(str_lat, 64)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		lon, err := strconv.ParseFloat(str_lon, 64)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		filters, err := filter.NewSPRFilterFromQuery(query)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		results, err := spatial_db.PointInPolygon(ctx, coord, filters)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -93,7 +111,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			collection, err := spatial_db.ResultsToFeatureCollection(ctx, results)
 
 			if err != nil {
-				gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+				http.Error(rsp, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
@@ -103,7 +121,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		js, err := json.Marshal(final)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -127,7 +145,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 				err := extras_db.AppendExtrasWithSPRResults(ctx, results, extras_paths...)
 
 				if err != nil {
-					gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+					http.Error(rsp, err.Error(), http.StatusInternalServerError)
 					return
 				}
 			}
@@ -139,70 +157,80 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		rsp.Write(js)
 	}
 
-	h := gohttp.HandlerFunc(fn)
+	h := http.HandlerFunc(fn)
 	return h, nil
 }
 
-func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (gohttp.Handler, error) {
+func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (http.Handler, error) {
 
 	walker := spatial_app.Walker
 	spatial_db := spatial_app.SpatialDatabase
 
-	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
+	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
 		if walker.IsIndexing() {
-			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
+			http.Error(rsp, "indexing records", http.StatusServiceUnavailable)
 			return
 		}
 
 		ctx := req.Context()
-		query := req.URL.Query()
 
-		str_lat := query.Get("latitude")
-		str_lon := query.Get("longitude")
+		str_lat, err := sanitize.GetString(req, "latitude")
 
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
+		str_lon, err := sanitize.GetString(req, "longitude")
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		
 		if str_lat == "" {
-			gohttp.Error(rsp, "Missing 'latitude' parameter", gohttp.StatusBadRequest)
+			http.Error(rsp, "Missing 'latitude' parameter", http.StatusBadRequest)
 			return
 		}
 
 		if str_lon == "" {
-			gohttp.Error(rsp, "Missing 'longitude' parameter", gohttp.StatusBadRequest)
+			http.Error(rsp, "Missing 'longitude' parameter", http.StatusBadRequest)
 			return
 		}
 
 		lat, err := strconv.ParseFloat(str_lat, 64)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		lon, err := strconv.ParseFloat(str_lon, 64)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusBadRequest)
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		candidates, err := spatial_db.PointInPolygonCandidates(ctx, coord)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		enc, err := json.Marshal(candidates)
 
 		if err != nil {
-			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -212,6 +240,6 @@ func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (gohtt
 		rsp.Write(enc)
 	}
 
-	h := gohttp.HandlerFunc(fn)
+	h := http.HandlerFunc(fn)
 	return h, nil
 }
