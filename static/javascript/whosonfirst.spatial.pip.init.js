@@ -42,6 +42,38 @@ window.addEventListener("load", function load(event){
 	return;
     }
 
-    map.setView([37.604, -122.405], 13);
+    var pip_layer = null;
+    var candidates_layer = null;
     
+    map.on("move", function(e){
+
+	var pos = map.getCenter();	
+
+	var args = {
+	    'latitude': pos['lat'],
+	    'longitude': pos['lng'],
+	};
+
+	var on_success = function(rsp){
+	    
+	    console.log("OKAY", rsp);
+
+	    if (candidates_layer){
+		map.removeLayer(candidates_layer);
+	    }
+
+	    candidates_layer = L.geoJSON(rsp);
+	    candidates_layer.addTo(map);
+	};
+
+	var on_error = function(err){
+	    console.log("SAD", err);
+	}
+
+	whosonfirst.spatial.api.point_in_polygon_candidates(args, on_success, on_error);
+    });
+    
+    map.setView([37.604, -122.405], 13);
+
+    slippymap.crosshairs.init(map);    
 });
