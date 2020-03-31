@@ -158,7 +158,7 @@ func main() {
 			logger.Fatal("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlersWithPrefix(mux, "static")
+		err = http.AppendStaticAssetHandlers(mux)
 
 		if err != nil {
 			logger.Fatal("Failed to append static assets, %v", err)
