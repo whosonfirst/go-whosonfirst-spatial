@@ -42,9 +42,9 @@ window.addEventListener("load", function load(event){
 	return;
     }
 
-    var pip_layer = null;
-    var candidates_layer = null;
-    
+    var layers = L.layerGroup();
+    layers.addTo(map);
+
     map.on("move", function(e){
 
 	var pos = map.getCenter();	
@@ -55,17 +55,27 @@ window.addEventListener("load", function load(event){
 	};
 
 	var on_success = function(rsp){
-
-	    console.log(rsp);
 	    
-	    /*
-	    if (candidates_layer){
-		map.removeLayer(candidates_layer);
-	    }
+	    var places = rsp["places"];
+	    var count = places.length;
 
-	    candidates_layer = L.geoJSON(rsp);
-	    candidates_layer.addTo(map);
-	    */
+	    layers.clearLayers();
+	    
+	    for (var i=0; i < count; i++){
+
+		var pl = places[i];
+		var id = pl["wof:id"];
+
+		var url = whosonfirst.uri.id2abspath(id);
+		
+		var fetch_on_success = function(rsp){
+		    var l = L.geoJSON(rsp);
+		    layers.addLayer(l);
+		};
+
+		console.log("fetch", id, url);
+		whosonfirst.net.fetch(url, fetch_on_success);
+	    }
 	    
 	};
 

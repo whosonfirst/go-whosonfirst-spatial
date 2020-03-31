@@ -1,21 +1,20 @@
 {{ define "pointinpolygon" }}
 {{ template "inc_head" . }}
-    <div class="row">
-	
-		<div id="map"></div>
-		<div id="status"><span id="coords"></span></div>
-		<div id="jump-to-form">
+<nav>
 		  <form>
 		    <input type="text" name="jump-to-latlon" id="jump-to-latlon" placeholder="jump to lat,lon" value="" />
 		    <button class="btn btn-primary" type="submit" id="jump-to-button">jump</button>
 		  </form>
-		</div>
-		<div id="results">
-		  <ul id="candidates-list"></ul>
-		  <ul id="intersecting-list"></ul>
-		</div>
+</nav>
 
-    </div>
+	<div class="card">
+	    <div id="status" class="card-header"><span id="coords"></span></div>	    
+	    <div id="map" class="card-body"></div>
+	    <div id="results" class="card-footer">
+		<ul id="candidates-list"></ul>
+		<ul id="intersecting-list"></ul>
+	    </div>
+	</div>
 
 <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.pip.css" />
 <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.js"></script>
