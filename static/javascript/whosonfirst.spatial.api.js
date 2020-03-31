@@ -7,10 +7,9 @@ whosonfirst.spatial.api = (function(){
 
 	'point_in_polygon': function(args, on_success, on_error) {
 
-	    var lat = args['latitude'];
-	    var lon = args['longitude'];
+	    var qs = self.query_string(args);
 
-	    var rel_url = "/point-in-polygon?latitude=" + lat + "&longitude=" + lon;
+	    var rel_url = "/point-in-polygon?" + qs;
 	    return self.get(rel_url, on_success, on_error);
 	},
 
@@ -53,7 +52,25 @@ whosonfirst.spatial.api = (function(){
 	'abs_url': function(rel_url) {
 
 	    return location.protocol + "//" + location.host + '/api' + rel_url;	// READ ME FROM A DATA ATTRIBUTE...
-	}
+	},
+
+	'query_string': function(args){
+
+	    var pairs = [];
+
+	    for (var k in args){
+
+		var v = args[k];
+
+		var enc_k = encodeURIComponent(k);
+		var enc_v = encodeURIComponent(v);
+		
+		var pair = enc_k + "=" + enc_v;
+		pairs.push(pair);
+	    }
+
+	    return pairs.join("&");
+	},
     };
 
     return self;

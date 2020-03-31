@@ -45,17 +45,24 @@ window.addEventListener("load", function load(event){
     var layers = L.layerGroup();
     layers.addTo(map);
 
-    map.on("move", function(e){
+    map.on("moveend", function(e){
 
 	var pos = map.getCenter();	
 
 	var args = {
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
+	    'format': 'geojson',
 	};
 
 	var on_success = function(rsp){
+
+	    layers.clearLayers();
 	    
+	    var l = L.geoJSON(rsp);
+	    layers.addLayer(l);
+
+	    /*
 	    var places = rsp["places"];
 	    var count = places.length;
 
@@ -76,6 +83,7 @@ window.addEventListener("load", function load(event){
 		console.log("fetch", id, url);
 		whosonfirst.net.fetch(url, fetch_on_success);
 	    }
+	     */
 	    
 	};
 
