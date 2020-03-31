@@ -26,7 +26,7 @@ type SpatialDatabaseInitializeFunc func(ctx context.Context, uri string) (Spatia
 
 var spatial_databases roster.Roster
 
-func ensureRoster() error {
+func ensureSpatialRoster() error {
 
 	if spatial_databases == nil {
 
@@ -44,7 +44,7 @@ func ensureRoster() error {
 
 func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDatabaseInitializeFunc) error {
 
-	err := ensureRoster()
+	err := ensureSpatialRoster()
 
 	if err != nil {
 		return err

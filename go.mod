@@ -16,7 +16,9 @@ require (
 	github.com/whosonfirst/algnhsa v0.1.0
 	github.com/whosonfirst/go-bindata v0.1.0
 	github.com/whosonfirst/go-bindata-assetfs v1.0.1
-	github.com/whosonfirst/go-cache v0.0.2 // indirect
+	github.com/whosonfirst/go-cache v0.0.2
+	github.com/whosonfirst/go-reader v0.1.1
+	github.com/whosonfirst/go-reader-cachereader v0.0.0-20200228003730-10ce58b401b3
 	github.com/whosonfirst/go-whosonfirst-flags v0.1.0
 	github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3
 	github.com/whosonfirst/go-whosonfirst-index v0.2.3
