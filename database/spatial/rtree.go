@@ -1,14 +1,21 @@
 package spatial
 
+/*
+
+data-architecture/
+2020/03/31 12:51:24 -enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates
+12:51:24.487074 [main] FATAL failed to index paths because Failed crawl callback for /usr/local/data/sfomuseum-data-architecture/data/115/915/793/1/1159157931.geojson: Failed to index 1159157931 (B-05 Boarding Lobby), rtreego: improper distance
+12:51:24.487090 [main] FATAL failed to index paths because Failed crawl callback for /usr/local/data/sfomuseum-data-architecture/data/115/915/793/1/1159157931.geojson: Failed to index 1159157931 (B-05 Boarding Lobby), rtreego: improper distance
+exit status 1
+
+*/
+
 import (
-	// "bytes"
 	"context"
-	// "encoding/json"
 	"errors"
 	"github.com/dhconnelly/rtreego"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/skelterjohn/geom"
-	// wof_cache "github.com/whosonfirst/go-cache"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
 	"github.com/whosonfirst/go-whosonfirst-log"
@@ -17,7 +24,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	// "io/ioutil"
 	"net/url"
 	"strconv"
 	"sync"
@@ -29,11 +35,12 @@ func init() {
 	database.RegisterSpatialDatabase(ctx, "rtree", NewRTreeSpatialDatabase)
 }
 
+// PLEASE DISCUSS WHY patrickm/go-cache AND NOT whosonfirst/go-cache HERE
+
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
-	Logger *log.WOFLogger
-	rtree  *rtreego.Rtree
-	// cache   wof_cache.Cache
+	Logger  *log.WOFLogger
+	rtree   *rtreego.Rtree
 	gocache *gocache.Cache
 	mu      *sync.RWMutex
 }
@@ -65,20 +72,6 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	}
 
 	q := u.Query()
-
-	/*
-		c_uri := q.Get("cache")
-
-		if c_uri == "" {
-			c_uri = "gocache://"
-		}
-
-		c, err := wof_cache.NewCache(ctx, c_uri)
-
-		if err != nil {
-			return nil, err
-		}
-	*/
 
 	expires := 0 * time.Second
 	cleanup := 0 * time.Second
@@ -128,14 +121,6 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 }
 
 func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
-
-	/*
-		err := r.cache.Close(ctx)
-
-		if err != nil {
-			return err
-		}
-	*/
 
 	return nil
 }
@@ -484,25 +469,6 @@ func (r *RTreeSpatialDatabase) setFeatureCache(ctx context.Context, f wof_geojso
 
 	r.gocache.Set(f.Id(), fc, -1)
 	return nil
-
-	/*
-		enc, err := json.Marshal(fc)
-
-		if err != nil {
-			return err
-		}
-
-		br := bytes.NewReader(enc)
-		cr := ioutil.NopCloser(br)
-
-		_, err = r.cache.Set(ctx, f.Id(), cr)
-
-		if err != nil {
-			return err
-		}
-
-		return nil
-	*/
 }
 
 func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id string) (*cache.FeatureCache, error) {
@@ -514,28 +480,4 @@ func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id 
 	}
 
 	return fc.(*cache.FeatureCache), nil
-
-	/*
-		cr, err := r.cache.Get(ctx, str_id)
-
-		if err != nil {
-			return nil, err
-		}
-
-		body, err := ioutil.ReadAll(cr)
-
-		if err != nil {
-			return nil, err
-		}
-
-		var fc *cache.FeatureCache
-
-		err = json.Unmarshal(body, &fc)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return fc, nil
-	*/
 }
