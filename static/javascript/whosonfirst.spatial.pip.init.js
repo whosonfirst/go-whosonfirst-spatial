@@ -62,28 +62,17 @@ window.addEventListener("load", function load(event){
 	    var l = L.geoJSON(rsp);
 	    layers.addLayer(l);
 
-	    /*
-	    var places = rsp["places"];
-	    var count = places.length;
+	    l.bringToFront();
 
-	    layers.clearLayers();
+	    //
 	    
-	    for (var i=0; i < count; i++){
+	    var features = rsp["features"];
 
-		var pl = places[i];
-		var id = pl["wof:id"];
-
-		var url = whosonfirst.uri.id2abspath(id);
-		
-		var fetch_on_success = function(rsp){
-		    var l = L.geoJSON(rsp);
-		    layers.addLayer(l);
-		};
-
-		console.log("fetch", id, url);
-		whosonfirst.net.fetch(url, fetch_on_success);
-	    }
-	     */
+	    var table = whosonfirst.spatial.pip.render_properties_table(features);
+	    
+	    var matches = document.getElementById("pip-matches");
+	    matches.innerHTML = "";
+	    matches.appendChild(table);
 	    
 	};
 

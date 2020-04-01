@@ -1,0 +1,8 @@
+#map {
+	height: 50vh !important;
+}
+
+#pip-results {
+	max-height: 40vh !important;
+	overflow: scroll !important;
+}

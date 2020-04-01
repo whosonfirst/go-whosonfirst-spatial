@@ -1,3 +1,3 @@
 package extras
 
-# https://github.com/whosonfirst/go-whosonfirst-spatial/issues/2
+// https://github.com/whosonfirst/go-whosonfirst-spatial/issues/2
