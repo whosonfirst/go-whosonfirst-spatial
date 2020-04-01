@@ -22,5 +22,5 @@ bake-templates:
 
 debug:
 	@make bake
-	go run -mod vendor cmd/spatial-server/main.go -enable-www -enable-extras -spatial-database-uri 'rtree:///?strict=false' -extras-reader-uri 'whosonfirst:///?reader=fs:///usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' -nextzen-apikey $(APIKEY) -mode repo:// /usr/local/data/sfomuseum-data-architecture/
+	go run -mod vendor cmd/spatial-server/main.go -enable-www -enable-extras -spatial-database-uri 'rtree:///?strict=false' -extras-reader-uri 'whosonfirst:///?reader=fs://$(REPO)/data&cache=gocache://' -nextzen-apikey $(APIKEY) -mode directory:// $(REPO)/data
 
