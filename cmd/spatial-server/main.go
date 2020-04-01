@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
+	"github.com/rs/cors"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
@@ -85,6 +86,17 @@ func main() {
 
 	mux.Handle("/health/ping", ping_handler)
 
+	enable_cors := true
+	cors_origins := []string{"*"}
+
+	var cors_wrapper *cors.Cors
+
+	if enable_cors {
+		cors_wrapper = cors.New(cors.Options{
+			AllowedOrigins: cors_origins,
+		})
+	}
+
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
 		EnableGeoJSON: enable_geojson,
 	}
@@ -95,19 +107,27 @@ func main() {
 		logger.Fatal("failed to create point-in-polygon handler because %s", err)
 	}
 
+	if enable_cors {
+		api_pip_handler = cors_wrapper.Handler(api_pip_handler)
+	}
+
 	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	if enable_candidates {
 
 		logger.Debug("setting up candidates handler")
 
-		candidateshandler, err := api.PointInPolygonCandidatesHandler(spatial_app)
+		candidates_handler, err := api.PointInPolygonCandidatesHandler(spatial_app)
 
 		if err != nil {
 			logger.Fatal("failed to create Spatial handler because %s", err)
 		}
 
-		mux.Handle("/api/point-in-polygon/candidates", candidateshandler)
+		if enable_cors {
+			candidates_handler = cors_wrapper.Handler(candidates_handler)
+		}
+
+		mux.Handle("/api/point-in-polygon/candidates", candidates_handler)
 	}
 
 	if enable_www {

@@ -10,6 +10,7 @@ require (
 	github.com/aaronland/go-roster v0.0.1
 	github.com/dhconnelly/rtreego v1.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/rs/cors v1.7.0
 	github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.0

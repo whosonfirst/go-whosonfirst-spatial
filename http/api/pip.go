@@ -1,12 +1,11 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/aaronland/go-http-sanitize"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/api/output"
 	"net/http"
 	"strconv"
 	"strings"
@@ -116,52 +115,37 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			}
 
 			final = collection
+		}
 
-			if extras_r != nil {
+		if extras_r != nil {
 
-				var extras_paths []string
+			var extras_paths []string
 
-				str_extras, err := sanitize.GetString(req, "extras")
+			str_extras, err := sanitize.GetString(req, "extras")
+
+			if err != nil {
+				http.Error(rsp, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			str_extras = strings.Trim(str_extras, " ")
+
+			if str_extras != "" {
+				extras_paths = strings.Split(str_extras, ",")
+			}
+
+			if len(extras_paths) > 0 {
+
+				err = extras_r.AppendExtras(ctx, final, extras_paths)
 
 				if err != nil {
-					http.Error(rsp, err.Error(), http.StatusBadRequest)
+					http.Error(rsp, err.Error(), http.StatusInternalServerError)
 					return
-				}
-
-				str_extras = strings.Trim(str_extras, " ")
-
-				if str_extras != "" {
-					extras_paths = strings.Split(str_extras, ",")
-				}
-
-				if len(extras_paths) > 0 {
-
-					// TO DO: MAKE ME WORK WITH SPR...
-
-					feature_collection := final.(*geojson.GeoJSONFeatureCollection)
-					err = extras_r.AppendExtras(ctx, feature_collection, extras_paths)
-
-					if err != nil {
-						http.Error(rsp, err.Error(), http.StatusInternalServerError)
-						return
-					}
-
-					final = feature_collection
 				}
 			}
 		}
 
-		js, err := json.Marshal(final)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		rsp.Header().Set("Content-Type", "application/json")
-		rsp.Header().Set("Access-Control-Allow-Origin", "*")
-
-		rsp.Write(js)
+		output.AsJSON(rsp, final)
 	}
 
 	h := http.HandlerFunc(fn)
@@ -234,17 +218,7 @@ func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (http.
 			return
 		}
 
-		enc, err := json.Marshal(candidates)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		rsp.Header().Set("Content-Type", "application/json")
-		rsp.Header().Set("Access-Control-Allow-Origin", "*")
-
-		rsp.Write(enc)
+		output.AsJSON(rsp, candidates)
 	}
 
 	h := http.HandlerFunc(fn)
