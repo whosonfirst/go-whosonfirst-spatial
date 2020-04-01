@@ -49,10 +49,19 @@ window.addEventListener("load", function load(event){
 
 	var pos = map.getCenter();	
 
+	// PLEASE MAKE ME DYNAMIC (or at least not hard-coded here)
+	
+	var extras = [
+	    "mz:min_zoom",
+	    "mz:max_zoom",
+	    "sfomuseum:uri",
+	];
+	
 	var args = {
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
 	    'format': 'geojson',
+	    'extras': extras.join(","),
 	};
 
 	var on_success = function(rsp){
@@ -72,7 +81,15 @@ window.addEventListener("load", function load(event){
 	    
 	    var features = rsp["features"];
 
-	    var table = whosonfirst.spatial.pip.render_properties_table(features);
+	    var table_props = whosonfirst.spatial.pip.default_properties();
+
+	    var count_extras = extras.length;
+
+	    for (var i=0; i < count_extras; i++){
+		table_props[extras[i]] = "";
+	    }
+	    
+	    var table = whosonfirst.spatial.pip.render_properties_table(features, table_props);
 	    
 	    var matches = document.getElementById("pip-matches");
 	    matches.innerHTML = "";
