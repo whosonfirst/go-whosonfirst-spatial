@@ -25,6 +25,7 @@ whosonfirst.spatial.pip = (function(){
 		"wof:id":"",
 		"wof:name":"",
 		"wof:placetype":"",
+		"wof:repo":"",
 	    };
 
 	    return props_table;

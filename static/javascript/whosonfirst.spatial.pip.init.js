@@ -52,9 +52,9 @@ window.addEventListener("load", function load(event){
 	// PLEASE MAKE ME DYNAMIC (or at least not hard-coded here)
 	
 	var extras = [
-	    "mz:min_zoom",
-	    "mz:max_zoom",
-	    "sfomuseum:uri",
+	    "sfomuseum:placetype",
+	    "edtf:inception",
+	    "edtf:cessation",	    
 	];
 	
 	var args = {

@@ -1,15 +1,5 @@
 package spatial
 
-/*
-
-data-architecture/
-2020/03/31 12:51:24 -enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates
-12:51:24.487074 [main] FATAL failed to index paths because Failed crawl callback for /usr/local/data/sfomuseum-data-architecture/data/115/915/793/1/1159157931.geojson: Failed to index 1159157931 (B-05 Boarding Lobby), rtreego: improper distance
-12:51:24.487090 [main] FATAL failed to index paths because Failed crawl callback for /usr/local/data/sfomuseum-data-architecture/data/115/915/793/1/1159157931.geojson: Failed to index 1159157931 (B-05 Boarding Lobby), rtreego: improper distance
-exit status 1
-
-*/
-
 import (
 	"context"
 	"errors"
@@ -43,6 +33,7 @@ type RTreeSpatialDatabase struct {
 	rtree   *rtreego.Rtree
 	gocache *gocache.Cache
 	mu      *sync.RWMutex
+	strict  bool
 }
 
 type RTreeSpatialIndex struct {
@@ -72,6 +63,12 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	}
 
 	q := u.Query()
+
+	strict := true
+
+	if q.Get("strict") == "false" {
+		strict = false
+	}
 
 	expires := 0 * time.Second
 	cleanup := 0 * time.Second
@@ -110,10 +107,10 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	mu := new(sync.RWMutex)
 
 	db := &RTreeSpatialDatabase{
-		Logger: logger,
-		rtree:  rtree,
-		// cache:   c,
+		Logger:  logger,
+		rtree:   rtree,
 		gocache: gc,
+		strict:  strict,
 		mu:      mu,
 	}
 
@@ -153,7 +150,13 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		rect, err := rtreego.NewRect(pt, []float64{llon, llat})
 
 		if err != nil {
-			return err
+
+			if r.strict {
+				return err
+			}
+
+			r.Logger.Error("%s failed indexing, (%v). Strict mode is disabled, so skipping.", str_id, err)
+			return nil
 		}
 
 		r.Logger.Status("index %s %v", str_id, rect)
