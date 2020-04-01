@@ -59,9 +59,13 @@ window.addEventListener("load", function load(event){
 
 	    layers.clearLayers();
 	    
-	    var l = L.geoJSON(rsp);
+	    var l = L.geoJSON(rsp, {
+		style: function(feature){
+		    return whosonfirst.spatial.pip.named_style("match");
+		},
+	    });
+	    
 	    layers.addLayer(l);
-
 	    l.bringToFront();
 
 	    //
