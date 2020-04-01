@@ -12,6 +12,7 @@ import (
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
+	"github.com/whosonfirst/go-whosonfirst-spr"
 	_ "log"
 	"net/url"
 )
@@ -86,18 +87,28 @@ func (db *ReaderExtrasDatabase) IndexFeature(context.Context, wof_geojson.Featur
 	return nil
 }
 
-func (db *ReaderExtrasDatabase) AppendExtras(ctx context.Context, i interface{}, extras []string) (interface{}, error) {
+func (db *ReaderExtrasDatabase) AppendExtras(ctx context.Context, i interface{}, extras []string) error {
 
 	switch i.(type) {
 	case *geojson.GeoJSONFeatureCollection:
 		return db.AppendExtrasWithFeatureCollection(ctx, i.(*geojson.GeoJSONFeatureCollection), extras)
+	case spr.StandardPlacesResults:
+		return db.AppendExtrasWithStandardPlacesResults(ctx, i.(spr.StandardPlacesResults), extras)
 	default:
-		return nil, errors.New("Unsupported interface type")
+		return errors.New("Unsupported interface type")
 	}
 
 }
 
-func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) (*geojson.GeoJSONFeatureCollection, error) {
+func (db *ReaderExtrasDatabase) AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error {
+
+	return errors.New("Not implemented")
+}
+
+func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	rsp_ch := make(chan ExtrasResponse)
 	err_ch := make(chan error)
@@ -112,19 +123,19 @@ func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Co
 	for remaining > 0 {
 		select {
 		case <-ctx.Done():
-			return nil, nil
+			return nil
 		case <-done_ch:
 			remaining -= 1
 		case rsp := <-rsp_ch:
 			fc.Features[rsp.Index] = rsp.Feature
 		case err := <-err_ch:
-			return nil, err
+			return err
 		default:
 			// pass
 		}
 	}
 
-	return fc, nil
+	return nil
 }
 
 func (db *ReaderExtrasDatabase) appendExtrasWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {

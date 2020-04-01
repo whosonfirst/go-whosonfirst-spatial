@@ -116,36 +116,38 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			}
 
 			final = collection
-		}
 
-		if extras_db != nil {
+			if extras_db != nil {
 
-			var extras_paths []string
+				var extras_paths []string
 
-			str_extras, err := sanitize.GetString(req, "extras")
-
-			if err != nil {
-				http.Error(rsp, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			str_extras = strings.Trim(str_extras, " ")
-
-			if str_extras != "" {
-				extras_paths = strings.Split(str_extras, ",")
-			}
-
-			if len(extras_paths) > 0 {
-
-				feature_collection := final.(*geojson.GeoJSONFeatureCollection)
-				final_extras, err := extras_db.AppendExtras(ctx, feature_collection, extras_paths)
+				str_extras, err := sanitize.GetString(req, "extras")
 
 				if err != nil {
-					http.Error(rsp, err.Error(), http.StatusInternalServerError)
+					http.Error(rsp, err.Error(), http.StatusBadRequest)
 					return
 				}
 
-				final = final_extras
+				str_extras = strings.Trim(str_extras, " ")
+
+				if str_extras != "" {
+					extras_paths = strings.Split(str_extras, ",")
+				}
+
+				if len(extras_paths) > 0 {
+
+					// TO DO: MAKE ME WORK WITH SPR...
+
+					feature_collection := final.(*geojson.GeoJSONFeatureCollection)
+					err = extras_db.AppendExtras(ctx, feature_collection, extras_paths)
+
+					if err != nil {
+						http.Error(rsp, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
+					final = feature_collection
+				}
 			}
 		}
 

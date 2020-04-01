@@ -1,8 +1,8 @@
 package app
 
 import (
+	_ "github.com/whosonfirst/go-reader-http"
 	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/extras"
-	_ 	"github.com/whosonfirst/go-reader-http"
 )
 
 import (
