@@ -426,7 +426,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c
 	wg.Wait()
 }
 
-func (db *RTreeSpatialDatabase) ResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {
+func (db *RTreeSpatialDatabase) StandardPlacesResultsToFeatureCollection(ctx context.Context, results spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error) {
 
 	features := make([]geojson.GeoJSONFeature, 0)
 

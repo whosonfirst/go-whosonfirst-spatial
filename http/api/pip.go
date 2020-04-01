@@ -108,7 +108,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 		if str_format == "geojson" {
 
-			collection, err := spatial_db.ResultsToFeatureCollection(ctx, results)
+			collection, err := spatial_db.StandardPlacesResultsToFeatureCollection(ctx, results)
 
 			if err != nil {
 				http.Error(rsp, err.Error(), http.StatusInternalServerError)
