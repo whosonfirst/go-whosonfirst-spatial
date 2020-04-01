@@ -1,5 +1,7 @@
 # go-whosonfirst-spatial
 
+![](docs/images/wof-spatial-sfo.png)
+
 ## IMPORTANT
 
 DO NOT TRY TO USE THIS YET. It is work in progress.
