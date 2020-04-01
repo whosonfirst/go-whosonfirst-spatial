@@ -132,7 +132,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		return err
 	}
 
-	err = r.setFeatureCache(ctx, f)
+	err = r.setSPRCacheItem(ctx, f)
 
 	if err != nil {
 		return err
@@ -389,7 +389,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c
 			seen[str_id] = true
 			mu.Unlock()
 
-			fc, err := r.retrieveFeatureCache(ctx, str_id)
+			fc, err := r.retrieveSPRCacheItem(ctx, str_id)
 
 			if err != nil {
 				r.Logger.Error("Failed to retrieve feature cache for %s, %v", str_id, err)
@@ -439,7 +439,7 @@ func (db *RTreeSpatialDatabase) StandardPlacesResultsToFeatureCollection(ctx con
 			// pass
 		}
 
-		fc, err := db.retrieveFeatureCache(ctx, r.Id())
+		fc, err := db.retrieveSPRCacheItem(ctx, r.Id())
 
 		if err != nil {
 			return nil, err
@@ -470,9 +470,9 @@ func (db *RTreeSpatialDatabase) StandardPlacesResultsToFeatureCollection(ctx con
 	return &collection, nil
 }
 
-func (r *RTreeSpatialDatabase) setFeatureCache(ctx context.Context, f wof_geojson.Feature) error {
+func (r *RTreeSpatialDatabase) setSPRCacheItem(ctx context.Context, f wof_geojson.Feature) error {
 
-	fc, err := cache.NewFeatureCache(f)
+	fc, err := cache.NewSPRCacheItem(f)
 
 	if err != nil {
 		return err
@@ -482,7 +482,7 @@ func (r *RTreeSpatialDatabase) setFeatureCache(ctx context.Context, f wof_geojso
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id string) (*cache.FeatureCache, error) {
+func (r *RTreeSpatialDatabase) retrieveSPRCacheItem(ctx context.Context, str_id string) (*cache.SPRCacheItem, error) {
 
 	fc, ok := r.gocache.Get(str_id)
 
@@ -490,5 +490,5 @@ func (r *RTreeSpatialDatabase) retrieveFeatureCache(ctx context.Context, str_id 
 		return nil, errors.New("Invalid cache ID")
 	}
 
-	return fc.(*cache.FeatureCache), nil
+	return fc.(*cache.SPRCacheItem), nil
 }

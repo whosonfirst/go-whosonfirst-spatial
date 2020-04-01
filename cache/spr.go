@@ -12,7 +12,7 @@ import (
 // go-whosonfirst-geojson-v2/geometry/polygon.go function called
 // PolygonsForFeature for details (20170921/thisisaaronland)
 
-type FeatureCache struct {
+type SPRCacheItem struct {
 	CacheItem       `json:",omitempty"`
 	FeatureSPR      spr.StandardPlacesResult `json:"spr"`
 	FeaturePolygons []wof_geojson.Polygon    `json:"polygons"`
@@ -20,7 +20,7 @@ type FeatureCache struct {
 	// FeaturePolygons []geometry.Polygon    `json:"polygons"`
 }
 
-func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
+func NewSPRCacheItem(f wof_geojson.Feature) (CacheItem, error) {
 
 	s, err := f.SPR()
 
@@ -34,7 +34,7 @@ func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
 		return nil, err
 	}
 
-	fc := FeatureCache{
+	fc := SPRCacheItem{
 		// FeatureSPR:      s.(*feature.WOFStandardPlacesResult),
 		FeatureSPR:      s,
 		FeaturePolygons: polys,
@@ -43,11 +43,11 @@ func NewFeatureCache(f wof_geojson.Feature) (CacheItem, error) {
 	return &fc, nil
 }
 
-func (fc *FeatureCache) SPR() spr.StandardPlacesResult {
+func (fc *SPRCacheItem) SPR() spr.StandardPlacesResult {
 	return fc.FeatureSPR
 }
 
-func (fc *FeatureCache) Geometry() geojson.GeoJSONGeometry {
+func (fc *SPRCacheItem) Geometry() geojson.GeoJSONGeometry {
 
 	multi_poly := make([]geojson.GeoJSONPolygon, 0)
 
@@ -91,7 +91,7 @@ func (fc *FeatureCache) Geometry() geojson.GeoJSONGeometry {
 	return geom
 }
 
-func (fc *FeatureCache) Polygons() []wof_geojson.Polygon {
+func (fc *SPRCacheItem) Polygons() []wof_geojson.Polygon {
 
 	return fc.FeaturePolygons
 }
