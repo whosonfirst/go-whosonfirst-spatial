@@ -57,7 +57,7 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	_, err = StringVar(fs, "spatial-database")
+	_, err = StringVar(fs, "spatial-database-uri")
 
 	if err != nil {
 		return err
@@ -71,14 +71,14 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 
 	if enable_extras {
 
-		extras_uri, err := StringVar(fs, "extras-database")
+		extras_reader_uri, err := StringVar(fs, "extras-reader-uri")
 
 		if err != nil {
 			return err
 		}
 
-		if extras_uri == "" {
-			return errors.New("Invalid or missing -extras-database flag")
+		if extras_reader_uri == "" {
+			return errors.New("Invalid or missing -extras-reader-uri flag")
 		}
 	}
 
@@ -165,9 +165,9 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs := NewFlagSet("common")
 
-	fs.String("spatial-database", "rtree://", "Valid options are: rtree://")
+	fs.String("spatial-database-uri", "rtree://", "Valid options are: rtree://")
 
-	fs.String("extras-database", "", "...")
+	fs.String("extras-reader-uri", "", "...")
 
 	modes := index.Modes()
 	modes = append(modes, "spatialite")

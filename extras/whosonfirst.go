@@ -10,7 +10,6 @@ import (
 	"github.com/whosonfirst/go-reader-cachereader"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	_ "log"
@@ -19,7 +18,7 @@ import (
 
 func init() {
 	ctx := context.Background()
-	database.RegisterExtrasDatabase(ctx, "reader", NewReaderExtrasDatabase)
+	RegisterExtrasReader(ctx, "whosonfirst", NewWhosonfirstExtrasReader)
 }
 
 type ExtrasResponse struct {
@@ -27,12 +26,12 @@ type ExtrasResponse struct {
 	Feature geojson.GeoJSONFeature
 }
 
-type ReaderExtrasDatabase struct {
-	database.ExtrasDatabase
+type WhosonfirstExtrasReader struct {
+	ExtrasReader
 	reader reader.Reader
 }
 
-func NewReaderExtrasDatabase(ctx context.Context, uri string) (database.ExtrasDatabase, error) {
+func NewWhosonfirstExtrasReader(ctx context.Context, uri string) (ExtrasReader, error) {
 
 	u, err := url.Parse(uri)
 
@@ -72,22 +71,22 @@ func NewReaderExtrasDatabase(ctx context.Context, uri string) (database.ExtrasDa
 		return nil, err
 	}
 
-	db := &ReaderExtrasDatabase{
+	db := &WhosonfirstExtrasReader{
 		reader: cr,
 	}
 
 	return db, nil
 }
 
-func (db *ReaderExtrasDatabase) Close(ctx context.Context) error {
+func (db *WhosonfirstExtrasReader) Close(ctx context.Context) error {
 	return nil
 }
 
-func (db *ReaderExtrasDatabase) IndexFeature(context.Context, wof_geojson.Feature) error {
+func (db *WhosonfirstExtrasReader) IndexFeature(context.Context, wof_geojson.Feature) error {
 	return nil
 }
 
-func (db *ReaderExtrasDatabase) AppendExtras(ctx context.Context, i interface{}, extras []string) error {
+func (db *WhosonfirstExtrasReader) AppendExtras(ctx context.Context, i interface{}, extras []string) error {
 
 	switch i.(type) {
 	case *geojson.GeoJSONFeatureCollection:
@@ -100,12 +99,12 @@ func (db *ReaderExtrasDatabase) AppendExtras(ctx context.Context, i interface{},
 
 }
 
-func (db *ReaderExtrasDatabase) AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error {
+func (db *WhosonfirstExtrasReader) AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error {
 
 	return errors.New("Not implemented")
 }
 
-func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
+func (db *WhosonfirstExtrasReader) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -138,7 +137,7 @@ func (db *ReaderExtrasDatabase) AppendExtrasWithFeatureCollection(ctx context.Co
 	return nil
 }
 
-func (db *ReaderExtrasDatabase) appendExtrasWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {
+func (db *WhosonfirstExtrasReader) appendExtrasWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {
 
 	defer func() {
 		done_ch <- true

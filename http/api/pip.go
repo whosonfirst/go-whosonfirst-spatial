@@ -19,7 +19,7 @@ type PointInPolygonHandlerOptions struct {
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
 
 	spatial_db := spatial_app.SpatialDatabase
-	extras_db := spatial_app.ExtrasDatabase
+	extras_r := spatial_app.ExtrasReader
 	walker := spatial_app.Walker
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
@@ -117,7 +117,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 			final = collection
 
-			if extras_db != nil {
+			if extras_r != nil {
 
 				var extras_paths []string
 
@@ -139,7 +139,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 					// TO DO: MAKE ME WORK WITH SPR...
 
 					feature_collection := final.(*geojson.GeoJSONFeatureCollection)
-					err = extras_db.AppendExtras(ctx, feature_collection, extras_paths)
+					err = extras_r.AppendExtras(ctx, feature_collection, extras_paths)
 
 					if err != nil {
 						http.Error(rsp, err.Error(), http.StatusInternalServerError)

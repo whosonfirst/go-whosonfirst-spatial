@@ -1,4 +1,4 @@
-package database
+package extras
 
 import (
 	"context"
@@ -6,11 +6,10 @@ import (
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	_ "log"
 	"net/url"
 )
 
-type ExtrasDatabase interface {
+type ExtrasReader interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	AppendExtras(context.Context, interface{}, []string) error
 	AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error
@@ -18,13 +17,13 @@ type ExtrasDatabase interface {
 	Close(context.Context) error
 }
 
-type ExtrasDatabaseInitializeFunc func(ctx context.Context, uri string) (ExtrasDatabase, error)
+type ExtrasReaderInitializeFunc func(ctx context.Context, uri string) (ExtrasReader, error)
 
-var extras_databases roster.Roster
+var extras_readers roster.Roster
 
 func ensureExtrasRoster() error {
 
-	if extras_databases == nil {
+	if extras_readers == nil {
 
 		r, err := roster.NewDefaultRoster()
 
@@ -32,13 +31,13 @@ func ensureExtrasRoster() error {
 			return err
 		}
 
-		extras_databases = r
+		extras_readers = r
 	}
 
 	return nil
 }
 
-func RegisterExtrasDatabase(ctx context.Context, scheme string, f ExtrasDatabaseInitializeFunc) error {
+func RegisterExtrasReader(ctx context.Context, scheme string, f ExtrasReaderInitializeFunc) error {
 
 	err := ensureExtrasRoster()
 
@@ -46,10 +45,10 @@ func RegisterExtrasDatabase(ctx context.Context, scheme string, f ExtrasDatabase
 		return err
 	}
 
-	return extras_databases.Register(ctx, scheme, f)
+	return extras_readers.Register(ctx, scheme, f)
 }
 
-func NewExtrasDatabase(ctx context.Context, uri string) (ExtrasDatabase, error) {
+func NewExtrasReader(ctx context.Context, uri string) (ExtrasReader, error) {
 
 	u, err := url.Parse(uri)
 
@@ -59,12 +58,12 @@ func NewExtrasDatabase(ctx context.Context, uri string) (ExtrasDatabase, error) 
 
 	scheme := u.Scheme
 
-	i, err := extras_databases.Driver(ctx, scheme)
+	i, err := extras_readers.Driver(ctx, scheme)
 
 	if err != nil {
 		return nil, err
 	}
 
-	f := i.(ExtrasDatabaseInitializeFunc)
+	f := i.(ExtrasReaderInitializeFunc)
 	return f(ctx, uri)
 }

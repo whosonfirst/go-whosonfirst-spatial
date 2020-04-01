@@ -15,6 +15,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/extras"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"github.com/whosonfirst/warning"
@@ -24,7 +25,7 @@ import (
 	"sync"
 )
 
-func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_db database.ExtrasDatabase) (*index.Indexer, error) {
+func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_r extras.ExtrasReader) (*index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
@@ -35,7 +36,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 	index_extras := false
 
-	if extras_db != nil {
+	if extras_r != nil {
 
 		if mode != "spatialite" {
 			index_extras = true
@@ -216,7 +217,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 				mu.Lock()
 
-				err = extras_db.IndexFeature(ctx, f)
+				err = extras_r.IndexFeature(ctx, f)
 
 				mu.Unlock()
 
