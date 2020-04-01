@@ -9,11 +9,14 @@ import (
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-reader-cachereader"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	_ "log"
+	"log"
 	"net/url"
+	"reflect"
+	"strconv"
 )
 
 func init() {
@@ -99,9 +102,63 @@ func (db *WhosonfirstExtrasReader) AppendExtras(ctx context.Context, i interface
 
 }
 
-func (db *WhosonfirstExtrasReader) AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error {
+func (db *WhosonfirstExtrasReader) AppendExtrasWithStandardPlacesResults(ctx context.Context, results spr.StandardPlacesResults, extras []string) error {
 
-	return errors.New("Not implemented")
+	log.Println(reflect.TypeOf(results))
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	previous_results := results.Results()
+	new_results := make([]spr.StandardPlacesResult, len(previous_results))
+
+	for idx, r := range previous_results {
+
+		log.Println(reflect.TypeOf(r))
+
+		target, err := json.Marshal(r)
+
+		if err != nil {
+			return err
+		}
+
+		str_id := r.Id()
+		id, err := strconv.ParseInt(str_id, 10, 64)
+
+		if err != nil {
+			return err
+		}
+
+		source, err := wof_reader.LoadBytesFromID(ctx, db.reader, id)
+
+		if err != nil {
+			return err
+		}
+
+		target, err = AppendExtrasWithBytes(ctx, source, target, extras)
+
+		if err != nil {
+			return err
+		}
+
+		log.Println(string(target))
+		t := reflect.TypeOf(r)
+		v := reflect.New(t.Elem())
+
+		err = json.Unmarshal(target, v.Interface())
+
+		if err != nil {
+			return err
+		}
+
+		log.Println(idx, t, reflect.TypeOf(v))
+		new_results[idx] = v.Interface().(*feature.WOFStandardPlacesResult)
+	}
+
+	log.Println(len(new_results))
+	results = NewExtrasSPRResults(new_results)
+
+	return nil
 }
 
 func (db *WhosonfirstExtrasReader) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
