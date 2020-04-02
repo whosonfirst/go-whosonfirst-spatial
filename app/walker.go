@@ -29,19 +29,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
-
-	// something something something, just keep going if indexing
-	// a given record fails (20190919/thisisaaronland)
-	// strict, _ := flags.BoolVar(fl, "strict")
-
-	index_properties := false
-
-	if properties_r != nil {
-
-		if mode != "spatialite" {
-			index_properties = true
-		}
-	}
+	index_properties, _ := flags.BoolVar(fl, "is-properties")
 
 	include_deprecated := true
 	include_superseded := true
@@ -200,12 +188,6 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 			msg := fmt.Sprintf("Failed to index %s (%s), %s", f.Id(), f.Name(), err)
 			return errors.New(msg)
 		}
-
-		// see also: http/intersects.go (20171217/thisisaaronland)
-
-		// notice the way errors indexing things in SQLite do not trigger
-		// an error signal - maybe we want to do that? maybe not...?
-		// (20171218/thisisaaronland)
 
 		if index_properties {
 

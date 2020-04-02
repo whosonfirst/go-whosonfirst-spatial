@@ -21,7 +21,7 @@ func Latitude(req *http.Request) (float64, error) {
 	if str_lat == "" {
 		return 0, errors.New("Missing 'latitude' parameter")
 	}
- 
+
 	lat, err := strconv.ParseFloat(str_lat, 64)
 
 	if err != nil {
