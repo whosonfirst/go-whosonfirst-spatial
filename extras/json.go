@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	_ "log"
 	"strings"
 )
 
-func AppendExtrasWithBytes(ctx context.Context, source []byte, target []byte, extras []string) ([]byte, error) {
+func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte, extras []string, prefix string) ([]byte, error) {
 
 	var err error
 
@@ -36,13 +37,17 @@ func AppendExtrasWithBytes(ctx context.Context, source []byte, target []byte, ex
 		for _, p := range paths {
 
 			get_path := fmt.Sprintf("properties.%s", p)
-			set_path := fmt.Sprintf("properties.%s", p) // FIX ME
+			set_path := p
+
+			if prefix != "" {
+				set_path = fmt.Sprintf("%s.%s", prefix, p)
+			}
 
 			v := gjson.GetBytes(source, get_path)
 
 			/*
-				log.Println("GET", id, get_path)
-				log.Println("SET", id, set_path)
+				log.Println("GET", get_path)
+				log.Println("SET", set_path)
 				log.Println("VALUE", v.Value())
 			*/
 

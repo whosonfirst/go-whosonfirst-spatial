@@ -9,11 +9,16 @@ import (
 	"net/url"
 )
 
+type Properties map[string]interface{}
+
+type PropertiesResponse struct {
+	Properties []*Properties `json:"properties"`
+}
+
 type ExtrasReader interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
-	AppendExtras(context.Context, interface{}, []string) error
-	AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error
-	AppendExtrasWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) error
+	PropertiesResponseWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*PropertiesResponse, error)
+	AppendPropertiesWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) error
 	Close(context.Context) error
 }
 

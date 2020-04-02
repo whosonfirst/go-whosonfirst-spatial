@@ -6,6 +6,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http/api/output"
+	"github.com/whosonfirst/go-whosonfirst-spr"
+	_ "log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -105,7 +107,23 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		var final interface{}
 		final = results
 
-		if str_format == "geojson" {
+		var extras_paths []string
+
+		str_extras, err := sanitize.GetString(req, "extras")
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		str_extras = strings.Trim(str_extras, " ")
+
+		if str_extras != "" {
+			extras_paths = strings.Split(str_extras, ",")
+		}
+
+		switch str_format {
+		case "geojson":
 
 			collection, err := spatial_db.StandardPlacesResultsToFeatureCollection(ctx, results)
 
@@ -114,35 +132,35 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 				return
 			}
 
-			final = collection
-		}
-
-		if extras_r != nil {
-
-			var extras_paths []string
-
-			str_extras, err := sanitize.GetString(req, "extras")
-
-			if err != nil {
-				http.Error(rsp, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			str_extras = strings.Trim(str_extras, " ")
-
-			if str_extras != "" {
-				extras_paths = strings.Split(str_extras, ",")
-			}
-
 			if len(extras_paths) > 0 {
 
-				err = extras_r.AppendExtras(ctx, final, extras_paths)
+				err := extras_r.AppendPropertiesWithFeatureCollection(ctx, collection, extras_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)
 					return
 				}
+
 			}
+
+			final = collection
+
+		case "extras":
+
+			if len(extras_paths) > 0 {
+
+				props, err := extras_r.PropertiesResponseWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), extras_paths)
+
+				if err != nil {
+					http.Error(rsp, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				final = props
+			}
+
+		default:
+			// spr (above)
 		}
 
 		output.AsJSON(rsp, final)

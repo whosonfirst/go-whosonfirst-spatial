@@ -9,13 +9,11 @@ import (
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-reader-cachereader"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	"log"
+	_ "log"
 	"net/url"
-	"reflect"
 	"strconv"
 )
 
@@ -89,79 +87,59 @@ func (db *WhosonfirstExtrasReader) IndexFeature(context.Context, wof_geojson.Fea
 	return nil
 }
 
-func (db *WhosonfirstExtrasReader) AppendExtras(ctx context.Context, i interface{}, extras []string) error {
-
-	switch i.(type) {
-	case *geojson.GeoJSONFeatureCollection:
-		return db.AppendExtrasWithFeatureCollection(ctx, i.(*geojson.GeoJSONFeatureCollection), extras)
-	case spr.StandardPlacesResults:
-		return db.AppendExtrasWithStandardPlacesResults(ctx, i.(spr.StandardPlacesResults), extras)
-	default:
-		return errors.New("Unsupported interface type")
-	}
-
-}
-
-func (db *WhosonfirstExtrasReader) AppendExtrasWithStandardPlacesResults(ctx context.Context, results spr.StandardPlacesResults, extras []string) error {
-
-	log.Println(reflect.TypeOf(results))
+func (db *WhosonfirstExtrasReader) PropertiesResponseWithStandardPlacesResults(ctx context.Context, results spr.StandardPlacesResults, extras []string) (*PropertiesResponse, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	previous_results := results.Results()
-	new_results := make([]spr.StandardPlacesResult, len(previous_results))
+	new_results := make([]*Properties, len(previous_results))
 
 	for idx, r := range previous_results {
-
-		log.Println(reflect.TypeOf(r))
 
 		target, err := json.Marshal(r)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		str_id := r.Id()
 		id, err := strconv.ParseInt(str_id, 10, 64)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		source, err := wof_reader.LoadBytesFromID(ctx, db.reader, id)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		target, err = AppendExtrasWithBytes(ctx, source, target, extras)
+		target, err = AppendPropertiesWithJSON(ctx, source, target, extras, "")
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		log.Println(string(target))
-		t := reflect.TypeOf(r)
-		v := reflect.New(t.Elem())
-
-		err = json.Unmarshal(target, v.Interface())
+		var props *Properties
+		err = json.Unmarshal(target, &props)
 
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		log.Println(idx, t, reflect.TypeOf(v))
-		new_results[idx] = v.Interface().(*feature.WOFStandardPlacesResult)
+		new_results[idx] = props
 	}
 
-	log.Println(len(new_results))
-	results = NewExtrasSPRResults(new_results)
+	props_rsp := &PropertiesResponse{
+		Properties: new_results,
+	}
 
-	return nil
+	return props_rsp, nil
 }
 
-func (db *WhosonfirstExtrasReader) AppendExtrasWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
+func (db *WhosonfirstExtrasReader) AppendPropertiesWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -173,7 +151,7 @@ func (db *WhosonfirstExtrasReader) AppendExtrasWithFeatureCollection(ctx context
 	remaining := len(fc.Features)
 
 	for idx, f := range fc.Features {
-		go db.appendExtrasWithChannels(ctx, idx, f, extras, rsp_ch, err_ch, done_ch)
+		go db.appendPropertiesWithChannels(ctx, idx, f, extras, rsp_ch, err_ch, done_ch)
 	}
 
 	for remaining > 0 {
@@ -194,7 +172,7 @@ func (db *WhosonfirstExtrasReader) AppendExtrasWithFeatureCollection(ctx context
 	return nil
 }
 
-func (db *WhosonfirstExtrasReader) appendExtrasWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {
+func (db *WhosonfirstExtrasReader) appendPropertiesWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {
 
 	defer func() {
 		done_ch <- true
@@ -230,7 +208,7 @@ func (db *WhosonfirstExtrasReader) appendExtrasWithChannels(ctx context.Context,
 		return
 	}
 
-	target, err = AppendExtrasWithBytes(ctx, source, target, extras)
+	target, err = AppendPropertiesWithJSON(ctx, source, target, extras, "properties")
 
 	if err != nil {
 		err_ch <- err
