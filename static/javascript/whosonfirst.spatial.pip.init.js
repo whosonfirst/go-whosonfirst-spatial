@@ -3,7 +3,7 @@ window.addEventListener("load", function load(event){
     var api_key = document.body.getAttribute("data-nextzen-api-key");
     var style_url = document.body.getAttribute("data-nextzen-style-url");
     var tile_url = document.body.getAttribute("data-nextzen-tile-url");    
-    
+
     if (! api_key){
 	console.log("Missing API key");
 	return;
@@ -16,6 +16,34 @@ window.addEventListener("load", function load(event){
     
     if (! tile_url){
 	console.log("Missing tile URL");
+	return;
+    }
+
+    var pip_wrapper = document.getElementById("point-in-polygon");
+
+    if (! pip_wrapper){
+	console.log("Missing 'point-in-polygon' element.");
+	return;
+    }
+    
+    var init_lat = pip_wrapper.getAttribute("data-initial-latitude");
+
+    if (! init_lat){
+	console.log("Missing initial latitude");
+	return;
+    }
+    
+    var init_lon = pip_wrapper.getAttribute("data-initial-longitude");
+
+    if (! init_lon){
+	console.log("Missing initial longitude");
+	return;
+    }
+    
+    var init_zoom = pip_wrapper.getAttribute("data-initial-zoom");    
+
+    if (! init_zoom){
+	console.log("Missing initial zoom");
 	return;
     }
     
@@ -42,6 +70,8 @@ window.addEventListener("load", function load(event){
 	return;
     }
 
+    var hash = new L.Hash(map);
+    
     var layers = L.layerGroup();
     layers.addTo(map);
 
@@ -104,7 +134,8 @@ window.addEventListener("load", function load(event){
 	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
     });
     
-    map.setView([37.604, -122.405], 13);
+    // map.setView([37.604, -122.405], 13);
+    map.setView([init_lat, init_lon], init_zoom);    
 
     slippymap.crosshairs.init(map);    
 });

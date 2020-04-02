@@ -23,6 +23,8 @@ whosonfirst.spatial.api = (function(){
 	},
 	
 	'get': function(rel_url, on_success, on_error) {
+
+	    var abs_url = self.abs_url(rel_url);
 	    
 	    var req = new XMLHttpRequest();
 	    
@@ -35,15 +37,13 @@ whosonfirst.spatial.api = (function(){
             	}
 		
 		catch (e){
-		    console.log("ERR", url, e);
+		    console.log("ERR", abs_url, e);
 		    on_error(e);
 		    return false;
 		}
 		
 		on_success(rsp);
        	    };
-
-	    var abs_url = self.abs_url(rel_url);
 	    
 	    req.open("get", abs_url, true);
 	    req.send();	    

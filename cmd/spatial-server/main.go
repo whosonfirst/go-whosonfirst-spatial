@@ -57,6 +57,10 @@ func main() {
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
 	nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
 
+	initial_lat, _ := flags.Float64Var(fs, "initial-latitude")
+	initial_lon, _ := flags.Float64Var(fs, "initial-longitude")
+	initial_zoom, _ := flags.IntVar(fs, "initial-zoom")
+
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
@@ -190,7 +194,10 @@ func main() {
 		}
 
 		www_pip_opts := &www.PointInPolygonHandlerOptions{
-			Templates: t,
+			Templates:        t,
+			InitialLatitude:  initial_lat,
+			InitialLongitude: initial_lon,
+			InitialZoom:      initial_zoom,
 		}
 
 		www_pip_handler, err := www.PointInPolygonHandler(spatial_app, www_pip_opts)

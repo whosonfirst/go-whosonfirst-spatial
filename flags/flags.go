@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"log"
 	"os"
 	"sort"
@@ -94,23 +95,53 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	}
 
 	if enable_www {
+		return nil
+	}
 
-		log.Println("-enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates -enable-properties")
+	log.Println("-enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates -enable-properties")
 
-		fs.Set("enable-geojson", "true")
-		fs.Set("enable-properties", "true")
-		fs.Set("enable-candidates", "true")
+	fs.Set("enable-geojson", "true")
+	fs.Set("enable-properties", "true")
+	fs.Set("enable-candidates", "true")
 
-		properties_reader_uri, err := StringVar(fs, "properties-reader-uri")
+	properties_reader_uri, err := StringVar(fs, "properties-reader-uri")
 
-		if err != nil {
-			return err
-		}
+	if err != nil {
+		return err
+	}
 
-		if properties_reader_uri == "" {
-			return errors.New("Invalid or missing -properties-reader-uri flag")
-		}
+	if properties_reader_uri == "" {
+		return errors.New("Invalid or missing -properties-reader-uri flag")
+	}
 
+	init_lat, err := Float64Var(fs, "initial-latitude")
+
+	if err != nil {
+		return err
+	}
+
+	if !geo.IsValidLatitude(init_lat) {
+		return errors.New("Invalid latitude")
+	}
+
+	init_lon, err := Float64Var(fs, "initial-longitude")
+
+	if err != nil {
+		return err
+	}
+
+	if !geo.IsValidLongitude(init_lon) {
+		return errors.New("Invalid longitude")
+	}
+
+	init_zoom, err := IntVar(fs, "initial-zoom")
+
+	if err != nil {
+		return err
+	}
+
+	if init_zoom < 1 {
+		return errors.New("Invalid zoom")
 	}
 
 	return nil
@@ -149,6 +180,17 @@ func IntVar(fl *flag.FlagSet, k string) (int, error) {
 	}
 
 	return i.(int), nil
+}
+
+func Float64Var(fl *flag.FlagSet, k string) (float64, error) {
+
+	i, err := Lookup(fl, k)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return i.(float64), nil
 }
 
 func BoolVar(fl *flag.FlagSet, k string) (bool, error) {
@@ -230,6 +272,10 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String("nextzen-tile-url", tangramjs.NEXTZEN_MVT_ENDPOINT, "...")
 
 	fs.String("templates", "", "An optional string for local templates. This is anything that can be read by the 'templates.ParseGlob' method.")
+
+	fs.Float64("initial-latitude", 37.604, "...")
+	fs.Float64("initial-longitude", -122.405, "...")
+	fs.Int("initial-zoom", 13, "...")
 
 	return nil
 }

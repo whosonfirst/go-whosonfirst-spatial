@@ -9,7 +9,16 @@ import (
 )
 
 type PointInPolygonHandlerOptions struct {
-	Templates *template.Template
+	Templates        *template.Template
+	InitialLatitude  float64
+	InitialLongitude float64
+	InitialZoom      int
+}
+
+type PointInPolygonHandlerTemplateVars struct {
+	InitialLatitude  float64
+	InitialLongitude float64
+	InitialZoom      int
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
@@ -33,7 +42,13 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 		rsp.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		err := t.Execute(rsp, nil)
+		vars := PointInPolygonHandlerTemplateVars{
+			InitialLatitude:  opts.InitialLatitude,
+			InitialLongitude: opts.InitialLongitude,
+			InitialZoom:      opts.InitialZoom,
+		}
+
+		err := t.Execute(rsp, vars)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
