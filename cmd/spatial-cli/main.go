@@ -116,7 +116,7 @@ func main() {
 
 			if command == "pip" {
 
-				intersects, err := spatial_db.PointInPolygon(ctx, c, f)
+				intersects, err := spatial_db.PointInPolygon(ctx, &c, f)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get intersects, because %s", err)
@@ -127,7 +127,7 @@ func main() {
 
 			} else {
 
-				candidates, err := spatial_db.PointInPolygonCandidates(ctx, c)
+				candidates, err := spatial_db.PointInPolygonCandidates(ctx, &c)
 
 				if err != nil {
 					pip.Logger.Warning("Unable to get candidates, because %s", err)

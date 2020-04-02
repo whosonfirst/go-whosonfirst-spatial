@@ -174,7 +174,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.Coord, filters filter.Filter) (spr.StandardPlacesResults, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -214,7 +214,7 @@ func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord geom.Co
 	return spr_results, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, coord geom.Coord, filters filter.Filter, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool) {
+func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, coord *geom.Coord, filters filter.Filter, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool) {
 
 	defer func() {
 		done_ch <- true
@@ -231,7 +231,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, c
 	return
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord) (*geojson.GeoJSONFeatureCollection, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -272,7 +272,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coo
 	return fc, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, coord geom.Coord, rsp_ch chan geojson.GeoJSONFeature, err_ch chan error, done_ch chan bool) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, coord *geom.Coord, rsp_ch chan geojson.GeoJSONFeature, err_ch chan error, done_ch chan bool) {
 
 	defer func() {
 		done_ch <- true
@@ -328,7 +328,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.
 	return
 }
 
-func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord geom.Coord) ([]rtreego.Spatial, error) {
+func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *geom.Coord) ([]rtreego.Spatial, error) {
 
 	lat := coord.Y
 	lon := coord.X
@@ -352,7 +352,7 @@ func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreeg
 	return results, nil
 }
 
-func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c geom.Coord, f filter.Filter, possible []rtreego.Spatial, rsp_ch chan spr.StandardPlacesResult, err_ch chan error) {
+func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c *geom.Coord, f filter.Filter, possible []rtreego.Spatial, rsp_ch chan spr.StandardPlacesResult, err_ch chan error) {
 
 	seen := make(map[string]bool)
 
@@ -407,7 +407,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, c
 
 			p := fc.Polygons()
 
-			contains, err := geometry.PolygonsContainsCoord(p, c)
+			contains, err := geometry.PolygonsContainsCoord(p, *c)
 
 			if err != nil {
 				r.Logger.Error("failed to calculate intersection for %s, because %s", str_id, err)

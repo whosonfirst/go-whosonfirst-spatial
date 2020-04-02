@@ -2,15 +2,13 @@ package api
 
 import (
 	"github.com/aaronland/go-http-sanitize"
-	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/http/api/output"
+	"github.com/whosonfirst/go-whosonfirst-spatial/http/api/parameters"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	_ "log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type PointInPolygonHandlerOptions struct {
@@ -34,14 +32,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		ctx := req.Context()
 		query := req.URL.Query()
 
-		str_lat, err := sanitize.GetString(req, "latitude")
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		str_lon, err := sanitize.GetString(req, "longitude")
+		coord, err := parameters.Coordinate(req)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
@@ -60,31 +51,12 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			return
 		}
 
-		if str_lat == "" {
-			http.Error(rsp, "Missing 'latitude' parameter", http.StatusBadRequest)
+		if str_format == "properties" && !opts.EnableProperties {
+			http.Error(rsp, "Invalid format", http.StatusBadRequest)
 			return
 		}
 
-		if str_lon == "" {
-			http.Error(rsp, "Missing 'longitude' parameter", http.StatusBadRequest)
-			return
-		}
-
-		lat, err := strconv.ParseFloat(str_lat, 64)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		lon, err := strconv.ParseFloat(str_lon, 64)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
+		properties_paths, err := parameters.Properties(req)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
@@ -108,21 +80,6 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		var final interface{}
 		final = results
 
-		var properties_paths []string
-
-		str_properties, err := sanitize.GetString(req, "properties")
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		str_properties = strings.Trim(str_properties, " ")
-
-		if str_properties != "" {
-			properties_paths = strings.Split(str_properties, ",")
-		}
-
 		switch str_format {
 		case "geojson":
 
@@ -133,32 +90,25 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 				return
 			}
 
-			if len(properties_paths) > 0 {
+			err = properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
 
-				err := properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
-
-				if err != nil {
-					http.Error(rsp, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
+			if err != nil {
+				http.Error(rsp, err.Error(), http.StatusInternalServerError)
+				return
 			}
 
 			final = collection
 
 		case "properties":
 
-			if len(properties_paths) > 0 {
+			props, err := properties_r.PropertiesResponseResultsWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
 
-				props, err := properties_r.PropertiesResponseResultsWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
-
-				if err != nil {
-					http.Error(rsp, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				final = props
+			if err != nil {
+				http.Error(rsp, err.Error(), http.StatusInternalServerError)
+				return
 			}
+
+			final = props
 
 		default:
 			// spr (above)
@@ -185,45 +135,7 @@ func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (http.
 
 		ctx := req.Context()
 
-		str_lat, err := sanitize.GetString(req, "latitude")
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		str_lon, err := sanitize.GetString(req, "longitude")
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		if str_lat == "" {
-			http.Error(rsp, "Missing 'latitude' parameter", http.StatusBadRequest)
-			return
-		}
-
-		if str_lon == "" {
-			http.Error(rsp, "Missing 'longitude' parameter", http.StatusBadRequest)
-			return
-		}
-
-		lat, err := strconv.ParseFloat(str_lat, 64)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		lon, err := strconv.ParseFloat(str_lon, 64)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
+		coord, err := parameters.Coordinate(req)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)

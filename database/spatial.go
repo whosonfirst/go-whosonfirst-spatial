@@ -13,10 +13,10 @@ import (
 
 type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
-	PointInPolygon(context.Context, geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
-	PointInPolygonCandidates(context.Context, geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
-	PointInPolygonWithChannels(context.Context, geom.Coord, filter.Filter, chan spr.StandardPlacesResult, chan error, chan bool)
-	PointInPolygonCandidatesWithChannels(context.Context, geom.Coord, chan geojson.GeoJSONFeature, chan error, chan bool)
+	PointInPolygon(context.Context, *geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
+	PointInPolygonCandidates(context.Context, *geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
+	PointInPolygonWithChannels(context.Context, *geom.Coord, filter.Filter, chan spr.StandardPlacesResult, chan error, chan bool)
+	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan geojson.GeoJSONFeature, chan error, chan bool)
 	StandardPlacesResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error)
 	Close(context.Context) error
 }
