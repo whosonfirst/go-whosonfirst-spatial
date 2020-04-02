@@ -7,8 +7,8 @@ import (
 import (
 	"context"
 	"flag"
-	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 )
 
 func NewPropertiesReaderWithFlagSet(ctx context.Context, fl *flag.FlagSet) (properties.PropertiesReader, error) {

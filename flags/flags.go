@@ -95,10 +95,22 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 	if enable_www {
 
-		log.Println("-enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates")
+		log.Println("-enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates -enable-properties")
 
 		fs.Set("enable-geojson", "true")
+		fs.Set("enable-properties", "true")
 		fs.Set("enable-candidates", "true")
+
+		properties_reader_uri, err := StringVar(fs, "properties-reader-uri")
+
+		if err != nil {
+			return err
+		}
+
+		if properties_reader_uri == "" {
+			return errors.New("Invalid or missing -properties-reader-uri flag")
+		}
+
 	}
 
 	return nil

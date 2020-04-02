@@ -48,7 +48,7 @@ func main() {
 	}
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
-	enable_properties, _ := flags.BoolVar(fs, "enable-properties")	
+	enable_properties, _ := flags.BoolVar(fs, "enable-properties")
 	enable_www, _ := flags.BoolVar(fs, "enable-www")
 	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
 
@@ -99,8 +99,8 @@ func main() {
 	}
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
-		EnableGeoJSON: enable_geojson,
-		EnableProperties: enable_properties,		
+		EnableGeoJSON:    enable_geojson,
+		EnableProperties: enable_properties,
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)

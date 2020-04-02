@@ -14,7 +14,7 @@ import (
 )
 
 type PointInPolygonHandlerOptions struct {
-	EnableGeoJSON bool
+	EnableGeoJSON    bool
 	EnableProperties bool
 }
 
@@ -150,7 +150,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 			if len(properties_paths) > 0 {
 
-				props, err := properties_r.PropertiesResponseWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
+				props, err := properties_r.PropertiesResponseResultsWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)

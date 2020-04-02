@@ -93,7 +93,7 @@ func (db *WhosonfirstPropertiesReader) PropertiesResponseResultsWithStandardPlac
 	defer cancel()
 
 	previous_results := results.Results()
-	new_results := make([]*Properties, len(previous_results))
+	new_results := make([]*PropertiesResponse, len(previous_results))
 
 	for idx, r := range previous_results {
 
@@ -122,7 +122,7 @@ func (db *WhosonfirstPropertiesReader) PropertiesResponseResultsWithStandardPlac
 			return nil, err
 		}
 
-		var props *Properties
+		var props *PropertiesResponse
 		err = json.Unmarshal(target, &props)
 
 		if err != nil {
@@ -132,7 +132,7 @@ func (db *WhosonfirstPropertiesReader) PropertiesResponseResultsWithStandardPlac
 		new_results[idx] = props
 	}
 
-	props_rsp := &PropertiesResponse{
+	props_rsp := &PropertiesResponseResults{
 		Properties: new_results,
 	}
 
@@ -223,7 +223,7 @@ func (db *WhosonfirstPropertiesReader) appendPropertiesWithChannels(ctx context.
 		return
 	}
 
-	rsp := PropertiesResponse{
+	rsp := ChannelResponse{
 		Index:   idx,
 		Feature: new_f,
 	}

@@ -7,17 +7,16 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
-	golog "log"
 	"runtime/debug"
 	"time"
 )
 
 type SpatialApplication struct {
-	mode            string
-	SpatialDatabase database.SpatialDatabase
-	PropertiesReader    properties.PropertiesReader
-	Walker          *index.Indexer
-	Logger          *log.WOFLogger
+	mode             string
+	SpatialDatabase  database.SpatialDatabase
+	PropertiesReader properties.PropertiesReader
+	Walker           *index.Indexer
+	Logger           *log.WOFLogger
 }
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
@@ -47,10 +46,10 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 	}
 
 	sp := SpatialApplication{
-		SpatialDatabase: spatial_db,
-		PropertiesReader:    properties_r,
-		Walker:          walker,
-		Logger:          logger,
+		SpatialDatabase:  spatial_db,
+		PropertiesReader: properties_r,
+		Walker:           walker,
+		Logger:           logger,
 	}
 
 	return &sp, nil
