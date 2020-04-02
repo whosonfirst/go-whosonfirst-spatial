@@ -1,4 +1,4 @@
-package extras
+package properties
 
 import (
 	"context"
@@ -19,20 +19,20 @@ import (
 
 func init() {
 	ctx := context.Background()
-	RegisterExtrasReader(ctx, "whosonfirst", NewWhosonfirstExtrasReader)
+	RegisterPropertiesReader(ctx, "whosonfirst", NewWhosonfirstPropertiesReader)
 }
 
-type ExtrasResponse struct {
+type ChannelResponse struct {
 	Index   int
 	Feature geojson.GeoJSONFeature
 }
 
-type WhosonfirstExtrasReader struct {
-	ExtrasReader
+type WhosonfirstPropertiesReader struct {
+	PropertiesReader
 	reader reader.Reader
 }
 
-func NewWhosonfirstExtrasReader(ctx context.Context, uri string) (ExtrasReader, error) {
+func NewWhosonfirstPropertiesReader(ctx context.Context, uri string) (PropertiesReader, error) {
 
 	u, err := url.Parse(uri)
 
@@ -72,22 +72,22 @@ func NewWhosonfirstExtrasReader(ctx context.Context, uri string) (ExtrasReader, 
 		return nil, err
 	}
 
-	db := &WhosonfirstExtrasReader{
+	db := &WhosonfirstPropertiesReader{
 		reader: cr,
 	}
 
 	return db, nil
 }
 
-func (db *WhosonfirstExtrasReader) Close(ctx context.Context) error {
+func (db *WhosonfirstPropertiesReader) Close(ctx context.Context) error {
 	return nil
 }
 
-func (db *WhosonfirstExtrasReader) IndexFeature(context.Context, wof_geojson.Feature) error {
+func (db *WhosonfirstPropertiesReader) IndexFeature(context.Context, wof_geojson.Feature) error {
 	return nil
 }
 
-func (db *WhosonfirstExtrasReader) PropertiesResponseWithStandardPlacesResults(ctx context.Context, results spr.StandardPlacesResults, extras []string) (*PropertiesResponse, error) {
+func (db *WhosonfirstPropertiesReader) PropertiesResponseResultsWithStandardPlacesResults(ctx context.Context, results spr.StandardPlacesResults, properties []string) (*PropertiesResponseResults, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -116,7 +116,7 @@ func (db *WhosonfirstExtrasReader) PropertiesResponseWithStandardPlacesResults(c
 			return nil, err
 		}
 
-		target, err = AppendPropertiesWithJSON(ctx, source, target, extras, "")
+		target, err = AppendPropertiesWithJSON(ctx, source, target, properties, "")
 
 		if err != nil {
 			return nil, err
@@ -139,19 +139,19 @@ func (db *WhosonfirstExtrasReader) PropertiesResponseWithStandardPlacesResults(c
 	return props_rsp, nil
 }
 
-func (db *WhosonfirstExtrasReader) AppendPropertiesWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, extras []string) error {
+func (db *WhosonfirstPropertiesReader) AppendPropertiesWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, properties []string) error {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	rsp_ch := make(chan ExtrasResponse)
+	rsp_ch := make(chan ChannelResponse)
 	err_ch := make(chan error)
 	done_ch := make(chan bool)
 
 	remaining := len(fc.Features)
 
 	for idx, f := range fc.Features {
-		go db.appendPropertiesWithChannels(ctx, idx, f, extras, rsp_ch, err_ch, done_ch)
+		go db.appendPropertiesWithChannels(ctx, idx, f, properties, rsp_ch, err_ch, done_ch)
 	}
 
 	for remaining > 0 {
@@ -172,7 +172,7 @@ func (db *WhosonfirstExtrasReader) AppendPropertiesWithFeatureCollection(ctx con
 	return nil
 }
 
-func (db *WhosonfirstExtrasReader) appendPropertiesWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, extras []string, rsp_ch chan ExtrasResponse, err_ch chan error, done_ch chan bool) {
+func (db *WhosonfirstPropertiesReader) appendPropertiesWithChannels(ctx context.Context, idx int, f geojson.GeoJSONFeature, properties []string, rsp_ch chan ChannelResponse, err_ch chan error, done_ch chan bool) {
 
 	defer func() {
 		done_ch <- true
@@ -208,7 +208,7 @@ func (db *WhosonfirstExtrasReader) appendPropertiesWithChannels(ctx context.Cont
 		return
 	}
 
-	target, err = AppendPropertiesWithJSON(ctx, source, target, extras, "properties")
+	target, err = AppendPropertiesWithJSON(ctx, source, target, properties, "properties")
 
 	if err != nil {
 		err_ch <- err
@@ -223,7 +223,7 @@ func (db *WhosonfirstExtrasReader) appendPropertiesWithChannels(ctx context.Cont
 		return
 	}
 
-	rsp := ExtrasResponse{
+	rsp := PropertiesResponse{
 		Index:   idx,
 		Feature: new_f,
 	}

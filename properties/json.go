@@ -1,4 +1,4 @@
-package extras
+package properties
 
 import (
 	"context"

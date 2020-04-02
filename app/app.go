@@ -6,7 +6,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/extras"
+	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	golog "log"
 	"runtime/debug"
 	"time"
@@ -15,7 +15,7 @@ import (
 type SpatialApplication struct {
 	mode            string
 	SpatialDatabase database.SpatialDatabase
-	ExtrasReader    extras.ExtrasReader
+	PropertiesReader    properties.PropertiesReader
 	Walker          *index.Indexer
 	Logger          *log.WOFLogger
 }
@@ -34,14 +34,13 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, err
 	}
 
-	extras_r, err := NewExtrasReaderWithFlagSet(ctx, fl)
+	properties_r, err := NewPropertiesReaderWithFlagSet(ctx, fl)
 
 	if err != nil {
-		golog.Println("SAD EXTRAS")
 		return nil, err
 	}
 
-	walker, err := NewWalkerWithFlagSet(ctx, fl, spatial_db, extras_r)
+	walker, err := NewWalkerWithFlagSet(ctx, fl, spatial_db, properties_r)
 
 	if err != nil {
 		return nil, err
@@ -49,7 +48,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 
 	sp := SpatialApplication{
 		SpatialDatabase: spatial_db,
-		ExtrasReader:    extras_r,
+		PropertiesReader:    properties_r,
 		Walker:          walker,
 		Logger:          logger,
 	}
@@ -61,8 +60,8 @@ func (p *SpatialApplication) Close(ctx context.Context) error {
 
 	p.SpatialDatabase.Close(ctx)
 
-	if p.ExtrasReader != nil {
-		p.ExtrasReader.Close(ctx)
+	if p.PropertiesReader != nil {
+		p.PropertiesReader.Close(ctx)
 	}
 
 	return nil

@@ -63,22 +63,22 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	enable_extras, err := BoolVar(fs, "enable-extras")
+	enable_properties, err := BoolVar(fs, "enable-properties")
 
 	if err != nil {
 		return err
 	}
 
-	if enable_extras {
+	if enable_properties {
 
-		extras_reader_uri, err := StringVar(fs, "extras-reader-uri")
+		properties_reader_uri, err := StringVar(fs, "properties-reader-uri")
 
 		if err != nil {
 			return err
 		}
 
-		if extras_reader_uri == "" {
-			return errors.New("Invalid or missing -extras-reader-uri flag")
+		if properties_reader_uri == "" {
+			return errors.New("Invalid or missing -properties-reader-uri flag")
 		}
 	}
 
@@ -167,7 +167,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String("spatial-database-uri", "rtree://", "Valid options are: rtree://")
 
-	fs.String("extras-reader-uri", "", "...")
+	fs.String("properties-reader-uri", "", "...")
 
 	modes := index.Modes()
 	modes = append(modes, "spatialite")
@@ -203,7 +203,7 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String("host", "localhost", "The hostname to listen for requests on.")
 	fs.Int("port", 8080, "The port number to listen for requests on.")
 
-	fs.Bool("enable-extras", false, "Enable support for 'extras' parameters in queries.")
+	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
 
 	fs.Bool("enable-geojson", false, "Allow users to request GeoJSON FeatureCollection formatted responses.")
 	fs.Bool("enable-candidates", false, "Enable the /candidates endpoint to return candidate bounding boxes (as GeoJSON) for requests.")

@@ -15,12 +15,13 @@ import (
 
 type PointInPolygonHandlerOptions struct {
 	EnableGeoJSON bool
+	EnableProperties bool
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
 
 	spatial_db := spatial_app.SpatialDatabase
-	extras_r := spatial_app.ExtrasReader
+	properties_r := spatial_app.PropertiesReader
 	walker := spatial_app.Walker
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
@@ -107,19 +108,19 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		var final interface{}
 		final = results
 
-		var extras_paths []string
+		var properties_paths []string
 
-		str_extras, err := sanitize.GetString(req, "extras")
+		str_properties, err := sanitize.GetString(req, "properties")
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		str_extras = strings.Trim(str_extras, " ")
+		str_properties = strings.Trim(str_properties, " ")
 
-		if str_extras != "" {
-			extras_paths = strings.Split(str_extras, ",")
+		if str_properties != "" {
+			properties_paths = strings.Split(str_properties, ",")
 		}
 
 		switch str_format {
@@ -132,9 +133,9 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 				return
 			}
 
-			if len(extras_paths) > 0 {
+			if len(properties_paths) > 0 {
 
-				err := extras_r.AppendPropertiesWithFeatureCollection(ctx, collection, extras_paths)
+				err := properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -145,11 +146,11 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 			final = collection
 
-		case "extras":
+		case "properties":
 
-			if len(extras_paths) > 0 {
+			if len(properties_paths) > 0 {
 
-				props, err := extras_r.PropertiesResponseWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), extras_paths)
+				props, err := properties_r.PropertiesResponseWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
 
 				if err != nil {
 					http.Error(rsp, err.Error(), http.StatusInternalServerError)

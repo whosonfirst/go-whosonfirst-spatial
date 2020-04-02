@@ -15,7 +15,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/extras"
+	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"github.com/whosonfirst/warning"
@@ -25,7 +25,7 @@ import (
 	"sync"
 )
 
-func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, extras_r extras.ExtrasReader) (*index.Indexer, error) {
+func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, properties_r properties.PropertiesReader) (*index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
@@ -34,12 +34,12 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 	// a given record fails (20190919/thisisaaronland)
 	// strict, _ := flags.BoolVar(fl, "strict")
 
-	index_extras := false
+	index_properties := false
 
-	if extras_r != nil {
+	if properties_r != nil {
 
 		if mode != "spatialite" {
-			index_extras = true
+			index_properties = true
 		}
 	}
 
@@ -79,7 +79,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 	var wg *sync.WaitGroup
 	var mu *sync.Mutex
 
-	if index_extras {
+	if index_properties {
 		wg = new(sync.WaitGroup)
 		mu = new(sync.Mutex)
 	}
@@ -207,7 +207,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 		// an error signal - maybe we want to do that? maybe not...?
 		// (20171218/thisisaaronland)
 
-		if index_extras {
+		if index_properties {
 
 			wg.Add(1)
 
@@ -217,7 +217,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 				mu.Lock()
 
-				err = extras_r.IndexFeature(ctx, f)
+				err = properties_r.IndexFeature(ctx, f)
 
 				mu.Unlock()
 
@@ -235,7 +235,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 	idx, err := index.NewIndexer(mode, cb)
 
-	if index_extras {
+	if index_properties {
 		wg.Wait()
 	}
 
