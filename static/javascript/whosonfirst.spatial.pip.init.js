@@ -75,13 +75,23 @@ window.addEventListener("load", function load(event){
     var layers = L.layerGroup();
     layers.addTo(map);
 
-    map.on("moveend", function(e){
+    var filter_ids = [
+	"is_current",
+	"is_deprecated",
+	"is_ceased",
+	"is_superseded",
+	"is_superseding",
+    ];
+
+    var count_filters = filter_ids.length;
+    	
+    var update_map = function(e){
 
 	var pos = map.getCenter();	
 
 	// PLEASE MAKE ME DYNAMIC (or at least not hard-coded here)
 	
-	var extras = [
+	var properties = [
 	    "sfomuseum:placetype",
 	    "edtf:inception",
 	    "edtf:cessation",	    
@@ -91,8 +101,18 @@ window.addEventListener("load", function load(event){
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
 	    'format': 'geojson',
-	    'extras': extras.join(","),
+	    'properties': properties.join(","),
 	};
+
+	for (var i=0; i < count_filters; i++){
+	    
+	    var f = filter_ids[i];
+	    var el = document.getElementById(f);
+
+	    if ((el) && (el.checked)){
+		args[f] = 1;
+	    }
+	}
 
 	var on_success = function(rsp){
 
@@ -113,10 +133,10 @@ window.addEventListener("load", function load(event){
 
 	    var table_props = whosonfirst.spatial.pip.default_properties();
 
-	    var count_extras = extras.length;
+	    var count_properties = properties.length;
 
-	    for (var i=0; i < count_extras; i++){
-		table_props[extras[i]] = "";
+	    for (var i=0; i < count_properties; i++){
+		table_props[properties[i]] = "";
 	    }
 	    
 	    var table = whosonfirst.spatial.pip.render_properties_table(features, table_props);
@@ -132,8 +152,23 @@ window.addEventListener("load", function load(event){
 	}
 
 	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
-    });
+    };
+    
+    map.on("moveend", update_map);
 
+    for (var i=0; i < count_filters; i++){
+	    
+	var f = filter_ids[i];
+	var el = document.getElementById(f);
+	
+	if (! el){
+	    continue
+	}
+
+	el.onchange = update_map;
+    }
+
+    
     var hash_str = location.hash;
 
     if (hash_str){

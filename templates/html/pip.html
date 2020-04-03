@@ -10,14 +10,43 @@
 </nav>
 
 	<div class="card" id="point-in-polygon" data-initial-latitude="{{ .InitialLatitude }}" data-initial-longitude="{{ .InitialLongitude }}" data-initial-zoom="{{ .InitialZoom }}" >
-	    <div id="status" class="card-header"><span id="coords"></span></div>	    
+
 	    <div id="map" class="card-body"></div>
-	    <div id="pip-results" class="card-footer">
-		<div id="pip-matches"></ul>		
-		<div id="pip-candidates"></ul>
+	    <div class="card-footer">
+
+		<div class="form-check form-check-inline">
+		    <input class="form-check-input" type="checkbox" id="is_current" value="on">
+		    <label class="form-check-label" for="is_current">is current</label>
+		</div>
+		<div class="form-check form-check-inline">
+		    <input class="form-check-input" type="checkbox" id="is_deprecated" value="on">
+		    <label class="form-check-label" for="is_deprecated">is deprecated</label>
+		</div>
+		<div class="form-check form-check-inline">
+		    <input class="form-check-input" type="checkbox" id="is_ceased" value="on">
+		    <label class="form-check-label" for="is_ceased">is ceased</label>
+		</div>
+
+		<div class="form-check form-check-inline">
+		    <input class="form-check-input" type="checkbox" id="is_superseded" value="option3">
+		    <label class="form-check-label" for="is_superseded">is superseded</label>
+		</div>
+
+		<div class="form-check form-check-inline">
+		    <input class="form-check-input" type="checkbox" id="is_superseding" value="option3">
+		    <label class="form-check-label" for="is_superseding">is superseding</label>
+		</div>
+		
 	    </div>
 	</div>
 
+	<div class="card">
+	    <div id="pip-results" class="card-body">
+		<div id="pip-matches"></ul>		
+		<div id="pip-candidates"></ul>
+	    </div>	    
+	</div>
+	
 <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.pip.css" />
 <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.js"></script>
 <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.init.js"></script>
