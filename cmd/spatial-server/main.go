@@ -8,6 +8,7 @@ import (
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
+	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
@@ -66,6 +67,27 @@ func main() {
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
+
+	//
+
+	parents := []int64{
+		102312307, // country
+	}
+
+	pt := placetypes.WOFPlacetype{
+		Id:     1,
+		Name:   "map",
+		Role:   "optional",
+		Parent: parents,
+	}
+
+	err = placetypes.AppendPlacetype(pt)
+
+	if err != nil {
+		log.Fatalf("Failed to append placetype, %v", err)
+	}
+
+	//
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 

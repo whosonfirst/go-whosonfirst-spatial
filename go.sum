@@ -203,6 +203,8 @@ github.com/whosonfirst/go-whosonfirst-placetypes v0.1.1 h1:GpLuHWiNfEXC0LSwklQwh
 github.com/whosonfirst/go-whosonfirst-placetypes v0.1.1/go.mod h1:z6NaJF62bAZvLVQ0Yxr6EPlr9+1E73KlgcISEN7cdSA=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.1.2 h1:vAfTZTRC56OMMTJUAUZLtcEbCg8kBuVxLtDLOBN3E3w=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.1.2/go.mod h1:z6NaJF62bAZvLVQ0Yxr6EPlr9+1E73KlgcISEN7cdSA=
+github.com/whosonfirst/go-whosonfirst-placetypes v0.2.0 h1:ItNH2cM+ILGfIAjOa9CU7MF14CoNY28GOoH/fjnuJaQ=
+github.com/whosonfirst/go-whosonfirst-placetypes v0.2.0/go.mod h1:bgzjQ1WjT9yzWpV23aS6qQAF27kJpf5UcWT28pVBzdA=
 github.com/whosonfirst/go-whosonfirst-reader v0.0.0-20191122203133-047f20452865/go.mod h1:xYzBn6llLD/uS6Zhh0H4LAqddEJHXdQSUIxywTnhpOU=
 github.com/whosonfirst/go-whosonfirst-reader v0.0.1 h1:8OC0/iOtElJXg6W/P3mROuNK2sZqQBDtvMN30sKfq5U=
 github.com/whosonfirst/go-whosonfirst-reader v0.0.1/go.mod h1:SNGLXBF9h8mmf2S3CYKPBtO9d4D8n1TohSKSmoRmvqo=
@@ -234,6 +236,8 @@ github.com/whosonfirst/walk v0.0.0-20160803014805-c0a349674b73 h1:/43peH8y6Wg+dA
 github.com/whosonfirst/walk v0.0.0-20160803014805-c0a349674b73/go.mod h1:U/1VXxlMzNZbyylg18AzEeHkGi1RXiBCMKpaM2XR+tQ=
 github.com/whosonfirst/warning v0.1.0 h1:NgMa6a6Xv7FdDNgpqK5j/FDo6qrcFzFtidAExDqPfC0=
 github.com/whosonfirst/warning v0.1.0/go.mod h1:cAez7FpC/UEUrbiOXZO15v2JM8eijtFHQlN93AGFy1k=
+github.com/whosonfirst/warning v0.1.1 h1:h29zL3VNL9VUHztkAAndzblhrDHyik9z47OuUR2Vovw=
+github.com/whosonfirst/warning v0.1.1/go.mod h1:/unEMzhB9YaMeEwTJpzLN3kM5LiSxdJhKEsf/OQhn6s=
 github.com/xanzy/ssh-agent v0.2.1/go.mod h1:mLlQY/MoOhWBj+gOGMQkOeiEvkx+8pJSI+0Bx9h2kr4=
 golang.org/x/crypto v0.0.0-20190219172222-a4c6cb3142f2/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

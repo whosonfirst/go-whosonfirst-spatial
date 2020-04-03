@@ -75,7 +75,7 @@ github.com/whosonfirst/go-whosonfirst-index
 github.com/whosonfirst/go-whosonfirst-index/fs
 # github.com/whosonfirst/go-whosonfirst-log v0.1.0
 github.com/whosonfirst/go-whosonfirst-log
-# github.com/whosonfirst/go-whosonfirst-placetypes v0.1.2
+# github.com/whosonfirst/go-whosonfirst-placetypes v0.2.0
 github.com/whosonfirst/go-whosonfirst-placetypes
 github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-reader v0.0.1
@@ -89,7 +89,7 @@ github.com/whosonfirst/go-whosonfirst-spr
 github.com/whosonfirst/go-whosonfirst-uri
 # github.com/whosonfirst/walk v0.0.0-20160803014805-c0a349674b73
 github.com/whosonfirst/walk
-# github.com/whosonfirst/warning v0.1.0
+# github.com/whosonfirst/warning v0.1.1
 github.com/whosonfirst/warning
 # golang.org/x/net v0.0.0-20190724013045-ca1201d0de80
 golang.org/x/net/html

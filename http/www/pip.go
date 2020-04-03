@@ -40,7 +40,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 	if err != nil {
 		return nil, err
 	}
-	
+
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
 		if walker.IsIndexing() {

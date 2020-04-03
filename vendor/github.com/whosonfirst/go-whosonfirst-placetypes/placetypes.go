@@ -1,9 +1,6 @@
 package placetypes
 
 import (
-	"encoding/json"
-	"errors"
-	"github.com/whosonfirst/go-whosonfirst-placetypes/placetypes"
 	"log"
 	"strconv"
 )
@@ -24,8 +21,6 @@ type WOFPlacetype struct {
 	// AltNames []WOFPlacetypeAltNames		`json:"names"`
 }
 
-type WOFPlacetypeSpecification map[string]WOFPlacetype
-
 var specification *WOFPlacetypeSpecification
 
 func init() {
@@ -37,18 +32,19 @@ func init() {
 	if err != nil {
 		log.Fatal("Failed to parse specification", err)
 	}
+
 }
 
-func Spec() (*WOFPlacetypeSpecification, error) {
+func GetPlacetypeByName(name string) (*WOFPlacetype, error) {
+	return specification.GetPlacetypeByName(name)
+}
 
-	var spec WOFPlacetypeSpecification
-	err := json.Unmarshal([]byte(placetypes.Specification), &spec)
+func GetPlacetypeById(id int64) (*WOFPlacetype, error) {
+	return specification.GetPlacetypeById(id)
+}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &spec, nil
+func AppendPlacetype(pt WOFPlacetype) error {
+	return specification.AppendPlacetype(pt)
 }
 
 func Placetypes() ([]*WOFPlacetype, error) {
@@ -78,7 +74,7 @@ func PlacetypesForRoles(roles []string) ([]*WOFPlacetype, error) {
 
 func IsValidPlacetype(name string) bool {
 
-	for _, pt := range *specification {
+	for _, pt := range specification.Catalog() {
 
 		if pt.Name == name {
 			return true
@@ -90,7 +86,7 @@ func IsValidPlacetype(name string) bool {
 
 func IsValidPlacetypeId(id int64) bool {
 
-	for str_id, _ := range *specification {
+	for str_id, _ := range specification.Catalog() {
 
 		pt_id, err := strconv.Atoi(str_id)
 
@@ -108,54 +104,11 @@ func IsValidPlacetypeId(id int64) bool {
 	return false
 }
 
-func GetPlacetypeByName(name string) (*WOFPlacetype, error) {
-
-	for str_id, pt := range *specification {
-
-		if pt.Name == name {
-
-			pt_id, err := strconv.Atoi(str_id)
-
-			if err != nil {
-				continue
-			}
-
-			pt_id64 := int64(pt_id)
-
-			pt.Id = pt_id64
-			return &pt, nil
-		}
-	}
-
-	return nil, errors.New("Invalid placetype")
-}
-
-func GetPlacetypeById(id int64) (*WOFPlacetype, error) {
-
-	for str_id, pt := range *specification {
-
-		pt_id, err := strconv.Atoi(str_id)
-
-		if err != nil {
-			continue
-		}
-
-		pt_id64 := int64(pt_id)
-
-		if pt_id64 == id {
-			pt.Id = pt_id64
-			return &pt, nil
-		}
-	}
-
-	return nil, errors.New("Invalid placetype")
-}
-
 func Children(pt *WOFPlacetype) []*WOFPlacetype {
 
 	children := make([]*WOFPlacetype, 0)
 
-	for _, details := range *specification {
+	for _, details := range specification.Catalog() {
 
 		for _, pid := range details.Parent {
 

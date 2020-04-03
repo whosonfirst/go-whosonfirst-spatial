@@ -17,31 +17,31 @@
 		<details>
 		    <summary>Filters</summary>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="is_current" value="on">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_current" value="on">
 			<label class="form-check-label" for="is_current">is current</label>
 		    </div>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="is_deprecated" value="on">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_deprecated" value="on">
 			<label class="form-check-label" for="is_deprecated">is deprecated</label>
 		    </div>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="is_ceased" value="on">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_ceased" value="on">
 			<label class="form-check-label" for="is_ceased">is ceased</label>
 		    </div>
 		    
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="is_superseded" value="option3">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseded" value="option3">
 			<label class="form-check-label" for="is_superseded">is superseded</label>
 		    </div>
 		    
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="is_superseding" value="option3">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseding" value="option3">
 			<label class="form-check-label" for="is_superseding">is superseding</label>
 		    </div>
 
 		    {{ range $i, $pt := .Placetypes }}			
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" id="{{ $pt.Name }}" value="on">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-placetype" type="checkbox" id="{{ $pt.Name }}" value="on">
 			<label class="form-check-label" for="{{ $pt.Name }}">{{ $pt.Name }}</label>
 		    </div>
 		    {{ end }}

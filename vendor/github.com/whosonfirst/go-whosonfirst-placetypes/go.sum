@@ -20,6 +20,8 @@ github.com/whosonfirst/go-whosonfirst-cli v0.1.0 h1:Wwj9z0R/ryHmPmpVm5jCbXdG4agJ
 github.com/whosonfirst/go-whosonfirst-cli v0.1.0/go.mod h1:Edy+amD+fMq1QS1yxB3u8maA8I93q/LG7JRNh+fsdfc=
 github.com/whosonfirst/warning v0.1.0 h1:NgMa6a6Xv7FdDNgpqK5j/FDo6qrcFzFtidAExDqPfC0=
 github.com/whosonfirst/warning v0.1.0/go.mod h1:cAez7FpC/UEUrbiOXZO15v2JM8eijtFHQlN93AGFy1k=
+github.com/whosonfirst/warning v0.1.1 h1:h29zL3VNL9VUHztkAAndzblhrDHyik9z47OuUR2Vovw=
+github.com/whosonfirst/warning v0.1.1/go.mod h1:/unEMzhB9YaMeEwTJpzLN3kM5LiSxdJhKEsf/OQhn6s=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20190311183353-d8887717615a/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

@@ -75,16 +75,6 @@ window.addEventListener("load", function load(event){
     var layers = L.layerGroup();
     layers.addTo(map);
 
-    var filter_ids = [
-	"is_current",
-	"is_deprecated",
-	"is_ceased",
-	"is_superseded",
-	"is_superseding",
-    ];
-
-    var count_filters = filter_ids.length;
-    	
     var update_map = function(e){
 
 	var pos = map.getCenter();	
@@ -104,16 +94,44 @@ window.addEventListener("load", function load(event){
 	    'properties': properties.join(","),
 	};
 
-	for (var i=0; i < count_filters; i++){
-	    
-	    var f = filter_ids[i];
-	    var el = document.getElementById(f);
+	var existential_filters = document.getElementsByClassName("point-in-polygon-filter-existential");
+	var count_existential = existential_filters.length;
 
-	    if ((el) && (el.checked)){
-		args[f] = 1;
+	for (var i=0; i < count_existential; i++){
+
+	    var el = existential_filters[i];
+
+	    if (! el.checked){
+		continue;
 	    }
+	    
+	    var id = el.getAttribute("id");
+	    args[id] = 1;
 	}
 
+	var placetypes = [];
+	
+	var placetype_filters = document.getElementsByClassName("point-in-polygon-filter-placetype");	
+	var count_placetypes = placetype_filters.length;
+
+	for (var i=0; i < count_placetypes; i++){
+
+	    var el = placetype_filters[i];
+
+	    if (! el.checked){
+		continue;
+	    }
+
+	    var id = el.getAttribute("id");
+	    placetypes.push(id);
+	}
+
+	if (placetypes.length > 0){
+	    args['placetype'] = placetypes.join(",");
+	}
+
+	console.log("ARGS", args);
+	
 	var on_success = function(rsp){
 
 	    layers.clearLayers();
@@ -156,15 +174,11 @@ window.addEventListener("load", function load(event){
     
     map.on("moveend", update_map);
 
-    for (var i=0; i < count_filters; i++){
-	    
-	var f = filter_ids[i];
-	var el = document.getElementById(f);
-	
-	if (! el){
-	    continue
-	}
-
+    var filters = document.getElementsByClassName("point-in-polygon-filter");
+    var count_filters = filters.length;
+    
+    for (var i=0; i < count_filters; i++){	    
+	var el = filters[i];
 	el.onchange = update_map;
     }
 
