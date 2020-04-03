@@ -3,6 +3,14 @@ nav {
 	margin-bottom:1rem !important;
 }
 
+details {
+	margin-bottom: 1rem;
+}
+
+details summary {
+	font-weight: 700;
+}
+
 .card {
 	margin-bottom: 1rem;
 }

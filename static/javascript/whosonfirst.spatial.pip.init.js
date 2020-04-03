@@ -79,21 +79,26 @@ window.addEventListener("load", function load(event){
 
 	var pos = map.getCenter();	
 
-	// PLEASE MAKE ME DYNAMIC (or at least not hard-coded here)
-	
-	var properties = [
-	    "sfomuseum:placetype",
-	    "edtf:inception",
-	    "edtf:cessation",	    
-	];
-	
 	var args = {
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
 	    'format': 'geojson',
-	    'properties': properties.join(","),
 	};
+	
+	var properties = [];
 
+	var extra_properties = document.getElementById("extras");
+
+	if (extra_properties){
+
+	    var extras = extra_properties.value;
+
+	    if (extras){
+		properties = extras.split(",");
+		args['properties'] = properties;
+	    }
+	}
+	
 	var existential_filters = document.getElementsByClassName("point-in-polygon-filter-existential");
 	var count_existential = existential_filters.length;
 
@@ -182,6 +187,13 @@ window.addEventListener("load", function load(event){
 	el.onchange = update_map;
     }
 
+    var extras = document.getElementsByClassName("point-in-polygon-extra");
+    var count_extras = extras.length;
+    
+    for (var i=0; i < count_extras; i++){	    
+	var el = extras[i];
+	el.onchange = update_map;
+    }
     
     var hash_str = location.hash;
 
