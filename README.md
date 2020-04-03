@@ -24,14 +24,13 @@ type SpatialDatabase interface {
 }
 ```
 
-### ExtrasReader
+### PropertiesReader
 
 ```
-type ExtrasReader interface {
+type PropertiesReader interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
-	AppendExtras(context.Context, interface{}, []string) error
-	AppendExtrasWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) error
-	AppendExtrasWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) error
+	PropertiesResponseResultsWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*PropertiesResponseResults, error)
+	AppendPropertiesWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) error
 	Close(context.Context) error
 }
 ```
