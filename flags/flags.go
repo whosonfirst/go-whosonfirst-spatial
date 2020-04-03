@@ -285,5 +285,8 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String("data-endpoint", "https://data.whosonfirst.org", "...")
 
+	fs.Bool("enable-custom-placetypes", false, "...")
+	fs.String("custom-placetypes", "", "...")
+	
 	return nil
 }

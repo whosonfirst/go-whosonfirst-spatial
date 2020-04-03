@@ -53,6 +53,9 @@ func main() {
 	enable_www, _ := flags.BoolVar(fs, "enable-www")
 	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
 
+	enable_custom_placetypes, _ := flags.BoolVar(fs, "enable-custom-placetypes")
+	custom_placetypes, _ := flags.StringVar(fs, "custom-placetypes")	
+	
 	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
@@ -68,27 +71,22 @@ func main() {
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
 
-	//
+	if enable_custom_placetypes {
 
-	parents := []int64{
-		102312307, // country
+		def := []byte(custom_placetypes)
+		spec, err := placetypes.NewWOFPlacetypeSpecification(def)
+
+		if err != nil {
+			log.Fatalf("Failed to parse custom placetype specification, %v", err)
+		}
+
+		err = placetypes.AppendPlacetypeSpecification(spec)
+
+		if err != nil {
+			log.Fatalf("Failed to append custom placetypes, %v", err)
+		}
 	}
-
-	pt := placetypes.WOFPlacetype{
-		Id:     1,
-		Name:   "map",
-		Role:   "optional",
-		Parent: parents,
-	}
-
-	err = placetypes.AppendPlacetype(pt)
-
-	if err != nil {
-		log.Fatalf("Failed to append placetype, %v", err)
-	}
-
-	//
-
+	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {

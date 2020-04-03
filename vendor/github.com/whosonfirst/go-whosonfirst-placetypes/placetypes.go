@@ -27,7 +27,7 @@ func init() {
 
 	var err error
 
-	specification, err = Spec()
+	specification, err = DefaultWOFPlacetypeSpecification()
 
 	if err != nil {
 		log.Fatal("Failed to parse specification", err)
@@ -45,6 +45,10 @@ func GetPlacetypeById(id int64) (*WOFPlacetype, error) {
 
 func AppendPlacetype(pt WOFPlacetype) error {
 	return specification.AppendPlacetype(pt)
+}
+
+func AppendPlacetypeSpecification(spec *WOFPlacetypeSpecification) error {
+	return specification.AppendPlacetypeSpecification(spec)
 }
 
 func Placetypes() ([]*WOFPlacetype, error) {

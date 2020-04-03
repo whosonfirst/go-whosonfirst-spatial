@@ -105,8 +105,8 @@ window.addEventListener("load", function load(event){
 		continue;
 	    }
 	    
-	    var id = el.getAttribute("id");
-	    args[id] = 1;
+	    var fl = el.value;
+	    args[fl] = 1;
 	}
 
 	var placetypes = [];
@@ -122,15 +122,15 @@ window.addEventListener("load", function load(event){
 		continue;
 	    }
 
-	    var id = el.getAttribute("id");
-	    placetypes.push(id);
+	    var pt = el.value;
+	    placetypes.push(pt);
 	}
 
 	if (placetypes.length > 0){
 	    args['placetype'] = placetypes.join(",");
 	}
 
-	console.log("ARGS", args);
+	// console.log("ARGS", args);
 	
 	var on_success = function(rsp){
 
