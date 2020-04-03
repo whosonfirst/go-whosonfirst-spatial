@@ -35,3 +35,25 @@ type PropertiesReader interface {
 }
 ```
 
+## Tools
+
+### spatial-server
+
+```
+go run -mod vendor cmd/spatial-server/main.go \
+	-enable-www \
+	-spatial-database-uri 'rtree:///?strict=false' \
+	-properties-reader-uri 'whosonfirst:///?reader=fs:///usr/local/data/sfomuseum-data-maps/data&cache=gocache://' \
+	-data-endpoint https://millsfield.sfomuseum.org/data \
+	-nextzen-apikey {APIKEY}
+	-mode directory:// /usr/local/data/sfomuseum-data-maps/data
+	
+2020/04/03 09:40:26 -enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates -enable-properties
+2020/04/03 09:40:26 Feature ID 1360391313 triggered the following warning: Invalid wof:placetype
+2020/04/03 09:40:26 Feature ID 1360391317 triggered the following warning: Invalid wof:placetype
+2020/04/03 09:40:26 Feature ID 1360391321 triggered the following warning: Invalid wof:placetype
+...
+09:40:26.241237 [main] STATUS finished indexing in 27.925694ms
+```
+
+## See also

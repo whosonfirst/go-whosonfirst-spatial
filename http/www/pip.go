@@ -2,6 +2,7 @@ package www
 
 import (
 	"errors"
+	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"html/template"
 	_ "log"
@@ -21,6 +22,7 @@ type PointInPolygonHandlerTemplateVars struct {
 	InitialLongitude float64
 	InitialZoom      int
 	DataEndpoint     string
+	Placetypes       []*placetypes.WOFPlacetype
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
@@ -33,6 +35,12 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 	walker := spatial_app.Walker
 
+	pt_list, err := placetypes.Placetypes()
+
+	if err != nil {
+		return nil, err
+	}
+	
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
 		if walker.IsIndexing() {
@@ -49,6 +57,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			InitialLongitude: opts.InitialLongitude,
 			InitialZoom:      opts.InitialZoom,
 			DataEndpoint:     opts.DataEndpoint,
+			Placetypes:       pt_list,
 		}
 
 		err := t.Execute(rsp, vars)
