@@ -94,7 +94,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	if enable_www {
+	if !enable_www {
 		return nil
 	}
 
@@ -273,8 +273,8 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String("templates", "", "An optional string for local templates. This is anything that can be read by the 'templates.ParseGlob' method.")
 
-	fs.Float64("initial-latitude", 37.604, "...")
-	fs.Float64("initial-longitude", -122.405, "...")
+	fs.Float64("initial-latitude", 37.616906, "...")
+	fs.Float64("initial-longitude", -122.386665, "...")
 	fs.Int("initial-zoom", 13, "...")
 
 	return nil

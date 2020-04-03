@@ -133,8 +133,20 @@ window.addEventListener("load", function load(event){
 
 	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
     });
+
+    var hash_str = location.hash;
+
+    if (hash_str){
+
+	var parsed = whosonfirst.spatial.maps.parseHash(hash_str);
+
+	if (parsed){
+	    init_lat = parsed['latitude'];
+	    init_lon = parsed['longitude'];
+	    init_zoom = parsed['zoom'];
+	}
+    }
     
-    // map.setView([37.604, -122.405], 13);
     map.setView([init_lat, init_lon], init_zoom);    
 
     slippymap.crosshairs.init(map);    

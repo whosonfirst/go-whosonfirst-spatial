@@ -9,6 +9,45 @@ whosonfirst.spatial.maps = (function(){
 
     var self = {
 
+	'parseHash': function(hash_str){
+
+	    if (hash_str.indexOf('#') === 0) {
+		hash_str = hash_str.substr(1);
+	    }
+
+	    var lat;
+	    var lon;
+	    var zoom;
+	    
+	    var args = hash_str.split("/");
+	    
+	    if (args.length != 3){
+		console.log("Unrecognized hash string");
+		return null;
+	    }
+	    
+	    zoom = args[0];
+	    lat = args[1];
+	    lon = args[2];			
+	    
+	    zoom = parseInt(zoom, 10);
+	    lat = parseFloat(lat);
+	    lon = parseFloat(lon);		
+	    
+	    if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
+		console.log("Invalid zoom/lat/lon", zoom, lat, lon);
+		return null;
+	    }
+
+	    var parsed = {
+		'latitude': lat,
+		'longitude': lon,
+		'zoom': zoom,
+	    };
+
+	    return parsed;
+	},
+	
 	'getMap': function(map_el, args){
 
 	    if (! args){
