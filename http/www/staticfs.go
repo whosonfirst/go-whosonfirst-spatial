@@ -16,10 +16,10 @@
 package www
 
 import (
-	"github.com/whosonfirst/go-bindata-assetfs"
 	"bytes"
 	"compress/gzip"
 	"fmt"
+	"github.com/whosonfirst/go-bindata-assetfs"
 	"io"
 	"io/ioutil"
 	"os"
@@ -159,7 +159,7 @@ func staticJavascriptWhosonfirstSpatialApiJs() (*asset, error) {
 	return a, nil
 }
 
-var _staticJavascriptWhosonfirstSpatialInitJs = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x14\xca\xb1\x6a\xc3\x30\x10\x06\xe0\xb9\x7e\x8a\x9f\x2c\xb1\xa1\x48\x7b\x33\x29\x58\xa5\x81\xb6\x01\x47\x7d\x00\x53\xc9\xcd\x81\x7c\x17\xa4\x53\x3d\x94\xbe\x7b\xc8\xf8\xc1\xb7\x11\x47\xd9\xcc\x1c\xa3\xff\x4d\xac\xef\x54\x35\x71\x2a\xfd\x2e\xcb\x1c\x77\xcf\x58\x1a\x7f\x2b\x09\xe3\xe1\x3e\x3d\xce\xf0\xd7\x75\x00\xb0\x5d\xa5\x0a\x2f\x54\xaa\x9a\x56\xc8\x24\x8e\x37\x21\xd6\x7e\x7f\x55\xbd\xd5\x17\x6b\x57\xca\xb9\x2e\x94\x72\x34\x75\x91\xb5\xd5\xd4\x56\x23\xe5\xc7\xc6\x59\x67\xbb\x1f\x0e\x4f\xd6\x22\xbc\x9d\x2e\xf8\xf4\x7e\xbc\x20\x9c\x71\xf4\x98\xbc\x1b\xf1\x3a\x9d\x3f\xe0\x30\xba\xe0\xe0\x42\x98\x4e\xc7\xaf\xe0\xd1\xfd\x0f\x87\xee\x1e\x00\x00\xff\xff\x20\xb5\x65\x4d\xb3\x00\x00\x00")
+var _staticJavascriptWhosonfirstSpatialInitJs = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x34\x8c\x41\xaa\xc3\x30\x0c\x44\xf7\x3e\x85\xf0\xca\x86\xff\x7d\x81\xd0\x45\x17\xdd\xf5\x12\x4e\xa4\xb4\x82\x56\x2a\xb6\x1c\x53\x4a\xef\x5e\x12\xf0\x66\x98\x61\x66\x5e\x67\x41\xed\x29\x23\x5e\x36\x12\xbb\x72\x35\x12\x2a\xc1\x3f\x34\xa3\xff\x83\xb5\xc9\x62\xac\x02\x7b\x0e\xb4\x6f\xe2\xc7\x39\x00\x80\x2d\x17\x20\xc1\x97\xb2\x18\x9c\x00\x75\x69\x4f\x12\x4b\xb3\xe2\x3b\xdd\xc8\xce\x66\x85\xe7\x66\x14\x3c\x66\xcb\xff\x87\x8c\x83\x8f\xd3\x01\xe9\x77\xad\x2a\x2b\x97\x6a\xa9\x15\x4e\xa3\x0f\xc3\xc4\xc9\x7d\xe3\xe4\x7e\x01\x00\x00\xff\xff\x88\x2e\x46\xa3\xa8\x00\x00\x00")
 
 func staticJavascriptWhosonfirstSpatialInitJsBytes() ([]byte, error) {
 	return bindataRead(
@@ -174,7 +174,7 @@ func staticJavascriptWhosonfirstSpatialInitJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.init.js", size: 179, mode: os.FileMode(420), modTime: time.Unix(1585677987, 0)}
+	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.init.js", size: 168, mode: os.FileMode(420), modTime: time.Unix(1585872893, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -351,17 +351,17 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"static/javascript/localforage.min.js": staticJavascriptLocalforageMinJs,
-	"static/javascript/slippymap.crosshairs.js": staticJavascriptSlippymapCrosshairsJs,
-	"static/javascript/whosonfirst.net.js": staticJavascriptWhosonfirstNetJs,
-	"static/javascript/whosonfirst.spatial.api.js": staticJavascriptWhosonfirstSpatialApiJs,
-	"static/javascript/whosonfirst.spatial.init.js": staticJavascriptWhosonfirstSpatialInitJs,
-	"static/javascript/whosonfirst.spatial.maps.js": staticJavascriptWhosonfirstSpatialMapsJs,
+	"static/javascript/localforage.min.js":              staticJavascriptLocalforageMinJs,
+	"static/javascript/slippymap.crosshairs.js":         staticJavascriptSlippymapCrosshairsJs,
+	"static/javascript/whosonfirst.net.js":              staticJavascriptWhosonfirstNetJs,
+	"static/javascript/whosonfirst.spatial.api.js":      staticJavascriptWhosonfirstSpatialApiJs,
+	"static/javascript/whosonfirst.spatial.init.js":     staticJavascriptWhosonfirstSpatialInitJs,
+	"static/javascript/whosonfirst.spatial.maps.js":     staticJavascriptWhosonfirstSpatialMapsJs,
 	"static/javascript/whosonfirst.spatial.pip.init.js": staticJavascriptWhosonfirstSpatialPipInitJs,
-	"static/javascript/whosonfirst.spatial.pip.js": staticJavascriptWhosonfirstSpatialPipJs,
-	"static/javascript/whosonfirst.uri.js": staticJavascriptWhosonfirstUriJs,
-	"static/css/whosonfirst.spatial.css": staticCssWhosonfirstSpatialCss,
-	"static/css/whosonfirst.spatial.pip.css": staticCssWhosonfirstSpatialPipCss,
+	"static/javascript/whosonfirst.spatial.pip.js":      staticJavascriptWhosonfirstSpatialPipJs,
+	"static/javascript/whosonfirst.uri.js":              staticJavascriptWhosonfirstUriJs,
+	"static/css/whosonfirst.spatial.css":                staticCssWhosonfirstSpatialCss,
+	"static/css/whosonfirst.spatial.pip.css":            staticCssWhosonfirstSpatialPipCss,
 }
 
 // AssetDir returns the file names below a certain
@@ -403,22 +403,23 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"static": &bintree{nil, map[string]*bintree{
 		"css": &bintree{nil, map[string]*bintree{
-			"whosonfirst.spatial.css": &bintree{staticCssWhosonfirstSpatialCss, map[string]*bintree{}},
+			"whosonfirst.spatial.css":     &bintree{staticCssWhosonfirstSpatialCss, map[string]*bintree{}},
 			"whosonfirst.spatial.pip.css": &bintree{staticCssWhosonfirstSpatialPipCss, map[string]*bintree{}},
 		}},
 		"javascript": &bintree{nil, map[string]*bintree{
-			"localforage.min.js": &bintree{staticJavascriptLocalforageMinJs, map[string]*bintree{}},
-			"slippymap.crosshairs.js": &bintree{staticJavascriptSlippymapCrosshairsJs, map[string]*bintree{}},
-			"whosonfirst.net.js": &bintree{staticJavascriptWhosonfirstNetJs, map[string]*bintree{}},
-			"whosonfirst.spatial.api.js": &bintree{staticJavascriptWhosonfirstSpatialApiJs, map[string]*bintree{}},
-			"whosonfirst.spatial.init.js": &bintree{staticJavascriptWhosonfirstSpatialInitJs, map[string]*bintree{}},
-			"whosonfirst.spatial.maps.js": &bintree{staticJavascriptWhosonfirstSpatialMapsJs, map[string]*bintree{}},
+			"localforage.min.js":              &bintree{staticJavascriptLocalforageMinJs, map[string]*bintree{}},
+			"slippymap.crosshairs.js":         &bintree{staticJavascriptSlippymapCrosshairsJs, map[string]*bintree{}},
+			"whosonfirst.net.js":              &bintree{staticJavascriptWhosonfirstNetJs, map[string]*bintree{}},
+			"whosonfirst.spatial.api.js":      &bintree{staticJavascriptWhosonfirstSpatialApiJs, map[string]*bintree{}},
+			"whosonfirst.spatial.init.js":     &bintree{staticJavascriptWhosonfirstSpatialInitJs, map[string]*bintree{}},
+			"whosonfirst.spatial.maps.js":     &bintree{staticJavascriptWhosonfirstSpatialMapsJs, map[string]*bintree{}},
 			"whosonfirst.spatial.pip.init.js": &bintree{staticJavascriptWhosonfirstSpatialPipInitJs, map[string]*bintree{}},
-			"whosonfirst.spatial.pip.js": &bintree{staticJavascriptWhosonfirstSpatialPipJs, map[string]*bintree{}},
-			"whosonfirst.uri.js": &bintree{staticJavascriptWhosonfirstUriJs, map[string]*bintree{}},
+			"whosonfirst.spatial.pip.js":      &bintree{staticJavascriptWhosonfirstSpatialPipJs, map[string]*bintree{}},
+			"whosonfirst.uri.js":              &bintree{staticJavascriptWhosonfirstUriJs, map[string]*bintree{}},
 		}},
 	}},
 }}
@@ -469,7 +470,6 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-
 
 func assetFS() *assetfs.AssetFS {
 	assetInfo := func(path string) (os.FileInfo, error) {

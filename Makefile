@@ -22,5 +22,5 @@ bake-templates:
 
 debug:
 	@make bake
-	go run -mod vendor cmd/spatial-server/main.go -enable-www -enable-properties -spatial-database-uri 'rtree:///?strict=false' -properties-reader-uri 'whosonfirst:///?reader=fs://$(REPO)/data&cache=gocache://' -nextzen-apikey $(APIKEY) -mode directory:// $(REPO)/data
+	go run -mod vendor cmd/spatial-server/main.go -enable-www -enable-properties -spatial-database-uri 'rtree:///?strict=false' -properties-reader-uri 'whosonfirst:///?reader=fs://$(REPO)/data&cache=gocache://' -data-endpoint $(DATA_ENDPOINT) -nextzen-apikey $(APIKEY) -mode directory:// $(REPO)/data
 

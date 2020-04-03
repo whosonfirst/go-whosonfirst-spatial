@@ -13,12 +13,14 @@ type PointInPolygonHandlerOptions struct {
 	InitialLatitude  float64
 	InitialLongitude float64
 	InitialZoom      int
+	DataEndpoint     string
 }
 
 type PointInPolygonHandlerTemplateVars struct {
 	InitialLatitude  float64
 	InitialLongitude float64
 	InitialZoom      int
+	DataEndpoint     string
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (gohttp.Handler, error) {
@@ -46,6 +48,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			InitialLatitude:  opts.InitialLatitude,
 			InitialLongitude: opts.InitialLongitude,
 			InitialZoom:      opts.InitialZoom,
+			DataEndpoint:     opts.DataEndpoint,
 		}
 
 		err := t.Execute(rsp, vars)

@@ -54,7 +54,7 @@ func Longitude(req *http.Request) (float64, error) {
 		return 0, err
 	}
 
-	if !geo.IsValidLongitude(lon){
+	if !geo.IsValidLongitude(lon) {
 		return 0, errors.New("Invalid 'longitude' parameter")
 	}
 

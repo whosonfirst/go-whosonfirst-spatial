@@ -61,6 +61,8 @@ func main() {
 	initial_lon, _ := flags.Float64Var(fs, "initial-longitude")
 	initial_zoom, _ := flags.IntVar(fs, "initial-zoom")
 
+	data_endpoint, _ := flags.StringVar(fs, "data-endpoint")
+
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
@@ -198,6 +200,7 @@ func main() {
 			InitialLatitude:  initial_lat,
 			InitialLongitude: initial_lon,
 			InitialZoom:      initial_zoom,
+			DataEndpoint:     data_endpoint,
 		}
 
 		www_pip_handler, err := www.PointInPolygonHandler(spatial_app, www_pip_opts)
