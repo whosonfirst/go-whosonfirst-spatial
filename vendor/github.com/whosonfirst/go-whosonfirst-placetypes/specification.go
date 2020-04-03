@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/whosonfirst/go-whosonfirst-placetypes/placetypes"
+	"io"
+	"io/ioutil"
 	"strconv"
 	"sync"
 )
@@ -15,6 +17,17 @@ type WOFPlacetypeSpecification struct {
 
 func DefaultWOFPlacetypeSpecification() (*WOFPlacetypeSpecification, error) {
 	return NewWOFPlacetypeSpecification([]byte(placetypes.Specification))
+}
+
+func NewWOFPlacetypeSpecificationWithReader(r io.Reader) (*WOFPlacetypeSpecification, error) {
+
+	body, err := ioutil.ReadAll(r)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return NewWOFPlacetypeSpecification(body)
 }
 
 func NewWOFPlacetypeSpecification(body []byte) (*WOFPlacetypeSpecification, error) {

@@ -241,6 +241,10 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
+	fs.Bool("enable-custom-placetypes", false, "...")
+	fs.String("custom-placetypes-source", "", "...")
+	fs.String("custom-placetypes", "", "...")
+
 	// this is invoked/used in app/indexer.go but for the life of me I can't
 	// figure out how to make the code in flags/exclude.go implement the
 	// correct inferface wah wah so that flag.Lookup("exclude").Value returns
@@ -285,8 +289,5 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String("data-endpoint", "https://data.whosonfirst.org", "...")
 
-	fs.Bool("enable-custom-placetypes", false, "...")
-	fs.String("custom-placetypes", "", "...")
-	
 	return nil
 }

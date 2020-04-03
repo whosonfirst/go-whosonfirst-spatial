@@ -8,7 +8,6 @@ import (
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
-	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
@@ -53,9 +52,6 @@ func main() {
 	enable_www, _ := flags.BoolVar(fs, "enable-www")
 	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
 
-	enable_custom_placetypes, _ := flags.BoolVar(fs, "enable-custom-placetypes")
-	custom_placetypes, _ := flags.StringVar(fs, "custom-placetypes")	
-	
 	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
@@ -71,22 +67,6 @@ func main() {
 	port, _ := flags.IntVar(fs, "port")
 	proto := "http" // FIX ME
 
-	if enable_custom_placetypes {
-
-		def := []byte(custom_placetypes)
-		spec, err := placetypes.NewWOFPlacetypeSpecification(def)
-
-		if err != nil {
-			log.Fatalf("Failed to parse custom placetype specification, %v", err)
-		}
-
-		err = placetypes.AppendPlacetypeSpecification(spec)
-
-		if err != nil {
-			log.Fatalf("Failed to append custom placetypes, %v", err)
-		}
-	}
-	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
