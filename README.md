@@ -34,3 +34,6 @@ type PropertiesReader interface {
 ```
 
 ## See also
+
+* https://github.com/whosonfirst/go-whosonfirst-spatial-http
+* https://github.com/whosonfirst/go-whosonfirst-spatial-grpc
