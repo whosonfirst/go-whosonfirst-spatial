@@ -45,10 +45,29 @@ whosonfirst.spatial.pip = (function(){
 	    var tr = document.createElement("tr");
 	    
 	    for (var k in props_table){
-		
-		var v = k;	// props_table[k]
-		var th = document.createElement("th");
-		th.appendChild(document.createTextNode(v));
+
+		for (var k in props_table){
+
+		    if (self.is_wildcard(k)){
+
+			for (prop_k in props){
+
+			    if (! prop_k.startsWith(k)){
+				continue;
+			    }
+
+			    var v = prop_k;
+			    var th = document.createElement("th");
+			    th.appendChild(document.createTextNode(v));
+			}
+			
+		    } else {
+
+			var v = k;	// props_table[k]
+			var th = document.createElement("th");
+			th.appendChild(document.createTextNode(v));
+		    }
+		}
 		
 		tr.appendChild(th);
 	    }
@@ -71,11 +90,30 @@ whosonfirst.spatial.pip = (function(){
 		
 		for (var k in props_table){
 
-		    var v = props[k];
-		    var td = document.createElement("td");
+		    if (self.is_wildcard(k)){
+
+			for (prop_k in props){
+
+			    if (! prop_k.startsWith(k)){
+				continue;
+			    }
+
+			    var v = props[prop_k];
+			    var td = document.createElement("td");
+			
+			    td.appendChild(document.createTextNode(v));
+			    tr.appendChild(td);
+			}
+			
+		    } else {
+			
+			var v = props[k];
+			var td = document.createElement("td");
+			
+			td.appendChild(document.createTextNode(v));
+			tr.appendChild(td);
+		    }
 		    
-		    td.appendChild(document.createTextNode(v));
-		    tr.appendChild(td);
 		    table.appendChild(tr);
 		}
 		
@@ -86,7 +124,20 @@ whosonfirst.spatial.pip = (function(){
 
 	    wrapper.appendChild(table);
 	    return wrapper;
-	}
+	},
+
+	'is_wildcard': function(str) {
+
+	    if (str.endsWith(":")){
+		is_wildcard = true;
+	    }
+	    
+	    if (str.endsWith("*")){
+		is_wildcard = true;
+	    }
+
+	    return false;
+	},
 	
     };
 
