@@ -1,7 +1,5 @@
 # go-whosonfirst-spatial
 
-![](docs/images/wof-spatial-sfo.png)
-
 ## IMPORTANT
 
 It is work in progress. It works... until it doesn't. It is not documented.
