@@ -48,8 +48,8 @@ whosonfirst.spatial.pip = (function(){
 		var props = f["properties"];
 
 		// draw table header
-		
-		if (i == 0){
+
+		if (i % 10 == 0){
 
 		    var tr = document.createElement("tr");
 	    
