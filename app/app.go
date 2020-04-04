@@ -50,7 +50,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 	if err != nil {
 		return nil, err
 	}
-	
+
 	sp := SpatialApplication{
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_r,

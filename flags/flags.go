@@ -227,6 +227,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String("spatial-database-uri", "rtree://", "Valid options are: rtree://")
 
+	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
 	fs.String("properties-reader-uri", "", "...")
 
 	modes := index.Modes()
@@ -266,8 +267,6 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String("host", "localhost", "The hostname to listen for requests on.")
 	fs.Int("port", 8080, "The port number to listen for requests on.")
-
-	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
 
 	fs.Bool("enable-geojson", false, "Allow users to request GeoJSON FeatureCollection formatted responses.")
 	fs.Bool("enable-candidates", false, "Enable the /candidates endpoint to return candidate bounding boxes (as GeoJSON) for requests.")
