@@ -9,6 +9,7 @@ import (
 	"fmt"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	log "log"
