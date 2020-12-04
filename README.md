@@ -57,7 +57,15 @@ _Please write me_
 
 _Please write me_
 
+### Filters
+
+_Please write me_
+
 ### Indices
+
+_Please write me_
+
+### Standard Places Response (SPR)
 
 _Please write me_
 
