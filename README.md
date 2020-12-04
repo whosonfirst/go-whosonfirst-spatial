@@ -2,9 +2,64 @@
 
 ## IMPORTANT
 
-It is work in progress. It works... until it doesn't. It is not documented.
+It is work in progress. It works... until it doesn't. It is not well documented yet.
 
 _Once complete this package will supersede the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package._
+
+## Example
+
+```
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"	
+	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+)
+
+func main() {
+
+	fl, _ := flags.CommonFlags()
+	flags.Parse(fl)
+
+	flags.ValidateCommonFlags(fl)
+
+	paths := fl.Args()
+	
+	ctx := context.Background()
+
+	spatial_app, _ := app.NewSpatialApplicationWithFlagSet(ctx, fl)
+	spatial_app.IndexPaths(ctx, paths...)
+
+	coords, _ := geojson_utils.NewCoordinateFromLatLons(37.794906, -122.395229)
+	f, _ := filter.NewSPRFilter()
+
+	spatial_db := spatial_app.SpatialDatabase
+	spatial_results, _ := spatial_db.PointInPolygon(ctx, &coords, f)
+
+	body, _ := json.Marshal(spatial_results)
+	fmt.Println(string(body))
+}
+```
+
+_Error handling omitted for brevity._
+
+## Concepts
+
+### Applications
+
+_Please write me_
+
+### Database
+
+_Please write me_
+
+### Indices
+
+_Please write me_
 
 ## Interfaces
 
