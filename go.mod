@@ -5,8 +5,8 @@ go 1.12
 require (
 	github.com/aaronland/go-http-tangramjs v0.0.7
 	github.com/aaronland/go-roster v0.0.2
-	github.com/dhconnelly/rtreego v1.0.0
-	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/dhconnelly/rtreego v1.0.0 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 	github.com/tidwall/gjson v1.6.3
 	github.com/tidwall/sjson v1.1.2

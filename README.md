@@ -98,7 +98,7 @@ type PropertiesReader interface {
 
 ## See also
 
-* https://github.com/whosonfirst/go-whosonfirst-spatial-database-sqlite
+* https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc
