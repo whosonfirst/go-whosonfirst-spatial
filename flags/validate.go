@@ -1,8 +1,8 @@
 package flags
 
 import (
-	"flag"
 	"errors"
+	"flag"
 )
 
 func ValidateCommonFlags(fs *flag.FlagSet) error {

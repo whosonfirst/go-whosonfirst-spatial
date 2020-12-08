@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"log"
 	"os"
@@ -64,20 +65,33 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs := NewFlagSet("common")
 
-	fs.String("spatial-database-uri", "rtree://", "Valid options are: rtree://")
+	// spatial databases
+
+	availables_databases := database.Schemes()
+	desc_databases := fmt.Sprintf("Valid options are: %s", available_databases)
+
+	fs.String("spatial-database-uri", "rtree://", desc_databases)
+
+	// property readers
 
 	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
-	fs.String("properties-reader-uri", "", "...")
+
+	availables_property_readers := properties.Schemes()
+	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
+
+	fs.String("properties-reader-uri", "", desc_property_readers)
+
+	// indexing modes
 
 	modes := index.Modes()
-	modes = append(modes, "spatialite")
-
 	sort.Strings(modes)
 
 	valid_modes := strings.Join(modes, ", ")
 	desc_modes := fmt.Sprintf("Valid modes are: %s.", valid_modes)
 
-	fs.String("mode", "files", desc_modes)
+	fs.String("mode", "repo://", desc_modes)
+
+	//
 
 	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 

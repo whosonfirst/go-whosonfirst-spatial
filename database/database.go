@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"github.com/aaronland/go-roster"
 	"github.com/skelterjohn/geom"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
@@ -9,6 +10,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
+	"sort"
 )
 
 type SpatialDatabase interface {
@@ -50,6 +52,19 @@ func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDataba
 	}
 
 	return spatial_databases.Register(ctx, scheme, f)
+}
+
+func Schemes() []string {
+
+	schemes := []string{}
+
+	for _, dr := range spatial_databases {
+		scheme := fmt.Sprintf("%s://", dr)
+		schemss = append(schemes, scheme)
+	}
+
+	sort.Strings(schemes)
+	return schemes
 }
 
 func NewSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error) {
