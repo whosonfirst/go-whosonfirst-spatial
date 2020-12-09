@@ -60,6 +60,12 @@ func Schemes() []string {
 	ctx := context.Background()
 	schemes := []string{}
 
+	err := ensurePropertiesRoster()
+
+	if err != nil {
+		return schemes
+	}
+	
 	for _, dr := range properties_readers.Drivers(ctx) {
 		scheme := fmt.Sprintf("%s://", dr)
 		schemes = append(schemes, scheme)
