@@ -8,7 +8,7 @@ _Once complete this package will supersede the [go-whosonfirst-pip-v2](https://g
 
 ## Motivation
 
-The following is adapted from [an answer about the differences](https://github.com/whosonfirst/go-whosonfirst-pip-v2/issues/34) between this package and the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package from which it is derived:
+The following is adapted from [an answer I gave when asked about the differences](https://github.com/whosonfirst/go-whosonfirst-pip-v2/issues/34) between this package and the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package from which it is derived:
 
 ---
 
