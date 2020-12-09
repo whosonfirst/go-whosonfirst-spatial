@@ -10,7 +10,7 @@ _Once complete this package will supersede the [go-whosonfirst-pip-v2](https://g
 
 The following is adapted from [an answer about the differences](https://github.com/whosonfirst/go-whosonfirst-pip-v2/issues/34) between this package and the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package from which it is derived:
 
---
+---
 
 It is an attempt to de-couple the various components that make up `go-whosonfirst-pip-v2` – indexing, storage, querying and serving – in to separate packages in order to allow for more flexibility.
 
@@ -47,7 +47,7 @@ import (
 )
 ```
 
-Here is a concrete example, implementing the PIP service over HTTP using a SQLite backend:
+Here is a concrete example, implementing a point-in-polygon service over HTTP using a SQLite backend:
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http-sqlite/blob/main/cmd/server/main.go
 
@@ -73,10 +73,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"	
-	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"	
 )
 
 func main() {
