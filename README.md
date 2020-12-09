@@ -75,6 +75,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geo"		
 	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"	
 )
 
@@ -92,7 +93,7 @@ func main() {
 	spatial_app, _ := app.NewSpatialApplicationWithFlagSet(ctx, fl)
 	spatial_app.IndexPaths(ctx, paths...)
 
-	coords, _ := geojson_utils.NewCoordinateFromLatLons(37.794906, -122.395229)
+	coords, _ := geo.NewCoordinate(-122.395229, 37.794906)
 	f, _ := filter.NewSPRFilter()
 
 	spatial_db := spatial_app.SpatialDatabase
