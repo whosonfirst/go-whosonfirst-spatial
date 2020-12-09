@@ -93,11 +93,11 @@ func main() {
 	spatial_app, _ := app.NewSpatialApplicationWithFlagSet(ctx, fl)
 	spatial_app.IndexPaths(ctx, paths...)
 
-	coords, _ := geo.NewCoordinate(-122.395229, 37.794906)
+	c, _ := geo.NewCoordinate(-122.395229, 37.794906)
 	f, _ := filter.NewSPRFilter()
 
 	spatial_db := spatial_app.SpatialDatabase
-	spatial_results, _ := spatial_db.PointInPolygon(ctx, &coords, f)
+	spatial_results, _ := spatial_db.PointInPolygon(ctx, c, f)
 
 	body, _ := json.Marshal(spatial_results)
 	fmt.Println(string(body))
