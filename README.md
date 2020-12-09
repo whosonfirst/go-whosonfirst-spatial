@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"	
-	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
@@ -98,6 +98,7 @@ type PropertiesReader interface {
 
 ## See also
 
+* https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
 * https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http-sqlite

@@ -3,6 +3,12 @@ package flags
 import (
 	"errors"
 	"flag"
+	"fmt"
+	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
+	"sort"
+	"strings"
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
@@ -11,7 +17,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	// spatial databases
 
-	availables_databases := database.Schemes()
+	available_databases := database.Schemes()
 	desc_databases := fmt.Sprintf("Valid options are: %s", available_databases)
 
 	fs.String("spatial-database-uri", "rtree://", desc_databases)
@@ -20,7 +26,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
 
-	availables_property_readers := properties.Schemes()
+	available_property_readers := properties.Schemes()
 	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
 
 	fs.String("properties-reader-uri", "", desc_property_readers)
@@ -68,7 +74,7 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	spatial_database_uri, err = StringVar(fs, "spatial-database-uri")
+	spatial_database_uri, err := StringVar(fs, "spatial-database-uri")
 
 	if err != nil {
 		return err

@@ -3,7 +3,7 @@ module github.com/whosonfirst/go-whosonfirst-spatial
 go 1.12
 
 require (
-	github.com/aaronland/go-http-tangramjs v0.0.7
+	github.com/aaronland/go-http-tangramjs v0.0.7 // indirect
 	github.com/aaronland/go-roster v0.0.2
 	github.com/dhconnelly/rtreego v1.0.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
@@ -13,8 +13,8 @@ require (
 	github.com/whosonfirst/go-cache v0.2.0 // indirect
 	github.com/whosonfirst/go-reader v0.2.0 // indirect
 	github.com/whosonfirst/go-reader-cachereader v0.0.0-20200520215638-b6af3cdb91ac // indirect
-	github.com/whosonfirst/go-reader-http v0.1.0
-	github.com/whosonfirst/go-reader-whosonfirst-data v1.0.0
+	github.com/whosonfirst/go-reader-http v0.1.0 // indirect
+	github.com/whosonfirst/go-reader-whosonfirst-data v1.0.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-flags v0.1.0
 	github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3
 	github.com/whosonfirst/go-whosonfirst-index v0.3.2

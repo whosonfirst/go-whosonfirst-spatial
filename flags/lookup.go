@@ -1,7 +1,9 @@
 package flags
 
 import (
+	"errors"
 	"flag"
+	"fmt"
 )
 
 func Lookup(fl *flag.FlagSet, k string) (interface{}, error) {

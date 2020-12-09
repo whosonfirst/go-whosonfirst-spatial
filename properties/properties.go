@@ -57,11 +57,12 @@ func RegisterPropertiesReader(ctx context.Context, scheme string, f PropertiesRe
 
 func Schemes() []string {
 
+	ctx := context.Background()
 	schemes := []string{}
 
-	for _, dr := range properties_readers {
+	for _, dr := range properties_readers.Drivers(ctx) {
 		scheme := fmt.Sprintf("%s://", dr)
-		schemss = append(schemes, scheme)
+		schemes = append(schemes, scheme)
 	}
 
 	sort.Strings(schemes)

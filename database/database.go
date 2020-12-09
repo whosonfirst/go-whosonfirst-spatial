@@ -56,11 +56,12 @@ func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDataba
 
 func Schemes() []string {
 
+	ctx := context.Background()
 	schemes := []string{}
 
-	for _, dr := range spatial_databases {
+	for _, dr := range spatial_databases.Drivers(ctx) {
 		scheme := fmt.Sprintf("%s://", dr)
-		schemss = append(schemes, scheme)
+		schemes = append(schemes, scheme)
 	}
 
 	sort.Strings(schemes)

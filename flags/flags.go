@@ -1,15 +1,10 @@
 package flags
 
 import (
-	"errors"
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-index"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"log"
 	"os"
-	"sort"
 	"strings"
 )
 
