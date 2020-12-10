@@ -11,6 +11,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
 	"sort"
+	"strings"
 )
 
 type SpatialDatabase interface {
@@ -64,9 +65,9 @@ func Schemes() []string {
 	if err != nil {
 		return schemes
 	}
-	
+
 	for _, dr := range spatial_databases.Drivers(ctx) {
-		scheme := fmt.Sprintf("%s://", dr)
+		scheme := fmt.Sprintf("%s://", strings.ToLower(dr))
 		schemes = append(schemes, scheme)
 	}
 
