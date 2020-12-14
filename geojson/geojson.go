@@ -1,5 +1,7 @@
 package geojson
 
+// PPPPPPRRRRRROOOBABLY DEPRECATED... (20201214/thisisaaronland)
+
 // would that we could have a single all-purpose geojson interface
 // but since we don't necessarily know what *kind* of geometry we're
 // dealing with (I mean here we do but that's not the point) it's
