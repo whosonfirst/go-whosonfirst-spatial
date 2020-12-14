@@ -7,7 +7,6 @@ import (
 	"github.com/skelterjohn/geom"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	// "github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/paulmach/go.geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
