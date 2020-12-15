@@ -136,6 +136,8 @@ github.com/tidwall/gjson v1.6.0/go.mod h1:P256ACg0Mn+j1RXIDXoss50DeIABTYK1PULOJH
 github.com/tidwall/gjson v1.6.1/go.mod h1:BaHyNc5bjzYkPqgLq7mdVzeiRtULKULXLgZFKsxEHI0=
 github.com/tidwall/gjson v1.6.3 h1:aHoiiem0dr7GHkW001T1SMTJ7X5PvyekH5WX0whWGnI=
 github.com/tidwall/gjson v1.6.3/go.mod h1:BaHyNc5bjzYkPqgLq7mdVzeiRtULKULXLgZFKsxEHI0=
+github.com/tidwall/gjson v1.6.4 h1:JKsCsJqRVFz8eYCsQ5E/ANRbK6CanAtA9IUvGsXklyo=
+github.com/tidwall/gjson v1.6.4/go.mod h1:BaHyNc5bjzYkPqgLq7mdVzeiRtULKULXLgZFKsxEHI0=
 github.com/tidwall/match v1.0.1 h1:PnKP62LPNxHKTwvHHZZzdOAOCtsJTjo6dZLCwpKm5xc=
 github.com/tidwall/match v1.0.1/go.mod h1:LujAq0jyVjBy028G1WhWfIzbpQfMO8bBZ6Tyb0+pL9E=
 github.com/tidwall/pretty v0.0.0-20190325153808-1166b9ac2b65 h1:rQ229MBgvW68s1/g6f1/63TgYwYxfF4E+bi/KC19P8g=
@@ -221,6 +223,8 @@ github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.1/go.mod h1:hC145O2TiPTU8
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3 h1:v4BLn+kM/BB2x1ZiMLlPAiBcFjmWnEGJmnIGqvZC/LI=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3/go.mod h1:/F8jdjew5bCB9J6G0xyMMEay+pQv/WuARYhASMKZbR4=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.13.0 h1:vYNFtbHfzULQljpjYYuozIQCQ5P6oFipAGHC2slJO0o=
+github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.14.0 h1:4AInFhRuaanU61oWfLhAiJpMbLr5H9Ofk+NEnmmKclU=
+github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.14.0/go.mod h1:UkzipFE8gZC9NU1PLIE4DUwjFHOlafkoNxd2Ng0ZIjc=
 github.com/whosonfirst/go-whosonfirst-hash v0.1.0 h1:FpnclPIb+8M1uhSXfl3z8nYcG/3O59vgfkdV+m0hQpA=
 github.com/whosonfirst/go-whosonfirst-hash v0.1.0/go.mod h1:1ZdCFZTnQt5bwnsj2daB9yHilKOKToVh+Tyj/Z8TbUk=
 github.com/whosonfirst/go-whosonfirst-index v0.1.1/go.mod h1:vgUaNF7Y7gFrqQ67UTkkMioXdGNUY4KpSlqhGy46wfg=
