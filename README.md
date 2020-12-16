@@ -138,9 +138,9 @@ _These interfaces are still subject to change. Things are settling down but noth
 type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	PointInPolygon(context.Context, *geom.Coord, ...filter.Filter) (spr.StandardPlacesResults, error)
-	PointInPolygonCandidates(context.Context, *geom.Coord) (*geojson.FeatureCollection, error)
-	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan *geojson.Feature, chan error, chan bool)
+	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)	
+	PointInPolygonCandidates(context.Context, *geom.Coord) ([]*spatial.PointInPolygonCandidate, error)
+	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan *spatial.PointInPolygonCandidate, chan error, chan bool)
 	Close(context.Context) error
 }
 ```
@@ -150,8 +150,7 @@ type SpatialDatabase interface {
 ```
 type PropertiesReader interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
-	PropertiesResponseResultsWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*PropertiesResponseResults, error)
-	AppendPropertiesWithFeatureCollection(context.Context, *geojson.FeatureCollection, []string) error
+	PropertiesResponseResultsWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*spatial.PropertiesResponseResults, error)
 	Close(context.Context) error
 }
 ```
@@ -164,4 +163,3 @@ type PropertiesReader interface {
 * https://github.com/whosonfirst/go-whosonfirst-spatial-http-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc
 * https://github.com/whosonfirst/go-whosonfirst-geojson-v2
-* https://github.com/paulmach/go.geojson
