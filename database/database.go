@@ -17,9 +17,9 @@ import (
 type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	PointInPolygon(context.Context, *geom.Coord, ...filter.Filter) (spr.StandardPlacesResults, error)
-	PointInPolygonCandidates(context.Context, *geom.Coord) (*geojson.FeatureCollection, error)
+	PointInPolygonCandidates(context.Context, *geom.Coord, ...filter.Filter) (*geojson.FeatureCollection, error)
 	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan *geojson.Feature, chan error, chan bool)
+	PointInPolygonCandidatesWithChannels(context.Context, chan *geojson.Feature, chan error, chan bool, *geom.Coord, ...filter.Filter)
 	StandardPlacesResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.FeatureCollection, error)
 	Close(context.Context) error
 }
