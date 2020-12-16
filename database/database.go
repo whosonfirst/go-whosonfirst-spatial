@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/aaronland/go-roster"
-	"github.com/paulmach/go.geojson"
 	"github.com/skelterjohn/geom"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-whosonfirst-spatial"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
@@ -17,10 +17,9 @@ import (
 type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	PointInPolygon(context.Context, *geom.Coord, ...filter.Filter) (spr.StandardPlacesResults, error)
-	PointInPolygonCandidates(context.Context, *geom.Coord, ...filter.Filter) (*geojson.FeatureCollection, error)
+	PointInPolygonCandidates(context.Context, *geom.Coord, ...filter.Filter) ([]*spatial.PointInPolygonCandidate, error)
 	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	PointInPolygonCandidatesWithChannels(context.Context, chan *geojson.Feature, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	StandardPlacesResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.FeatureCollection, error)
+	PointInPolygonCandidatesWithChannels(context.Context, chan *spatial.PointInPolygonCandidate, chan error, chan bool, *geom.Coord, ...filter.Filter)
 	Close(context.Context) error
 }
 

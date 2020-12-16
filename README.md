@@ -141,7 +141,6 @@ type SpatialDatabase interface {
 	PointInPolygonCandidates(context.Context, *geom.Coord) (*geojson.FeatureCollection, error)
 	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
 	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan *geojson.Feature, chan error, chan bool)
-	StandardPlacesResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.FeatureCollection, error)
 	Close(context.Context) error
 }
 ```
