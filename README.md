@@ -130,6 +130,8 @@ _Please write me_
 
 ## Interfaces
 
+_These interfaces are still subject to change. Things are settling down but nothing is final yet._
+
 ### SpatialDatabase
 
 ```
