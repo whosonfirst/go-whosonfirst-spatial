@@ -20,7 +20,7 @@ func NewSPRFilterFromQuery(query url.Values) (Filter, error) {
 	inputs.IsSuperseding = query["is_superseding"]
 
 	inputs.IsAlternateGeometry = query["is_alternate"]
-	inputs.HasAlternateGeometryWithLabel = query["alt_label"]	
-	
+	inputs.HasAlternateGeometry = query["alt_label"]
+
 	return NewSPRFilterFromInputs(inputs)
 }

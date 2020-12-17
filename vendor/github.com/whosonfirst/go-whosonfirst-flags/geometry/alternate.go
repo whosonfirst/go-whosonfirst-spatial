@@ -1,14 +1,48 @@
 package geometry
 
 import (
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-flags"
-	"github.com/whosonfirst/go-whosonfirst-uri"	
+	"github.com/whosonfirst/go-whosonfirst-uri"
+	"strconv"
 )
+
+const DUMMY_ID int64 = 0
+const DUMMY_ALT_LABEL string = "xxxxxx"
 
 type AlternateGeometryFlag struct {
 	flags.AlternateGeometryFlag
 	is_alt bool
 	label string
+}
+
+func DummyURI() string {
+	return fmt.Sprintf("%d.geojson", DUMMY_ID)
+}
+
+func DummyAlternateGeometryURI() string {
+	return DummyAlternateGeometryURIWithLabel(DUMMY_ALT_LABEL)
+}
+
+func DummyAlternateGeometryURIWithLabel(label string) string {
+	return fmt.Sprintf("%d-alt-%s.geojson", DUMMY_ID, label)
+}
+
+func NewIsAlternateGeometryFlag(bool_str string) (flags.AlternateGeometryFlag, error) {
+
+	is_alt, err := strconv.ParseBool(bool_str)
+
+	if err != nil {
+		return nil, err
+	}
+
+	uri_str := DummyURI()
+
+	if is_alt {
+		uri_str = DummyAlternateGeometryURI()
+	}
+
+	return NewAlternateGeometryFlag(uri_str)
 }
 
 func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, error) {
