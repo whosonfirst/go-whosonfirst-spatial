@@ -5,10 +5,17 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"strconv"
+	"math/rand"
+	"time"
 )
 
 const DUMMY_ID int64 = 0
-const DUMMY_ALT_LABEL string = "xxxxxx"
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+var seededRand *rand.Rand = rand.New(
+  rand.NewSource(time.Now().UnixNano()))
 
 type AlternateGeometryFlag struct {
 	flags.AlternateGeometryFlag
@@ -21,12 +28,31 @@ func DummyURI() string {
 }
 
 func DummyAlternateGeometryURI() string {
-	return DummyAlternateGeometryURIWithLabel(DUMMY_ALT_LABEL)
+	alt_label := DummyAlternateURILabel()
+	return DummyAlternateGeometryURIWithLabel(alt_label)
 }
 
 func DummyAlternateGeometryURIWithLabel(label string) string {
 	return fmt.Sprintf("%d-alt-%s.geojson", DUMMY_ID, label)
 }
+
+func DummyAlternateURILabel() string {
+	return stringWithCharset(12, charset)
+}
+
+// https://www.calhoun.io/creating-random-strings-in-go/
+
+func stringWithCharset(length int, charset string) string {
+	
+	b := make([]byte, length)
+	
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	
+	return string(b)
+}
+
 
 func NewIsAlternateGeometryFlag(bool_str string) (flags.AlternateGeometryFlag, error) {
 
@@ -133,3 +159,4 @@ func (f *AlternateGeometryFlag) isEqual(other flags.AlternateGeometryFlag) bool 
 
 	return true
 }
+
