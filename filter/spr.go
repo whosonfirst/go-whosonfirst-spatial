@@ -44,24 +44,6 @@ func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
 
 func (f *SPRFilter) IsAlternateGeometry(path string) bool {
 
-	_, uri_args, err := uri.ParseURI(string)
-
-	if err != nil {
-		return err
-	}
-
-	is_alt := uri_args.IsAlternate
-	alt_label := ""
-	
-	if  is_alt {
-		
-		label, err := uri_args.AltGeom.String()
-
-		if err != nil {
-			return err
-		}
-	}
-	
 
 	
 }
