@@ -1,8 +1,10 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
+	"github.com/whosonfirst/go-whosonfirst-flags/geometry"	
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
 	_ "log"
 	"strconv"
@@ -28,6 +30,8 @@ type SPRFilter struct {
 	Ceased      []flags.ExistentialFlag
 	Superseded  []flags.ExistentialFlag
 	Superseding []flags.ExistentialFlag
+	IsAlternateGeometry flags.AlternateGeometryFlag		
+	HasAlternateGeometry []flags.AlternateGeometryFlag	
 }
 
 func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
@@ -40,12 +44,6 @@ func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
 	}
 
 	return false
-}
-
-func (f *SPRFilter) IsAlternateGeometry(path string) bool {
-
-
-	
 }
 
 func (f *SPRFilter) IsCurrent(fl flags.ExistentialFlag) bool {
@@ -216,6 +214,31 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 		f.Superseding = possible
 	}
 
+	if len(inputs.IsAlternateGeometry) != 0 {
+
+		uri_str := "000-alt-geom.geojson"
+
+		af, err := geometry.NewAlternateGeometryFlag(uri_str)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f.IsAlternateGeometryFlag = af
+	}
+	
+	if len(inputs.HasAlternateGeometry) != 0 {
+
+		possible, err := hasAlternateGeometryFlags(inputs.HasAlternateGeometry)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f.HasAlternateGeometry = possible		
+	}
+
+	
 	return f, nil
 }
 
@@ -266,6 +289,26 @@ func existentialFlags(inputs []string) ([]flags.ExistentialFlag, error) {
 
 			possible = append(possible, fl)
 		}
+	}
+
+	return possible, nil
+}
+
+func hasAlternateGeometryFlags(input []string) ([]flags.AlternateGeometryFlag, error){
+
+	possible := make([]flags.AlternateGeometryFlag, 0)
+	
+	for _, alt_label := range input {
+
+		uri_str := fmt.Sprintf("000-alt-%s", alt_label)
+
+		fl, err := geometry.NewAlternateGeometryFlag(uri_str)
+
+		if err != nil {
+			return nil, err
+		}
+
+		possible = append(possible, fl)
 	}
 
 	return possible, nil

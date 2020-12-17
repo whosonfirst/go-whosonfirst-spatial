@@ -69,7 +69,7 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 		return errors.New("Failed 'is superseding' test")
 	}
 
-	af, err := geometry.NewAlternateGeometryFilter(s.Path())
+	af, err := geometry.NewAlternateGeometryFlag(s.Path())
 
 	if err != nil {
 

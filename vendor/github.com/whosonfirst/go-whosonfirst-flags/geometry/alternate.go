@@ -16,7 +16,7 @@ func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, erro
 	_, uri_args, err := uri.ParseURI(uri_str)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	is_alt := uri_args.IsAlternate
@@ -27,8 +27,10 @@ func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, erro
 		label, err := uri_args.AltGeom.String()
 
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		alt_label = label
 	}
 		
 	// check label against go-whosonfirst-sources here?
@@ -60,7 +62,7 @@ func (f *AlternateGeometryFlag) MatchesAll(others ...flags.AlternateGeometryFlag
 
 	for _, o := range others {
 
-		if f.isEqual(o)
+		if f.isEqual(o){
 			matches += 1
 		}
 
@@ -73,7 +75,7 @@ func (f *AlternateGeometryFlag) MatchesAll(others ...flags.AlternateGeometryFlag
 	return false
 }
 
-func (f *AlternateGeometryFlag) IsAlternateGeometry() string {
+func (f *AlternateGeometryFlag) IsAlternateGeometry() bool {
 	return f.is_alt
 }
 
@@ -87,11 +89,11 @@ func (f *AlternateGeometryFlag) String() string {
 
 func (f *AlternateGeometryFlag) isEqual(other flags.AlternateGeometryFlag) bool {
 
-	if f.IsAlternateGeometry() != o.IsAlternateGeometry(){
+	if f.IsAlternateGeometry() != other.IsAlternateGeometry(){
 		return false
 	}
 
-	if f.Label() != o.Label(){
+	if f.Label() != other.Label(){
 		return false
 	}
 
