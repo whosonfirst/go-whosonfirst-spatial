@@ -16,6 +16,8 @@ type SPRInputs struct {
 	IsDeprecated  []string
 	IsSuperseded  []string
 	IsSuperseding []string
+	IsAlternateGeometry []string
+	HasAlternateGeometryWithLabel []string
 }
 
 type SPRFilter struct {
@@ -38,6 +40,30 @@ func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
 	}
 
 	return false
+}
+
+func (f *SPRFilter) IsAlternateGeometry(path string) bool {
+
+	_, uri_args, err := uri.ParseURI(string)
+
+	if err != nil {
+		return err
+	}
+
+	is_alt := uri_args.IsAlternate
+	alt_label := ""
+	
+	if  is_alt {
+		
+		label, err := uri_args.AltGeom.String()
+
+		if err != nil {
+			return err
+		}
+	}
+	
+
+	
 }
 
 func (f *SPRFilter) IsCurrent(fl flags.ExistentialFlag) bool {

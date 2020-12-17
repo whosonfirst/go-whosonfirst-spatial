@@ -11,6 +11,7 @@ import (
 
 type Filter interface {
 	HasPlacetypes(flags.PlacetypeFlag) bool
+	IsAlternateGeometry() bool
 	IsCurrent(flags.ExistentialFlag) bool
 	IsDeprecated(flags.ExistentialFlag) bool
 	IsCeased(flags.ExistentialFlag) bool
@@ -66,5 +67,11 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 		return errors.New("Failed 'is superseding' test")
 	}
 
+	ok = filters.IsAlternateGeometry(s.Path())
+
+	if !ok {
+		return errors.New("Failed 'is alternate geometry' test")
+	}
+	
 	return nil
 }
