@@ -15,7 +15,7 @@ type AlternateGeometryFlag interface {
 	MatchesAny(...AlternateGeometryFlag) bool
 	MatchesAll(...AlternateGeometryFlag) bool
 	IsAlternateGeometry() bool
-	Label() string	
+	Label() string
 	String() string
 }
 

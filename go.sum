@@ -214,6 +214,8 @@ github.com/whosonfirst/go-whosonfirst-csv v0.1.0 h1:ootWwNZNxXRGrWVQt17NFtcyukpW
 github.com/whosonfirst/go-whosonfirst-csv v0.1.0/go.mod h1:jhAZLURSWJN7mEpdQeXeSQnmLJq+FkTL2Q32iV0170I=
 github.com/whosonfirst/go-whosonfirst-flags v0.1.0 h1:llb2wtsI2y+gHZCmWaamMCx4YDRE8ZXQRRYqC7qB4so=
 github.com/whosonfirst/go-whosonfirst-flags v0.1.0/go.mod h1:bovMiQphaVhqemXFmNVf9Ts0tqnWtzHRFMUSKX+zTE8=
+github.com/whosonfirst/go-whosonfirst-flags v0.2.0 h1:zia/L+rhKSQ5iruITPnwU9lqsd1SavvF+HYRubEARSs=
+github.com/whosonfirst/go-whosonfirst-flags v0.2.0/go.mod h1:ECd0AJJZIlybmjTGB9z+CPz9pSiMTwxur7fPKmDnoqI=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.10.2 h1:pdl6KNnyQ9eKGfmLyrU6CIbiv58V0wN3xP2+NQa/vjU=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.10.2/go.mod h1:uriIqN/EQVo1QllqvpIcAyshnEOggPlraUYjjeyGTBg=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.11.1/go.mod h1:uriIqN/EQVo1QllqvpIcAyshnEOggPlraUYjjeyGTBg=

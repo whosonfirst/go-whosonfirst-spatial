@@ -142,9 +142,11 @@ func NewSPRFilter() (*SPRFilter, error) {
 
 	null_pt, _ := placetypes.NewNullFlag()
 	null_ex, _ := existential.NewNullFlag()
+	null_alt, _ := geometry.NewNullAlternateGeometryFlag()	
 
 	col_pt := []flags.PlacetypeFlag{null_pt}
 	col_ex := []flags.ExistentialFlag{null_ex}
+	col_alt := []flags.AlternateGeometryFlag{null_alt}	
 
 	f := SPRFilter{
 		Placetypes:  col_pt,
@@ -153,6 +155,8 @@ func NewSPRFilter() (*SPRFilter, error) {
 		Ceased:      col_ex,
 		Superseded:  col_ex,
 		Superseding: col_ex,
+		AlternateGeometry: null_alt,
+		AlternateGeometries: col_alt,		
 	}
 
 	return &f, nil
@@ -236,7 +240,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 
 		is_alt := inputs.IsAlternateGeometry[0]
 
-		af, err := geometry.NewIsAlternateGeometryFlag(is_alt)
+		af, err := geometry.NewIsAlternateGeometryFlagWithString(is_alt)
 
 		if err != nil {
 			return nil, err

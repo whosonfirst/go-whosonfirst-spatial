@@ -4,23 +4,27 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-uri"
-	"strconv"
+	_ "log"
 	"math/rand"
+	"strconv"
+	"strings"
 	"time"
 )
 
 const DUMMY_ID int64 = 0
 
+const DUMMY_PREFIX string = "dummy"
+
 const charset = "abcdefghijklmnopqrstuvwxyz" +
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 var seededRand *rand.Rand = rand.New(
-  rand.NewSource(time.Now().UnixNano()))
+	rand.NewSource(time.Now().UnixNano()))
 
 type AlternateGeometryFlag struct {
 	flags.AlternateGeometryFlag
 	is_alt bool
-	label string
+	label  string
 }
 
 func DummyURI() string {
@@ -37,30 +41,35 @@ func DummyAlternateGeometryURIWithLabel(label string) string {
 }
 
 func DummyAlternateURILabel() string {
-	return stringWithCharset(12, charset)
+	rand := stringWithCharset(12, charset)
+	return fmt.Sprintf("%s-%s", DUMMY_PREFIX, rand)
 }
 
 // https://www.calhoun.io/creating-random-strings-in-go/
 
 func stringWithCharset(length int, charset string) string {
-	
+
 	b := make([]byte, length)
-	
+
 	for i := range b {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
-	
+
 	return string(b)
 }
 
-
-func NewIsAlternateGeometryFlag(bool_str string) (flags.AlternateGeometryFlag, error) {
+func NewIsAlternateGeometryFlagWithString(bool_str string) (flags.AlternateGeometryFlag, error) {
 
 	is_alt, err := strconv.ParseBool(bool_str)
 
 	if err != nil {
 		return nil, err
 	}
+
+	return NewIsAlternateGeometryFlag(is_alt)
+}
+
+func NewIsAlternateGeometryFlag(is_alt bool) (flags.AlternateGeometryFlag, error) {
 
 	uri_str := DummyURI()
 
@@ -69,6 +78,41 @@ func NewIsAlternateGeometryFlag(bool_str string) (flags.AlternateGeometryFlag, e
 	}
 
 	return NewAlternateGeometryFlag(uri_str)
+}
+
+func NewAlternateGeometryFlagWithLabel(label string) (flags.AlternateGeometryFlag, error) {
+
+	uri_str := DummyAlternateGeometryURIWithLabel(label)
+	return NewAlternateGeometryFlag(uri_str)
+}
+
+func NewAlternateGeometryFlagsWithLabelArray(labels ...string) ([]flags.AlternateGeometryFlag, error) {
+
+	uris := make([]string, len(labels))
+
+	for i, label := range labels {
+		uris[i] = DummyAlternateGeometryURIWithLabel(label)
+	}
+
+	return NewAlternateGeometryFlagsArray(uris...)
+}
+
+func NewAlternateGeometryFlagsArray(uris ...string) ([]flags.AlternateGeometryFlag, error) {
+
+	alt_flags := make([]flags.AlternateGeometryFlag, 0)
+
+	for _, uri_str := range uris {
+
+		fl, err := NewAlternateGeometryFlag(uri_str)
+
+		if err != nil {
+			return nil, err
+		}
+
+		alt_flags = append(alt_flags, fl)
+	}
+
+	return alt_flags, nil
 }
 
 func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, error) {
@@ -81,9 +125,9 @@ func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, erro
 
 	is_alt := uri_args.IsAlternate
 	alt_label := ""
-	
-	if  is_alt {
-		
+
+	if is_alt {
+
 		label, err := uri_args.AltGeom.String()
 
 		if err != nil {
@@ -92,12 +136,12 @@ func NewAlternateGeometryFlag(uri_str string) (flags.AlternateGeometryFlag, erro
 
 		alt_label = label
 	}
-		
+
 	// check label against go-whosonfirst-sources here?
 
 	f := AlternateGeometryFlag{
 		is_alt: is_alt,
-		label: alt_label,
+		label:  alt_label,
 	}
 
 	return &f, nil
@@ -107,7 +151,7 @@ func (f *AlternateGeometryFlag) MatchesAny(others ...flags.AlternateGeometryFlag
 
 	for _, o := range others {
 
-		if f.isEqual(o){
+		if f.isEqual(o) {
 			return true
 		}
 
@@ -122,7 +166,7 @@ func (f *AlternateGeometryFlag) MatchesAll(others ...flags.AlternateGeometryFlag
 
 	for _, o := range others {
 
-		if f.isEqual(o){
+		if f.isEqual(o) {
 			matches += 1
 		}
 
@@ -149,14 +193,16 @@ func (f *AlternateGeometryFlag) String() string {
 
 func (f *AlternateGeometryFlag) isEqual(other flags.AlternateGeometryFlag) bool {
 
-	if f.IsAlternateGeometry() != other.IsAlternateGeometry(){
+	if f.IsAlternateGeometry() != other.IsAlternateGeometry() {
 		return false
 	}
 
-	if f.Label() != other.Label(){
-		return false
+	if !strings.HasPrefix(f.Label(), DUMMY_PREFIX) {
+
+		if f.Label() != other.Label() {
+			return false
+		}
 	}
 
 	return true
 }
-
