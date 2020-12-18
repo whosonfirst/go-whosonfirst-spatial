@@ -2,6 +2,7 @@ package flags
 
 import (
 	"flag"
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"sort"
 	"strings"
