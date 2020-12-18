@@ -70,7 +70,7 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 	}
 
 	af, err := geometry.NewAlternateGeometryFlag(s.Path())
-	
+
 	if err != nil {
 
 		msg := fmt.Sprintf("Unable to parse alternate geometry (%s) for ID %s, because '%s' - skipping alternate geometry filters", s.Path(), s.Id(), err)

@@ -142,21 +142,21 @@ func NewSPRFilter() (*SPRFilter, error) {
 
 	null_pt, _ := placetypes.NewNullFlag()
 	null_ex, _ := existential.NewNullFlag()
-	null_alt, _ := geometry.NewNullAlternateGeometryFlag()	
+	null_alt, _ := geometry.NewNullAlternateGeometryFlag()
 
 	col_pt := []flags.PlacetypeFlag{null_pt}
 	col_ex := []flags.ExistentialFlag{null_ex}
-	col_alt := []flags.AlternateGeometryFlag{null_alt}	
+	col_alt := []flags.AlternateGeometryFlag{null_alt}
 
 	f := SPRFilter{
-		Placetypes:  col_pt,
-		Current:     col_ex,
-		Deprecated:  col_ex,
-		Ceased:      col_ex,
-		Superseded:  col_ex,
-		Superseding: col_ex,
-		AlternateGeometry: null_alt,
-		AlternateGeometries: col_alt,		
+		Placetypes:          col_pt,
+		Current:             col_ex,
+		Deprecated:          col_ex,
+		Ceased:              col_ex,
+		Superseded:          col_ex,
+		Superseding:         col_ex,
+		AlternateGeometry:   null_alt,
+		AlternateGeometries: col_alt,
 	}
 
 	return &f, nil
