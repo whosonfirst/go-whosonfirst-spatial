@@ -48,21 +48,21 @@ func ValidateQueryFlags(fs *flag.FlagSet) error {
 	if err != nil {
 		return err
 	}
-	
-	lon, err := Float64Var(fs, "longitude")	
+
+	lon, err := Float64Var(fs, "longitude")
 
 	if err != nil {
 		return err
 	}
 
-	if !geo.IsValidLatitude(lat){
+	if !geo.IsValidLatitude(lat) {
 		return errors.New("Invalid latitude")
 	}
 
-	if !geo.IsValidLongitude(lon){
+	if !geo.IsValidLongitude(lon) {
 		return errors.New("Invalid longitude")
 	}
-	
+
 	_, err = StringVar(fs, "geometries")
 
 	if err != nil {
@@ -104,7 +104,6 @@ func ValidateQueryFlags(fs *flag.FlagSet) error {
 	if err != nil {
 		return err
 	}
-	
-	
+
 	return nil
 }
