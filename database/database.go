@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 	"fmt"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
 	"github.com/aaronland/go-roster"
-	"github.com/skelterjohn/geom"
-	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spr"
@@ -15,11 +15,11 @@ import (
 )
 
 type SpatialDatabase interface {
-	IndexFeature(context.Context, wof_geojson.Feature) error
-	PointInPolygon(context.Context, *geom.Coord, ...filter.Filter) (spr.StandardPlacesResults, error)
+	IndexFeature(context.Context, *geojson.Feature) error
+	PointInPolygon(context.Context, orb.Point, ...filter.Filter) (spr.StandardPlacesResults, error)
 	PointInPolygonCandidates(context.Context, *geom.Coord, ...filter.Filter) ([]*spatial.PointInPolygonCandidate, error)
 	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	PointInPolygonCandidatesWithChannels(context.Context, chan *spatial.PointInPolygonCandidate, chan error, chan bool, *geom.Coord, ...filter.Filter)
+	PointInPolygonCandidatesWithChannels(context.Context, chan *spatial.PointInPolygonCandidate, chan error, chan bool, orb.Point, ...filter.Filter)
 	Close(context.Context) error
 }
 

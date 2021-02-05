@@ -1,10 +1,10 @@
 package geo
 
 import (
-	"github.com/skelterjohn/geom"
+	"github.com/paulmach/orb"
 )
 
-func MultiPolygonContainsCoord(multi [][][][]float64, c *geom.Coord) bool {
+func MultiPolygonContainsCoord(multi [][][][]float64, c *orb.Point) bool {
 
 	for _, poly := range multi {
 
@@ -16,7 +16,7 @@ func MultiPolygonContainsCoord(multi [][][][]float64, c *geom.Coord) bool {
 	return false
 }
 
-func PolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
+func PolygonContainsCoord(poly [][][]float64, c *orb.Point) bool {
 
 	count := len(poly)
 
@@ -47,7 +47,9 @@ func PolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 	return true
 }
 
-func RingContainsCoord(ring [][]float64, c *geom.Coord) bool {
+// FIX ME...
+
+func RingContainsCoord(ring [][]float64, c *orb.Point) bool {
 
 	polygon := geom.Polygon{}
 
