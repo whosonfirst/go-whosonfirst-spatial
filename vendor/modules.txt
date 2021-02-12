@@ -24,6 +24,8 @@ github.com/tidwall/match
 github.com/tidwall/pretty
 # github.com/tidwall/sjson v1.1.5
 github.com/tidwall/sjson
+# github.com/whosonfirst/go-reader v0.2.1
+github.com/whosonfirst/go-reader
 # github.com/whosonfirst/go-sanitize v0.1.0
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-flags v0.2.0

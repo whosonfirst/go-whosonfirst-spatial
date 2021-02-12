@@ -200,6 +200,8 @@ github.com/whosonfirst/go-reader v0.1.1 h1:0fXoYQR/Yyh3PKk+9Huwoc6dCAt8l1tjg2dES
 github.com/whosonfirst/go-reader v0.1.1/go.mod h1:w0AeU+Ojyfmxb7r+rcSYyxpCxrhxlHv+D9EgEwQsqcM=
 github.com/whosonfirst/go-reader v0.2.0 h1:Et8rvkh+86msAo4Db4h88m1t2QDSMNr3rLy6RqJzeJc=
 github.com/whosonfirst/go-reader v0.2.0/go.mod h1:qUhz3OWefOUX/G1nzCEUzJskDjkF+l9oKPOM3K2fAJI=
+github.com/whosonfirst/go-reader v0.2.1 h1:URhO7a2rDZizElGPy7lrWDpV1c4ceInYMGNQPXsQFiM=
+github.com/whosonfirst/go-reader v0.2.1/go.mod h1:qUhz3OWefOUX/G1nzCEUzJskDjkF+l9oKPOM3K2fAJI=
 github.com/whosonfirst/go-reader-cachereader v0.0.0-20200228003730-10ce58b401b3 h1:ecL1aAJKYsJ53WI5aL89LuPOkxvJ2+0+EzXMRM/640s=
 github.com/whosonfirst/go-reader-cachereader v0.0.0-20200228003730-10ce58b401b3/go.mod h1:9R+M4nOXU9eN6tJ9r+zJph3SL6NyYtiOlvNEjMfAbD0=
 github.com/whosonfirst/go-reader-cachereader v0.0.0-20200520215638-b6af3cdb91ac h1:Y2obfwOiyZV/kMDLWcwEdHJ69gonIpwvhUJ7Fev0OD8=
