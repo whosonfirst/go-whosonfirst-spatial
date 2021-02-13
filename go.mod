@@ -16,5 +16,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-log v0.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4
 	github.com/whosonfirst/go-whosonfirst-spr v0.1.0
+	github.com/whosonfirst/go-writer v0.2.0
 	github.com/whosonfirst/warning v0.1.1
 )

@@ -8,6 +8,8 @@ github.com/hashicorp/errwrap
 github.com/hashicorp/go-multierror
 # github.com/mmcloughlin/geohash v0.9.0
 github.com/mmcloughlin/geohash
+# github.com/natefinch/atomic v0.0.0-20150920032501-a62ce929ffcc
+github.com/natefinch/atomic
 # github.com/paulmach/go.geojson v1.4.0
 github.com/paulmach/go.geojson
 # github.com/sfomuseum/go-edtf v0.2.2
@@ -56,5 +58,7 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 github.com/whosonfirst/go-whosonfirst-spr
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri
+# github.com/whosonfirst/go-writer v0.2.0
+github.com/whosonfirst/go-writer
 # github.com/whosonfirst/warning v0.1.1
 github.com/whosonfirst/warning
