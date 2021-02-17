@@ -12,7 +12,8 @@ require (
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-flags v0.2.0
 	github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.15.1
-	github.com/whosonfirst/go-whosonfirst-index v0.3.4
+	github.com/whosonfirst/go-whosonfirst-index v0.3.4 // indirect
+	github.com/whosonfirst/go-whosonfirst-index/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-log v0.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4
 	github.com/whosonfirst/go-whosonfirst-spr v0.1.0

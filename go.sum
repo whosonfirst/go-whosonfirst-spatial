@@ -262,6 +262,8 @@ github.com/whosonfirst/go-whosonfirst-index v0.3.2 h1:Hxbw5W3npHgC9cL9Ea909yzFi8
 github.com/whosonfirst/go-whosonfirst-index v0.3.2/go.mod h1:lebfpAgDKaDBJL3u98IJclttOKTnj7GvCsRZv14wmbE=
 github.com/whosonfirst/go-whosonfirst-index v0.3.4 h1:Ix6IxQOt3FEDcsgtD7uf/cfaKS9AkOgvFePkpWHWIFc=
 github.com/whosonfirst/go-whosonfirst-index v0.3.4/go.mod h1:6PU507JqA3wK/WbCeA3jVGMqcBD/QZ6JGbzmDEXdlfU=
+github.com/whosonfirst/go-whosonfirst-index/v2 v2.0.0 h1:PnPLYvCnBrg7Vvw3ho8tc2lMMRBncHfjVSoGeQ5X5Hw=
+github.com/whosonfirst/go-whosonfirst-index/v2 v2.0.0/go.mod h1:BiIcEdIv7W6CZd/sc9m2npVo/rXCVUvWL7dldUb4bu8=
 github.com/whosonfirst/go-whosonfirst-log v0.1.0 h1:mWYI5hn16uyeLxBmPsLSvYV4rQKK/cxGVhM+bC2ZoGc=
 github.com/whosonfirst/go-whosonfirst-log v0.1.0/go.mod h1:pmgBbxZSnjGVy2nsUJBBMcFagxwIKLlmRsW7ClkXmac=
 github.com/whosonfirst/go-whosonfirst-names v0.1.0 h1:uXop/DwQqH60uDBZvHCPg1yRSQLScbm6VZyqcaED2KE=
