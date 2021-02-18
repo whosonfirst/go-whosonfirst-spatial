@@ -2,7 +2,7 @@ package emitter
 
 import (
 	"context"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/filters"
+	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
 )
 
 func init() {
@@ -30,7 +30,7 @@ func NewFileEmitter(ctx context.Context, uri string) (Emitter, error) {
 	return idx, nil
 }
 
-func (idx *FileEmitter) IndexURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
+func (idx *FileEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
 
 	fh, err := ReaderWithPath(ctx, uri)
 

@@ -44,11 +44,11 @@ github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst
 github.com/whosonfirst/go-whosonfirst-geojson-v2/utils
 # github.com/whosonfirst/go-whosonfirst-hash v0.1.0
 github.com/whosonfirst/go-whosonfirst-hash
-# github.com/whosonfirst/go-whosonfirst-index/v2 v2.0.0
-github.com/whosonfirst/go-whosonfirst-index/v2/emitter
-github.com/whosonfirst/go-whosonfirst-index/v2/filters
-github.com/whosonfirst/go-whosonfirst-index/v2/indexer
-github.com/whosonfirst/go-whosonfirst-index/v2/ioutil
+# github.com/whosonfirst/go-whosonfirst-iterate v1.0.0
+github.com/whosonfirst/go-whosonfirst-iterate/emitter
+github.com/whosonfirst/go-whosonfirst-iterate/filters
+github.com/whosonfirst/go-whosonfirst-iterate/ioutil
+github.com/whosonfirst/go-whosonfirst-iterate/iterator
 # github.com/whosonfirst/go-whosonfirst-log v0.1.0
 github.com/whosonfirst/go-whosonfirst-log
 # github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4

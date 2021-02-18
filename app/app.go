@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/indexer"
+	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
@@ -16,7 +16,7 @@ type SpatialApplication struct {
 	mode             string
 	SpatialDatabase  database.SpatialDatabase
 	PropertiesReader properties.PropertiesReader
-	Indexer           *indexer.Indexer
+	Iterator         *iterator.Iterator
 	Logger           *log.WOFLogger
 }
 
@@ -40,10 +40,10 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, fmt.Errorf("Failed to instantiate properties reader, %v", err)
 	}
 
-	idx, err := NewIndexerWithFlagSet(ctx, fl, spatial_db, properties_r)
+	iter, err := NewIteratorWithFlagSet(ctx, fl, spatial_db, properties_r)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to instantiate indexer, %v", err)
+		return nil, fmt.Errorf("Failed to instantiate iterator, %v", err)
 	}
 
 	err = AppendCustomPlacetypesWithFlagSet(ctx, fl)
@@ -55,7 +55,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 	sp := SpatialApplication{
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_r,
-		Indexer:           idx,
+		Iterator:         iter,
 		Logger:           logger,
 	}
 
@@ -82,7 +82,7 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 
 		t1 := time.Now()
 
-		err := p.Indexer.Index(ctx, paths...)
+		err := p.Iterator.IterateURIs(ctx, paths...)
 
 		if err != nil {
 			p.Logger.Fatal("failed to index paths because %s", err)
@@ -102,11 +102,11 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 
 		for _ = range c {
 
-			if !p.Indexer.IsIndexing() {
+			if !p.Iterator.IsIndexing() {
 				continue
 			}
 
-			p.Logger.Status("indexing %d records indexed", p.Indexer.Indexed)
+			p.Logger.Status("indexing %d records indexed", p.Iterator.Seen)
 		}
 	}()
 

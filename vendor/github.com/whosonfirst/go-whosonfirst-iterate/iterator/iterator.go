@@ -1,8 +1,8 @@
-package indexer
+package iterator
 
 import (
 	"context"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/emitter"
+	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"
 	"io"
 	"log"
 	"net/url"
@@ -12,24 +12,24 @@ import (
 	"time"
 )
 
-type Indexer struct {
+type Iterator struct {
 	Emitter             emitter.Emitter
 	EmitterCallbackFunc emitter.EmitterCallbackFunc
 	Logger              *log.Logger
-	Indexed             int64
+	Seen                int64
 	count               int64
 	max_procs           int
 }
 
-func NewIndexer(ctx context.Context, uri string, cb emitter.EmitterCallbackFunc) (*Indexer, error) {
+func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.EmitterCallbackFunc) (*Iterator, error) {
 
-	idx, err := emitter.NewEmitter(ctx, uri)
+	idx, err := emitter.NewEmitter(ctx, emitter_uri)
 
 	if err != nil {
 		return nil, err
 	}
 
-	u, err := url.Parse(uri)
+	u, err := url.Parse(emitter_uri)
 
 	if err != nil {
 		return nil, err
@@ -52,11 +52,11 @@ func NewIndexer(ctx context.Context, uri string, cb emitter.EmitterCallbackFunc)
 
 	logger := log.Default()
 
-	i := Indexer{
+	i := Iterator{
 		Emitter:             idx,
-		EmitterCallbackFunc: cb,
+		EmitterCallbackFunc: emitter_cb,
 		Logger:              logger,
-		Indexed:             0,
+		Seen:                0,
 		count:               0,
 		max_procs:           max_procs,
 	}
@@ -64,7 +64,7 @@ func NewIndexer(ctx context.Context, uri string, cb emitter.EmitterCallbackFunc)
 	return &i, nil
 }
 
-func (idx *Indexer) Index(ctx context.Context, uris ...string) error {
+func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 
 	t1 := time.Now()
 
@@ -76,11 +76,8 @@ func (idx *Indexer) Index(ctx context.Context, uris ...string) error {
 	idx.increment()
 	defer idx.decrement()
 
-	counter_func := func(ctx context.Context, fh io.ReadSeekCloser, args ...interface{}) error {
-
-		defer atomic.AddInt64(&idx.Indexed, 1)
-		defer fh.Close()
-
+	counter_func := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
+		defer atomic.AddInt64(&idx.Seen, 1)
 		return idx.EmitterCallbackFunc(ctx, fh, args...)
 	}
 
@@ -117,7 +114,7 @@ func (idx *Indexer) Index(ctx context.Context, uris ...string) error {
 				// pass
 			}
 
-			err := idx.Emitter.IndexURI(ctx, counter_func, uri)
+			err := idx.Emitter.WalkURI(ctx, counter_func, uri)
 
 			if err != nil {
 				err_ch <- err
@@ -139,7 +136,7 @@ func (idx *Indexer) Index(ctx context.Context, uris ...string) error {
 	return nil
 }
 
-func (idx *Indexer) IsIndexing() bool {
+func (idx *Iterator) IsIndexing() bool {
 
 	if atomic.LoadInt64(&idx.count) > 0 {
 		return true
@@ -148,10 +145,10 @@ func (idx *Indexer) IsIndexing() bool {
 	return false
 }
 
-func (idx *Indexer) increment() {
+func (idx *Iterator) increment() {
 	atomic.AddInt64(&idx.count, 1)
 }
 
-func (idx *Indexer) decrement() {
+func (idx *Iterator) decrement() {
 	atomic.AddInt64(&idx.count, -1)
 }

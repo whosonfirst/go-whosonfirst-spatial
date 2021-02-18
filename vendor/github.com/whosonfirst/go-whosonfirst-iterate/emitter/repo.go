@@ -30,7 +30,7 @@ func NewRepoEmitter(ctx context.Context, uri string) (Emitter, error) {
 	return idx, nil
 }
 
-func (idx *RepoEmitter) IndexURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
+func (idx *RepoEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
 
 	abs_path, err := filepath.Abs(uri)
 
@@ -39,5 +39,5 @@ func (idx *RepoEmitter) IndexURI(ctx context.Context, index_cb EmitterCallbackFu
 	}
 
 	data_path := filepath.Join(abs_path, "data")
-	return idx.emitter.IndexURI(ctx, index_cb, data_path)
+	return idx.emitter.WalkURI(ctx, index_cb, data_path)
 }

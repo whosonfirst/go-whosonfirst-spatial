@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/filters"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/ioutil"
+	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
+	"github.com/whosonfirst/go-whosonfirst-iterate/ioutil"
 	"io"
 )
 
@@ -35,7 +35,7 @@ func NewFeatureCollectionEmitter(ctx context.Context, uri string) (Emitter, erro
 	return i, nil
 }
 
-func (idx *FeatureCollectionEmitter) IndexURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
+func (idx *FeatureCollectionEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
 
 	fh, err := ReaderWithPath(ctx, uri)
 

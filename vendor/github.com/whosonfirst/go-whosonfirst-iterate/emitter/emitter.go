@@ -18,10 +18,10 @@ type IndexerContextKey string
 
 type EmitterInitializeFunc func(context.Context, string) (Emitter, error)
 
-type EmitterCallbackFunc func(context.Context, io.ReadSeekCloser, ...interface{}) error
+type EmitterCallbackFunc func(context.Context, io.ReadSeeker, ...interface{}) error
 
 type Emitter interface {
-	IndexURI(context.Context, EmitterCallbackFunc, string) error
+	WalkURI(context.Context, EmitterCallbackFunc, string) error
 }
 
 var emitters roster.Roster

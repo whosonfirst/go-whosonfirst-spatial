@@ -3,7 +3,7 @@ package emitter
 import (
 	"context"
 	"github.com/whosonfirst/go-whosonfirst-crawl"
-	"github.com/whosonfirst/go-whosonfirst-index/v2/filters"
+	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
 	"os"
 	"path/filepath"
 )
@@ -33,7 +33,7 @@ func NewDirectoryEmitter(ctx context.Context, uri string) (Emitter, error) {
 	return idx, nil
 }
 
-func (idx *DirectoryEmitter) IndexURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
+func (idx *DirectoryEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
 
 	abs_path, err := filepath.Abs(uri)
 
