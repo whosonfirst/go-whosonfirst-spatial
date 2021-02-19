@@ -64,7 +64,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 
 func (p *SpatialApplication) Close(ctx context.Context) error {
 
-	p.SpatialDatabase.Close(ctx)
+	p.SpatialDatabase.Disconnect(ctx)
 
 	if p.PropertiesReader != nil {
 		p.PropertiesReader.Close(ctx)

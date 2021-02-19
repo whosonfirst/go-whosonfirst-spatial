@@ -14,7 +14,7 @@ type SpatialIndex interface {
 	PointInPolygonCandidates(context.Context, *geom.Coord, ...filter.Filter) ([]*PointInPolygonCandidate, error)
 	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
 	PointInPolygonCandidatesWithChannels(context.Context, chan *PointInPolygonCandidate, chan error, chan bool, *geom.Coord, ...filter.Filter)
-	Close(context.Context) error
+	Disconnect(context.Context) error
 }
 
 type PointInPolygonCandidate struct {

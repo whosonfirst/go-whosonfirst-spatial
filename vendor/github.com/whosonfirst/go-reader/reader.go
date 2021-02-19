@@ -12,8 +12,8 @@ var reader_roster roster.Roster
 type ReaderInitializationFunc func(ctx context.Context, uri string) (Reader, error)
 
 type Reader interface {
-	Read(context.Context, string) (io.ReadCloser, error)
-	URI(string) string
+	Read(context.Context, string) (io.ReadSeekCloser, error)
+	ReaderURI(string) string
 }
 
 func NewService(ctx context.Context, uri string) (Reader, error) {
