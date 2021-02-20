@@ -13,7 +13,7 @@ type ReaderInitializationFunc func(ctx context.Context, uri string) (Reader, err
 
 type Reader interface {
 	Read(context.Context, string) (io.ReadSeekCloser, error)
-	ReaderURI(string) string
+	ReaderURI(context.Context, string) string
 }
 
 func NewService(ctx context.Context, uri string) (Reader, error) {

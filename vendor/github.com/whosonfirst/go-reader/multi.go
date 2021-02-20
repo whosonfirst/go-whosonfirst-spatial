@@ -100,7 +100,7 @@ func (mr *MultiReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser,
 	return fh, nil
 }
 
-func (mr *MultiReader) ReaderURI(uri string) string {
+func (mr *MultiReader) ReaderURI(ctx context.Context, uri string) string {
 
 	mr.mu.RLock()
 
@@ -109,15 +109,14 @@ func (mr *MultiReader) ReaderURI(uri string) string {
 	mr.mu.RUnlock()
 
 	if ok {
-		return mr.readers[idx].ReaderURI(uri)
+		return mr.readers[idx].ReaderURI(ctx, uri)
 	}
 
-	ctx := context.Background()
 	_, err := mr.Read(ctx, uri)
 
 	if err != nil {
 		return fmt.Sprintf("x-urn:go-reader:multi#%s", uri)
 	}
 
-	return mr.ReaderURI(uri)
+	return mr.ReaderURI(ctx, uri)
 }

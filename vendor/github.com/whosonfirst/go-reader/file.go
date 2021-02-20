@@ -59,7 +59,7 @@ func NewFileReader(ctx context.Context, uri string) (Reader, error) {
 
 func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, error) {
 
-	abs_path := r.ReaderURI(path)
+	abs_path := r.ReaderURI(ctx, path)
 
 	_, err := os.Stat(abs_path)
 
@@ -70,6 +70,6 @@ func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, 
 	return os.Open(abs_path)
 }
 
-func (r *FileReader) ReaderURI(path string) string {
+func (r *FileReader) ReaderURI(ctx context.Context, path string) string {
 	return filepath.Join(r.root, path)
 }

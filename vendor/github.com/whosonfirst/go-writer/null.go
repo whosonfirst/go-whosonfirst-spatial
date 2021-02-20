@@ -29,10 +29,10 @@ func (wr *NullWriter) Write(ctx context.Context, uri string, fh io.ReadSeeker) (
 	return io.Copy(io.Discard, fh)
 }
 
-func (wr *NullWriter) WriterURI(uri string) string {
+func (wr *NullWriter) WriterURI(ctx context.Context, uri string) string {
 	return uri
 }
 
-func (wr *NullWriter) Close() error {
+func (wr *NullWriter) Close(ctx context.Context) error {
 	return nil
 }

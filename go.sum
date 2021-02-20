@@ -39,6 +39,8 @@ github.com/whosonfirst/go-reader v0.2.1 h1:URhO7a2rDZizElGPy7lrWDpV1c4ceInYMGNQP
 github.com/whosonfirst/go-reader v0.2.1/go.mod h1:qUhz3OWefOUX/G1nzCEUzJskDjkF+l9oKPOM3K2fAJI=
 github.com/whosonfirst/go-reader v0.3.0 h1:MlNNRzPQMqJKMoU6fueihOxLjtcw1KcfAdTyds+u29s=
 github.com/whosonfirst/go-reader v0.3.0/go.mod h1:ffg8ww1158rNNqStFx64EGmDL5m5WZPsoMqR6wohOWE=
+github.com/whosonfirst/go-reader v0.4.0 h1:9RQEVL+UYUbIuzj4oxSR9bd/sNIQ53/1jePNhpuYZKo=
+github.com/whosonfirst/go-reader v0.4.0/go.mod h1:ffg8ww1158rNNqStFx64EGmDL5m5WZPsoMqR6wohOWE=
 github.com/whosonfirst/go-sanitize v0.1.0 h1:ygSqCnakwdzH/m8UEa15zXGDsoo5/JJeRkgmAjXZrBU=
 github.com/whosonfirst/go-sanitize v0.1.0/go.mod h1:p/emgbafMM0p5iVAz2XWwecYPl06Tw4Jos9rhTKIrt8=
 github.com/whosonfirst/go-whosonfirst-cli v0.1.0/go.mod h1:Edy+amD+fMq1QS1yxB3u8maA8I93q/LG7JRNh+fsdfc=
@@ -68,6 +70,8 @@ github.com/whosonfirst/go-whosonfirst-uri v0.2.0 h1:iODHdyvW+8IXqHZTixZ/9GEZy1dV
 github.com/whosonfirst/go-whosonfirst-uri v0.2.0/go.mod h1:8eaDVcc4v+HHHEDaRbApdmhPwM4/JQllw2PktvZcPVs=
 github.com/whosonfirst/go-writer v0.3.0 h1:BQfYxKpnRXE7Rda3C7FLlJS/U3wrqlXve69TlATaaoE=
 github.com/whosonfirst/go-writer v0.3.0/go.mod h1:kFzhremCFtnkJdmviwJEPLFYKQ5+vq6ocJPxt1bHPFY=
+github.com/whosonfirst/go-writer v0.4.0 h1:pwZWJVvmRzdvTwoHKxRO4VY013ltp9NA7nsTTK4X/L8=
+github.com/whosonfirst/go-writer v0.4.0/go.mod h1:kFzhremCFtnkJdmviwJEPLFYKQ5+vq6ocJPxt1bHPFY=
 github.com/whosonfirst/walk v0.0.1 h1:t0QrqGwOdPMSeovFZSXfiS0GIGHrRXK3Wb9z5Uhs2bg=
 github.com/whosonfirst/walk v0.0.1/go.mod h1:1KtP/VeooSlFOI61p+THc/C16Ra8Z5MjpjI0tsd3c1M=
 github.com/whosonfirst/warning v0.1.0/go.mod h1:cAez7FpC/UEUrbiOXZO15v2JM8eijtFHQlN93AGFy1k=

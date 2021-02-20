@@ -13,8 +13,8 @@ type WriterInitializationFunc func(ctx context.Context, uri string) (Writer, err
 
 type Writer interface {
 	Write(context.Context, string, io.ReadSeeker) (int64, error)
-	Close() error
-	WriterURI(string) string
+	WriterURI(context.Context, string) string
+	Close(context.Context) error
 }
 
 func NewService(ctx context.Context, uri string) (Writer, error) {

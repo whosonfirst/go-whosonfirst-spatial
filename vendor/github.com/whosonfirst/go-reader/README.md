@@ -64,7 +64,7 @@ func main() {
 type Reader interface {
 	Open(context.Context, string) error
 	Read(context.Context, string) (io.ReadSeekCloser, error)
-	ReaderURI(string) string
+	ReaderURI(context.Context, string) string
 }
 ```
 

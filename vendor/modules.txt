@@ -31,7 +31,7 @@ github.com/tidwall/pretty
 # github.com/tidwall/sjson v1.1.5
 ## explicit
 github.com/tidwall/sjson
-# github.com/whosonfirst/go-reader v0.3.0
+# github.com/whosonfirst/go-reader v0.4.0
 ## explicit
 github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-reader/ioutil
@@ -77,7 +77,7 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 github.com/whosonfirst/go-whosonfirst-spr
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri
-# github.com/whosonfirst/go-writer v0.3.0
+# github.com/whosonfirst/go-writer v0.4.0
 ## explicit
 github.com/whosonfirst/go-writer
 # github.com/whosonfirst/walk v0.0.1

@@ -30,10 +30,10 @@ func (wr *StdoutWriter) Write(ctx context.Context, uri string, fh io.ReadSeeker)
 	return io.Copy(os.Stdout, fh)
 }
 
-func (wr *StdoutWriter) WriterURI(uri string) string {
+func (wr *StdoutWriter) WriterURI(ctx context.Context, uri string) string {
 	return uri
 }
 
-func (wr *StdoutWriter) Close() error {
+func (wr *StdoutWriter) Close(ctx context.Context) error {
 	return nil
 }

@@ -39,11 +39,11 @@ func (wr *IOWriter) Write(ctx context.Context, uri string, fh io.ReadSeeker) (in
 	return io.Copy(target, fh)
 }
 
-func (wr *IOWriter) WriterURI(uri string) string {
+func (wr *IOWriter) WriterURI(ctx context.Context, uri string) string {
 	return uri
 }
 
-func (wr *IOWriter) Close() error {
+func (wr *IOWriter) Close(ctx context.Context) error {
 	return nil
 }
 

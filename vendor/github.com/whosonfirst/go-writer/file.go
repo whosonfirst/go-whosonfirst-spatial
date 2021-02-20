@@ -68,7 +68,7 @@ func NewFileWriter(ctx context.Context, uri string) (Writer, error) {
 
 func (wr *FileWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) (int64, error) {
 
-	abs_path := wr.WriterURI(path)
+	abs_path := wr.WriterURI(ctx, path)
 	abs_root := filepath.Dir(abs_path)
 
 	tmp_file, err := os.CreateTemp("", filepath.Base(abs_path))
@@ -118,10 +118,10 @@ func (wr *FileWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) 
 	return b, nil
 }
 
-func (wr *FileWriter) WriterURI(path string) string {
+func (wr *FileWriter) WriterURI(ctx context.Context, path string) string {
 	return filepath.Join(wr.root, path)
 }
 
-func (wr *FileWriter) Close() error {
+func (wr *FileWriter) Close(ctx context.Context) error {
 	return nil
 }

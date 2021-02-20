@@ -32,6 +32,6 @@ func (r *NullReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, e
 	return ioutil.NewReadSeekCloser(br)
 }
 
-func (r *NullReader) ReaderURI(uri string) string {
+func (r *NullReader) ReaderURI(ctx context.Context, uri string) string {
 	return uri
 }
