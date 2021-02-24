@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
-	"github.com/whosonfirst/go-whosonfirst-iterate/ioutil"
+	"github.com/whosonfirst/go-ioutil"
 	"io"
 )
 
