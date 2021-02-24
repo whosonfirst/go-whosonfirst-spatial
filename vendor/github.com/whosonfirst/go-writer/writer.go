@@ -2,9 +2,12 @@ package writer
 
 import (
 	"context"
+	"fmt"
 	"github.com/aaronland/go-roster"
 	"io"
 	"net/url"
+	"sort"
+	"strings"
 )
 
 var writer_roster roster.Roster
@@ -93,4 +96,24 @@ func NewWriter(ctx context.Context, uri string) (Writer, error) {
 func Writers() []string {
 	ctx := context.Background()
 	return writer_roster.Drivers(ctx)
+}
+
+func Schemes() []string {
+
+	ctx := context.Background()
+	schemes := []string{}
+
+	err := ensureWriterRoster()
+
+	if err != nil {
+		return schemes
+	}
+
+	for _, dr := range writer_roster.Drivers(ctx) {
+		scheme := fmt.Sprintf("%s://", strings.ToLower(dr))
+		schemes = append(schemes, scheme)
+	}
+
+	sort.Strings(schemes)
+	return schemes
 }

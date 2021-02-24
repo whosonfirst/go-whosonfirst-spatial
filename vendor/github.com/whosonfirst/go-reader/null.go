@@ -3,7 +3,7 @@ package reader
 import (
 	"bytes"
 	"context"
-	"github.com/whosonfirst/go-reader/ioutil"
+	"github.com/whosonfirst/go-ioutil"
 	"io"
 )
 
