@@ -42,6 +42,17 @@ func StringVar(fl *flag.FlagSet, k string) (string, error) {
 	return i.(string), nil
 }
 
+func MultiIntVar(fl *flag.FlagSet, k string) ([]int, error) {
+
+	i, err := Lookup(fl, k)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return i.(multi.MultiInt), nil
+}
+
 func IntVar(fl *flag.FlagSet, k string) (int, error) {
 
 	i, err := Lookup(fl, k)

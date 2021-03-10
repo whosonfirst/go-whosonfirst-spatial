@@ -23,19 +23,19 @@ func AppendQueryFlags(fs *flag.FlagSet) error {
 	var alt_geoms multi.MultiString
 	fs.Var(&alt_geoms, "alternate-geometry", "One or more alternate geometry labels (wof:alt_label) values to filter results by.")
 
-	var is_current multi.MultiString
+	var is_current multi.MultiInt
 	fs.Var(&is_current, "is-current", "One or more existential flags (-1, 0, 1) to filter results by.")
 
-	var is_ceased multi.MultiString
+	var is_ceased multi.MultiInt
 	fs.Var(&is_ceased, "is-ceased", "One or more existential flags (-1, 0, 1) to filter results by.")
 
-	var is_deprecated multi.MultiString
+	var is_deprecated multi.MultiInt
 	fs.Var(&is_deprecated, "is-deprecated", "One or more existential flags (-1, 0, 1) to filter results by.")
 
-	var is_superseded multi.MultiString
+	var is_superseded multi.MultiInt
 	fs.Var(&is_superseded, "is-superseded", "One or more existential flags (-1, 0, 1) to filter results by.")
 
-	var is_superseding multi.MultiString
+	var is_superseding multi.MultiInt
 	fs.Var(&is_superseding, "is-superseding", "One or more existential flags (-1, 0, 1) to filter results by.")
 
 	return nil
@@ -75,31 +75,31 @@ func ValidateQueryFlags(fs *flag.FlagSet) error {
 		return err
 	}
 
-	_, err = MultiStringVar(fs, "is-current")
+	_, err = MultiIntVar(fs, "is-current")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = MultiStringVar(fs, "is-ceased")
+	_, err = MultiIntVar(fs, "is-ceased")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = MultiStringVar(fs, "is-deprecated")
+	_, err = MultiIntVar(fs, "is-deprecated")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = MultiStringVar(fs, "is-superseding")
+	_, err = MultiIntVar(fs, "is-superseding")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = MultiStringVar(fs, "is-superseded")
+	_, err = MultiIntVar(fs, "is-superseded")
 
 	if err != nil {
 		return err

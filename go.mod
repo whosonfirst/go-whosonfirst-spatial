@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/aaronland/go-roster v0.0.2
-	github.com/sfomuseum/go-flags v0.7.0
+	github.com/sfomuseum/go-flags v0.8.0
 	github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 	github.com/tidwall/gjson v1.6.8
 	github.com/tidwall/sjson v1.1.5

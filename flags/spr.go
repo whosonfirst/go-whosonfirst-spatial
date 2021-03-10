@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"net/url"
+	"strconv"
 )
 
 func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (filter.Filter, error) {
@@ -26,31 +27,31 @@ func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (filter.Filter, error) {
 		return nil, err
 	}
 
-	is_current, err := MultiStringVar(fs, "is-current")
+	is_current, err := MultiIntVar(fs, "is-current")
 
 	if err != nil {
 		return nil, err
 	}
 
-	is_ceased, err := MultiStringVar(fs, "is-ceased")
+	is_ceased, err := MultiIntVar(fs, "is-ceased")
 
 	if err != nil {
 		return nil, err
 	}
 
-	is_deprecated, err := MultiStringVar(fs, "is-deprecated")
+	is_deprecated, err := MultiIntVar(fs, "is-deprecated")
 
 	if err != nil {
 		return nil, err
 	}
 
-	is_superseded, err := MultiStringVar(fs, "is-superseded")
+	is_superseded, err := MultiIntVar(fs, "is-superseded")
 
 	if err != nil {
 		return nil, err
 	}
 
-	is_superseding, err := MultiStringVar(fs, "is-superseding")
+	is_superseding, err := MultiIntVar(fs, "is-superseding")
 
 	if err != nil {
 		return nil, err
@@ -68,23 +69,23 @@ func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (filter.Filter, error) {
 	}
 
 	for _, v := range is_current {
-		q.Add("is_current", v)
+		q.Add("is_current", strconv.Itoa(v))
 	}
 
 	for _, v := range is_ceased {
-		q.Add("is_ceased", v)
+		q.Add("is_ceased", strconv.Itoa(v))
 	}
 
 	for _, v := range is_deprecated {
-		q.Add("is_deprecated", v)
+		q.Add("is_deprecated", strconv.Itoa(v))
 	}
 
 	for _, v := range is_superseded {
-		q.Add("is_superseded", v)
+		q.Add("is_superseded", strconv.Itoa(v))
 	}
 
 	for _, v := range is_superseding {
-		q.Add("is_superseding", v)
+		q.Add("is_superseding", strconv.Itoa(v))
 	}
 
 	return filter.NewSPRFilterFromQuery(q)

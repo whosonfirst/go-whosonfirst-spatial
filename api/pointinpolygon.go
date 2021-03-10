@@ -3,6 +3,7 @@ package api
 import (
 	"flag"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"net/url"
 	"strconv"
 )
@@ -21,9 +22,9 @@ type PointInPolygonRequest struct {
 	IsSuperseding       []int    `json:"is_superseding,omitempty"`
 }
 
-func (req *PointInPolygonRequest) AppendSPRFilterFromFlagSet(fs *flag.FlagSet) error {
+func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) error {
 
-	placetypes, err := MultiStringVar(fs, "placetype")
+	placetypes, err := flags.MultiStringVar(fs, "placetype")
 
 	if err != nil {
 		return err
@@ -31,7 +32,7 @@ func (req *PointInPolygonRequest) AppendSPRFilterFromFlagSet(fs *flag.FlagSet) e
 
 	req.Placetypes = placetypes
 
-	geometries, err := StringVar(fs, "geometries")
+	geometries, err := flags.StringVar(fs, "geometries")
 
 	if err != nil {
 		return err
@@ -39,15 +40,15 @@ func (req *PointInPolygonRequest) AppendSPRFilterFromFlagSet(fs *flag.FlagSet) e
 
 	req.Geometries = geometries
 
-	alt_geoms, err := MultiStringVar(fs, "alternate-geometry")
+	alt_geoms, err := flags.MultiStringVar(fs, "alternate-geometry")
 
 	if err != nil {
 		return err
 	}
 
-	req.AlternateGeometries = alt_geom
+	req.AlternateGeometries = alt_geoms
 
-	props, err := MultiStringVar(fs, "properties")
+	props, err := flags.MultiStringVar(fs, "properties")
 
 	if err != nil {
 		return err
@@ -55,35 +56,45 @@ func (req *PointInPolygonRequest) AppendSPRFilterFromFlagSet(fs *flag.FlagSet) e
 
 	req.Properties = props
 
-	is_current, err := MultiStringVar(fs, "is-current")
+	is_current, err := flags.MultiIntVar(fs, "is-current")
 
 	if err != nil {
 		return err
 	}
 
-	is_ceased, err := MultiStringVar(fs, "is-ceased")
+	req.IsCurrent = is_current
+
+	is_ceased, err := flags.MultiIntVar(fs, "is-ceased")
 
 	if err != nil {
 		return err
 	}
 
-	is_deprecated, err := MultiStringVar(fs, "is-deprecated")
+	req.IsCeased = is_ceased
+
+	is_deprecated, err := flags.MultiIntVar(fs, "is-deprecated")
 
 	if err != nil {
 		return err
 	}
 
-	is_superseded, err := MultiStringVar(fs, "is-superseded")
+	req.IsDeprecated = is_deprecated
+
+	is_superseded, err := flags.MultiIntVar(fs, "is-superseded")
 
 	if err != nil {
 		return err
 	}
 
-	is_superseding, err := MultiStringVar(fs, "is-superseding")
+	req.IsSuperseded = is_superseded
+
+	is_superseding, err := flags.MultiIntVar(fs, "is-superseding")
 
 	if err != nil {
 		return err
 	}
+
+	req.IsSuperseding = is_superseding
 
 	return nil
 }
