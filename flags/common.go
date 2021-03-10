@@ -4,9 +4,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
-	"github.com/sfomuseum/go-flags/flagset"
 )
 
 func CommonFlags() (*flag.FlagSet, error) {

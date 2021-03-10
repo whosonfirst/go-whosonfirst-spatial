@@ -22,12 +22,38 @@ type PointInPolygonRequest struct {
 	IsSuperseding       []int    `json:"is_superseding,omitempty"`
 }
 
-func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) error {
+func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonRequest, error) {
+
+	req := &PointInPolygonRequest{}
+
+	latitude, err := flags.Float64Var(fs, "latitude")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Latitude = latitude
+
+	longitude, err := flags.Float64Var(fs, "longitude")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Longitude = longitude
+
+	props, err := flags.MultiStringVar(fs, "properties")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Properties = props
 
 	placetypes, err := flags.MultiStringVar(fs, "placetype")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Placetypes = placetypes
@@ -35,7 +61,7 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	geometries, err := flags.StringVar(fs, "geometries")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Geometries = geometries
@@ -43,23 +69,15 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	alt_geoms, err := flags.MultiStringVar(fs, "alternate-geometry")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.AlternateGeometries = alt_geoms
 
-	props, err := flags.MultiStringVar(fs, "properties")
-
-	if err != nil {
-		return err
-	}
-
-	req.Properties = props
-
 	is_current, err := flags.MultiIntVar(fs, "is-current")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.IsCurrent = is_current
@@ -67,7 +85,7 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	is_ceased, err := flags.MultiIntVar(fs, "is-ceased")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.IsCeased = is_ceased
@@ -75,7 +93,7 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	is_deprecated, err := flags.MultiIntVar(fs, "is-deprecated")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.IsDeprecated = is_deprecated
@@ -83,7 +101,7 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	is_superseded, err := flags.MultiIntVar(fs, "is-superseded")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.IsSuperseded = is_superseded
@@ -91,12 +109,12 @@ func (req *PointInPolygonRequest) AppendSPRFiltersFromFlagSet(fs *flag.FlagSet) 
 	is_superseding, err := flags.MultiIntVar(fs, "is-superseding")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.IsSuperseding = is_superseding
 
-	return nil
+	return req, nil
 }
 
 func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (filter.Filter, error) {
