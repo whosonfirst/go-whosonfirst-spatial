@@ -1,6 +1,7 @@
 package api
 
 import (
+	"flag"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"net/url"
 	"strconv"
@@ -18,6 +19,73 @@ type PointInPolygonRequest struct {
 	IsDeprecated        []int    `json:"is_deprecated,omitempty"`
 	IsSuperseded        []int    `json:"is_superseded,omitempty"`
 	IsSuperseding       []int    `json:"is_superseding,omitempty"`
+}
+
+func (req *PointInPolygonRequest) AppendSPRFilterFromFlagSet(fs *flag.FlagSet) error {
+
+	placetypes, err := MultiStringVar(fs, "placetype")
+
+	if err != nil {
+		return err
+	}
+
+	req.Placetypes = placetypes
+
+	geometries, err := StringVar(fs, "geometries")
+
+	if err != nil {
+		return err
+	}
+
+	req.Geometries = geometries
+
+	alt_geoms, err := MultiStringVar(fs, "alternate-geometry")
+
+	if err != nil {
+		return err
+	}
+
+	req.AlternateGeometries = alt_geom
+
+	props, err := MultiStringVar(fs, "properties")
+
+	if err != nil {
+		return err
+	}
+
+	req.Properties = props
+
+	is_current, err := MultiStringVar(fs, "is-current")
+
+	if err != nil {
+		return err
+	}
+
+	is_ceased, err := MultiStringVar(fs, "is-ceased")
+
+	if err != nil {
+		return err
+	}
+
+	is_deprecated, err := MultiStringVar(fs, "is-deprecated")
+
+	if err != nil {
+		return err
+	}
+
+	is_superseded, err := MultiStringVar(fs, "is-superseded")
+
+	if err != nil {
+		return err
+	}
+
+	is_superseding, err := MultiStringVar(fs, "is-superseding")
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (filter.Filter, error) {
