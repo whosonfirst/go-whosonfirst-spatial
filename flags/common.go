@@ -46,7 +46,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 	var exclude Exclude
 	fs.Var(&exclude, "exclude", "Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.")
 
-	fs.Bool("setenv", false, "Set flags from environment variables.")
 	fs.Bool("verbose", false, "Be chatty.")
 
 	return fs, nil
