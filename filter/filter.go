@@ -50,6 +50,8 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 		return fmt.Errorf("Failed to parse inception date '%s', %v", s.Inception(), err)
 	} else {
 
+		log.Println("INC", inc_fl)
+
 		ok := filters.MatchesInception(inc_fl)
 
 		if !ok {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-sanitize"
 	"github.com/whosonfirst/go-whosonfirst-flags"
+	"github.com/whosonfirst/go-whosonfirst-flags/date"
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
@@ -27,6 +28,7 @@ type SPRInputs struct {
 	IsSuperseding       []string
 	Geometries          []string
 	AlternateGeometries []string
+	Dates               []string
 }
 
 type SPRFilter struct {
@@ -39,6 +41,35 @@ type SPRFilter struct {
 	Superseding         []flags.ExistentialFlag
 	AlternateGeometry   flags.AlternateGeometryFlag
 	AlternateGeometries []flags.AlternateGeometryFlag
+	Dates               []flags.DateFlag
+}
+
+// TBD...
+
+func (f *SPRFilter) MatchesInception(fl flags.DateFlag) bool {
+
+	for _, d := range f.Dates {
+
+		if d.MatchesAny(fl) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// TBD...
+
+func (f *SPRFilter) MatchesCessation(fl flags.DateFlag) bool {
+
+	for _, d := range f.Dates {
+
+		if d.MatchesAny(fl) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
@@ -141,6 +172,7 @@ func NewSPRInputs() (*SPRInputs, error) {
 		IsSuperseding:       make([]string, 0),
 		Geometries:          make([]string, 0),
 		AlternateGeometries: make([]string, 0),
+		Dates:               make([]string, 0),
 	}
 
 	return &i, nil
@@ -151,10 +183,12 @@ func NewSPRFilter() (*SPRFilter, error) {
 	null_pt, _ := placetypes.NewNullFlag()
 	null_ex, _ := existential.NewNullFlag()
 	null_alt, _ := geometry.NewNullAlternateGeometryFlag()
+	null_dt, _ := date.NewNullDateFlag()
 
 	col_pt := []flags.PlacetypeFlag{null_pt}
 	col_ex := []flags.ExistentialFlag{null_ex}
 	col_alt := []flags.AlternateGeometryFlag{null_alt}
+	col_dt := []flags.DateFlag{null_dt}
 
 	f := SPRFilter{
 		Placetypes:          col_pt,
@@ -165,6 +199,7 @@ func NewSPRFilter() (*SPRFilter, error) {
 		Superseding:         col_ex,
 		AlternateGeometry:   null_alt,
 		AlternateGeometries: col_alt,
+		Dates:               col_dt,
 	}
 
 	return &f, nil
@@ -187,6 +222,17 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 		}
 
 		f.Placetypes = possible
+	}
+
+	if len(inputs.Dates) != 0 {
+
+		dates, err := dateFlags(inputs.Dates)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f.Dates = dates
 	}
 
 	if len(inputs.IsCurrent) != 0 {
@@ -289,6 +335,33 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 	}
 
 	return f, nil
+}
+
+func dateFlags(inputs []string) ([]flags.DateFlag, error) {
+
+	possible := make([]flags.DateFlag, 0)
+
+	for _, raw := range inputs {
+
+		candidates, err := stringList(raw, ",")
+
+		if err != nil {
+			return nil, err
+		}
+
+		for _, edtf_str := range candidates {
+
+			fl, err := date.NewEDTFDateFlag(edtf_str)
+
+			if err != nil {
+				return nil, err
+			}
+
+			possible = append(possible, fl)
+		}
+	}
+
+	return possible, nil
 }
 
 func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {

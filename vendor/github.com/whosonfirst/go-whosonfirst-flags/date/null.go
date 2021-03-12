@@ -22,11 +22,11 @@ func (fl *NullDateFlag) OuterRange() (*int64, *int64) {
 }
 
 func (fl *NullDateFlag) MatchesAny(others ...flags.DateFlag) bool {
-	return false
+	return true
 }
 
 func (fl *NullDateFlag) MatchesAll(others ...flags.DateFlag) bool {
-	return false
+	return true
 }
 
 func (fl *NullDateFlag) String() string {
