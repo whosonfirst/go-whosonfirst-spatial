@@ -67,7 +67,7 @@ github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst
 github.com/whosonfirst/go-whosonfirst-geojson-v2/utils
 # github.com/whosonfirst/go-whosonfirst-hash v0.1.0
 github.com/whosonfirst/go-whosonfirst-hash
-# github.com/whosonfirst/go-whosonfirst-iterate v1.0.1
+# github.com/whosonfirst/go-whosonfirst-iterate v1.1.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-iterate/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/filters
@@ -83,7 +83,6 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
 # github.com/whosonfirst/go-whosonfirst-spr v0.1.0
-## explicit
 github.com/whosonfirst/go-whosonfirst-spr
 # github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0
 ## explicit

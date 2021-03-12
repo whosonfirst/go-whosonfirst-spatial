@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/url"
+	"regexp"
 	"runtime"
 	"strconv"
 	"sync/atomic"
@@ -19,6 +20,7 @@ type Iterator struct {
 	Seen                int64
 	count               int64
 	max_procs           int
+	exclude_paths       *regexp.Regexp
 }
 
 func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.EmitterCallbackFunc) (*Iterator, error) {
@@ -61,6 +63,17 @@ func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.Emi
 		max_procs:           max_procs,
 	}
 
+	if q.Get("_exclude") != "" {
+
+		re_exclude, err := regexp.Compile(q.Get("_exclude"))
+
+		if err != nil {
+			return nil, err
+		}
+
+		i.exclude_paths = re_exclude
+	}
+
 	return &i, nil
 }
 
@@ -76,8 +89,23 @@ func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 	idx.increment()
 	defer idx.decrement()
 
-	counter_func := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
+	local_callback := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
+
 		defer atomic.AddInt64(&idx.Seen, 1)
+
+		if idx.exclude_paths != nil {
+
+			path, err := emitter.PathForContext(ctx)
+
+			if err != nil {
+				return err
+			}
+
+			if idx.exclude_paths.MatchString(path) {
+				return nil
+			}
+		}
+
 		return idx.EmitterCallbackFunc(ctx, fh, args...)
 	}
 
@@ -114,7 +142,7 @@ func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 				// pass
 			}
 
-			err := idx.Emitter.WalkURI(ctx, counter_func, uri)
+			err := idx.Emitter.WalkURI(ctx, local_callback, uri)
 
 			if err != nil {
 				err_ch <- err

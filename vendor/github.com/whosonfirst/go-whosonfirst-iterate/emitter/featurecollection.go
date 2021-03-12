@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
 	"github.com/whosonfirst/go-ioutil"
+	"github.com/whosonfirst/go-whosonfirst-iterate/filters"
 	"io"
 )
 
