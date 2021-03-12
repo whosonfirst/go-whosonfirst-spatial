@@ -11,7 +11,7 @@ require (
 	github.com/whosonfirst/go-reader v0.5.0
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-flags v0.4.0
-	github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.15.1
+	github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.0
 	github.com/whosonfirst/go-whosonfirst-iterate v1.1.0
 	github.com/whosonfirst/go-whosonfirst-log v0.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0

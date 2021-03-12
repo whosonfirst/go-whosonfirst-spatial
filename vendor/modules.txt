@@ -7,7 +7,7 @@ github.com/aaronland/go-roster
 github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874
 github.com/hashicorp/go-multierror
-# github.com/mmcloughlin/geohash v0.9.0
+# github.com/mmcloughlin/geohash v0.10.0
 github.com/mmcloughlin/geohash
 # github.com/natefinch/atomic v0.0.0-20200526193002-18c0533a5b09
 github.com/natefinch/atomic
@@ -57,7 +57,7 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.15.1
+# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-geojson-v2
 github.com/whosonfirst/go-whosonfirst-geojson-v2/feature
@@ -82,8 +82,6 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spr v0.1.0
-github.com/whosonfirst/go-whosonfirst-spr
 # github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spr/v2

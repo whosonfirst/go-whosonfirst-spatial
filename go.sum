@@ -11,6 +11,8 @@ github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874/go.mod h1:
 github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/mmcloughlin/geohash v0.9.0 h1:FihR004p/aE1Sju6gcVq5OLDqGcMnpBY+8moBqIsVOs=
 github.com/mmcloughlin/geohash v0.9.0/go.mod h1:oNZxQo5yWJh0eMQEP/8hwQuVx9Z9tjwFUqcTB1SmG0c=
+github.com/mmcloughlin/geohash v0.10.0 h1:9w1HchfDfdeLc+jFEf/04D27KP7E2QmpDu52wPbJWRE=
+github.com/mmcloughlin/geohash v0.10.0/go.mod h1:oNZxQo5yWJh0eMQEP/8hwQuVx9Z9tjwFUqcTB1SmG0c=
 github.com/natefinch/atomic v0.0.0-20200526193002-18c0533a5b09 h1:DXR0VtCesBD2ss3toN9OEeXszpQmW9dc3SvUbUfiBC0=
 github.com/natefinch/atomic v0.0.0-20200526193002-18c0533a5b09/go.mod h1:1rLVY/DWf3U6vSZgH16S7pymfrhK2lcUlXjgGglw/lY=
 github.com/paulmach/go.geojson v1.4.0 h1:5x5moCkCtDo5x8af62P9IOAYGQcYHtxz2QJ3x1DoCgY=
@@ -61,6 +63,8 @@ github.com/whosonfirst/go-whosonfirst-flags v0.4.0 h1:3qEz1v7rALk+TqVstW9DKQOWrM
 github.com/whosonfirst/go-whosonfirst-flags v0.4.0/go.mod h1:kewFjxBiE00SqjjIanm5DPI81SYvx93wVb3ogwV/PMk=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.15.1 h1:Kxsd+B6U97YRbIlpBxrZpXNXDYqJYwEBxhgUUzlQky0=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.15.1/go.mod h1:zAXmgT1EjBAt5HawVNyr3/N53j5iVqxFVha8VBhkra0=
+github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.0 h1:o+Q4noTqXYKeDD+dMrf4lb1yFvly5PDAcF4ASKwHwpc=
+github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.0/go.mod h1:cWVV68R2xgKtmOcAsQmWYsdv8QhIhT4k9DmqRbqrt/4=
 github.com/whosonfirst/go-whosonfirst-hash v0.1.0 h1:FpnclPIb+8M1uhSXfl3z8nYcG/3O59vgfkdV+m0hQpA=
 github.com/whosonfirst/go-whosonfirst-hash v0.1.0/go.mod h1:1ZdCFZTnQt5bwnsj2daB9yHilKOKToVh+Tyj/Z8TbUk=
 github.com/whosonfirst/go-whosonfirst-index/v2 v2.0.0 h1:PnPLYvCnBrg7Vvw3ho8tc2lMMRBncHfjVSoGeQ5X5Hw=
