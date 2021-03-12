@@ -12,6 +12,7 @@ type PointInPolygonRequest struct {
 	Latitude            float64  `json:"latitude"`
 	Longitude           float64  `json:"longitude"`
 	Properties          []string `json:"properties"`
+	Date                string   `json:"date"`
 	Placetypes          []string `json:"placetypes,omitempty"`
 	Geometries          string   `json:"geometries,omitempty"`
 	AlternateGeometries []string `json:"alternate_geometries,omitempty"`
@@ -57,6 +58,14 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 	}
 
 	req.Placetypes = placetypes
+
+	date, err := flags.StringVar(fs, "date")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Date = date
 
 	geometries, err := flags.StringVar(fs, "geometries")
 

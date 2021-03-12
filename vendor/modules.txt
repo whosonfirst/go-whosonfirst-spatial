@@ -15,6 +15,14 @@ github.com/natefinch/atomic
 github.com/paulmach/go.geojson
 # github.com/sfomuseum/go-edtf v0.2.2
 github.com/sfomuseum/go-edtf
+github.com/sfomuseum/go-edtf/calendar
+github.com/sfomuseum/go-edtf/common
+github.com/sfomuseum/go-edtf/level0
+github.com/sfomuseum/go-edtf/level1
+github.com/sfomuseum/go-edtf/level2
+github.com/sfomuseum/go-edtf/parser
+github.com/sfomuseum/go-edtf/re
+github.com/sfomuseum/go-edtf/tests
 # github.com/sfomuseum/go-flags v0.8.0
 ## explicit
 github.com/sfomuseum/go-flags/flagset
@@ -42,9 +50,10 @@ github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-flags v0.2.0
+# github.com/whosonfirst/go-whosonfirst-flags v0.4.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-flags
+github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
@@ -76,6 +85,9 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 # github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spr
+# github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0
+## explicit
+github.com/whosonfirst/go-whosonfirst-spr/v2
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri
 # github.com/whosonfirst/go-writer v0.4.1

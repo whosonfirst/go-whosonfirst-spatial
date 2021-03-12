@@ -14,6 +14,8 @@ func AppendQueryFlags(fs *flag.FlagSet) error {
 
 	fs.String("geometries", "all", "Valid options are: all, alt, default.")
 
+	fs.String("date", "", "A valid EDTF date string.")
+
 	var props multi.MultiString
 	fs.Var(&props, "properties", "One or more Who's On First properties to append to each result.")
 

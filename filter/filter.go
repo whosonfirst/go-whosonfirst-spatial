@@ -4,14 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-flags"
+	"github.com/whosonfirst/go-whosonfirst-flags/date"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
-	"github.com/whosonfirst/go-whosonfirst-spr"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"log"
 )
 
 type Filter interface {
 	HasPlacetypes(flags.PlacetypeFlag) bool
+	MatchesInception(flags.DateFlag) bool
+	MatchesCessation(flags.DateFlag) bool
 	IsCurrent(flags.ExistentialFlag) bool
 	IsDeprecated(flags.ExistentialFlag) bool
 	IsCeased(flags.ExistentialFlag) bool
@@ -38,6 +41,36 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 			return errors.New("Failed 'placetype' test")
 		}
 	}
+
+	// START OF still not sure how this should work
+
+	inc_fl, err := date.NewEDTFDateFlagWithDate(s.Inception())
+
+	if err != nil {
+		return fmt.Errorf("Failed to parse inception date '%s', %v", s.Inception(), err)
+	} else {
+
+		ok := filters.MatchesInception(inc_fl)
+
+		if !ok {
+			return fmt.Errorf("Failed inception test")
+		}
+	}
+
+	cessation_fl, err := date.NewEDTFDateFlagWithDate(s.Cessation())
+
+	if err != nil {
+		return fmt.Errorf("Failed to parse cessation date '%s', %v", s.Cessation(), err)
+	} else {
+
+		ok := filters.MatchesCessation(cessation_fl)
+
+		if !ok {
+			return fmt.Errorf("Failed cessation test")
+		}
+	}
+
+	// END OF still not sure how this should work
 
 	ok = filters.IsCurrent(s.IsCurrent())
 
