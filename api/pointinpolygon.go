@@ -2,12 +2,11 @@ package api
 
 import (
 	"flag"
-	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"net/url"
 	"strconv"
 )
-
 
 type PointInPolygonRequest struct {
 	Latitude            float64  `json:"latitude"`

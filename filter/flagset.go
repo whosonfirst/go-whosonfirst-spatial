@@ -2,7 +2,7 @@ package filter
 
 import (
 	"flag"
-	"github.com/sfomuseum/go-flags/lookup"	
+	"github.com/sfomuseum/go-flags/lookup"
 )
 
 func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (Filter, error) {
@@ -16,7 +16,7 @@ func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (Filter, error) {
 	return NewSPRFilterFromInputs(inputs)
 }
 
-func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {	
+func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs, err := NewSPRInputs()
 
@@ -31,7 +31,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 	}
 
 	inputs.Placetypes = placetypes
-	
+
 	inception_date, err := lookup.StringVar(fs, "inception-date")
 
 	if err != nil {
@@ -47,8 +47,8 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 	}
 
 	inputs.CessationDate = cessation_date
-	
-	geometries, err := lookup.StringVar(fs, "geometries")
+
+	geometries, err := lookup.MultiStringVar(fs, "geometries")
 
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.AlternateGeometries = alt_geoms
 
-	is_current, err := lookup.MultiIntVar(fs, "is-current")
+	is_current, err := lookup.MultiInt64Var(fs, "is-current")
 
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsCurrent = is_current
 
-	is_ceased, err := lookup.MultiIntVar(fs, "is-ceased")
+	is_ceased, err := lookup.MultiInt64Var(fs, "is-ceased")
 
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsCeased = is_ceased
 
-	is_deprecated, err := lookup.MultiIntVar(fs, "is-deprecated")
+	is_deprecated, err := lookup.MultiInt64Var(fs, "is-deprecated")
 
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsDeprecated = is_deprecated
 
-	is_superseded, err := lookup.MultiIntVar(fs, "is-superseded")
+	is_superseded, err := lookup.MultiInt64Var(fs, "is-superseded")
 
 	if err != nil {
 		return nil, err
@@ -96,13 +96,13 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsSuperseded = is_superseded
 
-	is_superseding, err := lookup.MultiIntVar(fs, "is-superseding")
+	is_superseding, err := lookup.MultiInt64Var(fs, "is-superseding")
 
 	if err != nil {
 		return nil, err
 	}
 
 	inputs.IsSuperseding = is_superseding
-	
-	return NewSPRFilterFromInputs(inputs)	
+
+	return inputs, nil
 }

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-sanitize"
 	"github.com/whosonfirst/go-whosonfirst-flags"
+	"github.com/whosonfirst/go-whosonfirst-flags/date"
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
-	"github.com/whosonfirst/go-whosonfirst-flags/date"	
 	_ "log"
 	"strconv"
 	"strings"
@@ -21,15 +21,15 @@ func init() {
 
 type SPRInputs struct {
 	Placetypes          []string
-	IsCurrent           []string
-	IsCeased            []string
-	IsDeprecated        []string
-	IsSuperseded        []string
-	IsSuperseding       []string
+	IsCurrent           []int64
+	IsCeased            []int64
+	IsDeprecated        []int64
+	IsSuperseded        []int64
+	IsSuperseding       []int64
 	Geometries          []string
 	AlternateGeometries []string
-	InceptionDate string
-	CessationDate string
+	InceptionDate       string
+	CessationDate       string
 }
 
 type SPRFilter struct {
@@ -42,8 +42,8 @@ type SPRFilter struct {
 	Superseding         []flags.ExistentialFlag
 	AlternateGeometry   flags.AlternateGeometryFlag
 	AlternateGeometries []flags.AlternateGeometryFlag
-	InceptionDate flags.DateFlag
-	CessationDate flags.DateFlag	
+	InceptionDate       flags.DateFlag
+	CessationDate       flags.DateFlag
 }
 
 func (f *SPRFilter) MatchesInception(fl flags.DateFlag) bool {
@@ -53,7 +53,7 @@ func (f *SPRFilter) MatchesInception(fl flags.DateFlag) bool {
 
 func (f *SPRFilter) MatchesCessation(fl flags.DateFlag) bool {
 
-	return f.CessationDate.MatchesAny(fl)	
+	return f.CessationDate.MatchesAny(fl)
 }
 
 func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
@@ -149,15 +149,15 @@ func NewSPRInputs() (*SPRInputs, error) {
 
 	i := SPRInputs{
 		Placetypes:          make([]string, 0),
-		IsCurrent:           make([]string, 0),
-		IsDeprecated:        make([]string, 0),
-		IsCeased:            make([]string, 0),
-		IsSuperseded:        make([]string, 0),
-		IsSuperseding:       make([]string, 0),
+		IsCurrent:           make([]int64, 0),
+		IsDeprecated:        make([]int64, 0),
+		IsCeased:            make([]int64, 0),
+		IsSuperseded:        make([]int64, 0),
+		IsSuperseding:       make([]int64, 0),
 		Geometries:          make([]string, 0),
 		AlternateGeometries: make([]string, 0),
-		InceptionDate: "",
-		CessationDate: "",
+		InceptionDate:       "",
+		CessationDate:       "",
 	}
 
 	return &i, nil
@@ -169,11 +169,11 @@ func NewSPRFilter() (*SPRFilter, error) {
 	null_ex, _ := existential.NewNullFlag()
 	null_alt, _ := geometry.NewNullAlternateGeometryFlag()
 	null_dt, _ := date.NewNullDateFlag()
-	
+
 	col_pt := []flags.PlacetypeFlag{null_pt}
 	col_ex := []flags.ExistentialFlag{null_ex}
 	col_alt := []flags.AlternateGeometryFlag{null_alt}
-	
+
 	f := SPRFilter{
 		Placetypes:          col_pt,
 		Current:             col_ex,
@@ -183,8 +183,8 @@ func NewSPRFilter() (*SPRFilter, error) {
 		Superseding:         col_ex,
 		AlternateGeometry:   null_alt,
 		AlternateGeometries: col_alt,
-		InceptionDate: null_dt,
-		CessationDate: null_dt,		
+		InceptionDate:       null_dt,
+		CessationDate:       null_dt,
 	}
 
 	return &f, nil
@@ -211,26 +211,26 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 
 	if inputs.InceptionDate != "" {
 
-		fl, err := date.NewEDTFDateFlag(inputs.InceptionDate)		
+		fl, err := date.NewEDTFDateFlag(inputs.InceptionDate)
 
 		if err != nil {
 			return nil, err
 		}
-		
+
 		f.InceptionDate = fl
 	}
 
 	if inputs.CessationDate != "" {
 
-		fl, err := date.NewEDTFDateFlag(inputs.CessationDate)				
+		fl, err := date.NewEDTFDateFlag(inputs.CessationDate)
 
 		if err != nil {
 			return nil, err
 		}
 
 		f.CessationDate = fl
-	}	
-	
+	}
+
 	if len(inputs.IsCurrent) != 0 {
 
 		possible, err := existentialFlags(inputs.IsCurrent)
@@ -357,7 +357,7 @@ func dateFlags(inputs []string) ([]flags.DateFlag, error) {
 		}
 	}
 
-	return possible, nil	
+	return possible, nil
 }
 
 func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {
@@ -387,28 +387,19 @@ func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {
 	return possible, nil
 }
 
-func existentialFlags(inputs []string) ([]flags.ExistentialFlag, error) {
+func existentialFlags(inputs []int64) ([]flags.ExistentialFlag, error) {
 
 	possible := make([]flags.ExistentialFlag, 0)
 
-	for _, raw := range inputs {
+	for _, i := range inputs {
 
-		candidates, err := int64List(raw, ",")
+		fl, err := existential.NewKnownUnknownFlag(i)
 
 		if err != nil {
 			return nil, err
 		}
 
-		for _, i := range candidates {
-
-			fl, err := existential.NewKnownUnknownFlag(i)
-
-			if err != nil {
-				return nil, err
-			}
-
-			possible = append(possible, fl)
-		}
+		possible = append(possible, fl)
 	}
 
 	return possible, nil
