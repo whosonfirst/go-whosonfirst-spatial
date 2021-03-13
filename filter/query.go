@@ -1,11 +1,12 @@
 package filter
 
 import (
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"net/url"
 	"strconv"
 )
 
-func NewSPRFilterFromQuery(query url.Values) (Filter, error) {
+func NewSPRFilterFromQuery(query url.Values) (spatial.Filter, error) {
 
 	inputs, err := NewSPRInputs()
 

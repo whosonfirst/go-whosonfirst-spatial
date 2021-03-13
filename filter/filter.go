@@ -3,28 +3,15 @@ package filter
 import (
 	"errors"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-flags/date"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"log"
 )
 
-type Filter interface {
-	HasPlacetypes(flags.PlacetypeFlag) bool
-	MatchesInception(flags.DateFlag) bool
-	MatchesCessation(flags.DateFlag) bool
-	IsCurrent(flags.ExistentialFlag) bool
-	IsDeprecated(flags.ExistentialFlag) bool
-	IsCeased(flags.ExistentialFlag) bool
-	IsSuperseded(flags.ExistentialFlag) bool
-	IsSuperseding(flags.ExistentialFlag) bool
-	IsAlternateGeometry(flags.AlternateGeometryFlag) bool
-	HasAlternateGeometry(flags.AlternateGeometryFlag) bool
-}
-
-func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
+func FilterSPR(filters spatial.Filter, s spr.StandardPlacesResult) error {
 
 	var ok bool
 

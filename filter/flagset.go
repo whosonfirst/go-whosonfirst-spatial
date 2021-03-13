@@ -3,10 +3,11 @@ package filter
 import (
 	"flag"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
-func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (Filter, error) {
+func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (spatial.Filter, error) {
 
 	inputs, err := NewSPRInputsFromFlagSet(fs)
 

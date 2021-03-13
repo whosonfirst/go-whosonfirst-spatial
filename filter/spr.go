@@ -8,6 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	_ "log"
 	"strconv"
 	"strings"
@@ -33,7 +34,7 @@ type SPRInputs struct {
 }
 
 type SPRFilter struct {
-	Filter
+	spatial.Filter
 	Placetypes          []flags.PlacetypeFlag
 	Current             []flags.ExistentialFlag
 	Deprecated          []flags.ExistentialFlag
@@ -190,7 +191,7 @@ func NewSPRFilter() (*SPRFilter, error) {
 	return &f, nil
 }
 
-func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
+func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 
 	f, err := NewSPRFilter()
 

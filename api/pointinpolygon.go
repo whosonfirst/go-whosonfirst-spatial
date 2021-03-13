@@ -3,8 +3,9 @@ package api
 import (
 	"flag"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"	
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"net/url"
 	"strconv"
 )
@@ -17,11 +18,13 @@ type PointInPolygonRequest struct {
 	Placetypes          []string `json:"placetypes,omitempty"`
 	Geometries          string   `json:"geometries,omitempty"`
 	AlternateGeometries []string `json:"alternate_geometries,omitempty"`
-	IsCurrent           []int64    `json:"is_current,omitempty"`
-	IsCeased            []int64    `json:"is_ceased,omitempty"`
-	IsDeprecated        []int64    `json:"is_deprecated,omitempty"`
-	IsSuperseded        []int64    `json:"is_superseded,omitempty"`
-	IsSuperseding       []int64    `json:"is_superseding,omitempty"`
+	IsCurrent           []int64  `json:"is_current,omitempty"`
+	IsCeased            []int64  `json:"is_ceased,omitempty"`
+	IsDeprecated        []int64  `json:"is_deprecated,omitempty"`
+	IsSuperseded        []int64  `json:"is_superseded,omitempty"`
+	IsSuperseding       []int64  `json:"is_superseding,omitempty"`
+	InceptionDate       string   `json:"inception_date,omitempty"`
+	CessationDate       string   `json:"cessation_date,omitempty"`
 }
 
 func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonRequest, error) {
@@ -71,9 +74,9 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 	if err != nil {
 		return nil, err
 	}
-	
+
 	req.InceptionDate = inception_date
-	req.CessationDate = cessation_date	
+	req.CessationDate = cessation_date
 
 	geometries, err := lookup.StringVar(fs, flags.GEOMETRIES)
 
@@ -134,14 +137,14 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 	return req, nil
 }
 
-func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (filter.Filter, error) {
+func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (spatial.Filter, error) {
 
 	q := url.Values{}
 	q.Set("geometries", req.Geometries)
 
 	q.Set("inception_date", req.InceptionDate)
-	q.Set("cessation_date", req.CessationDate)	
-	
+	q.Set("cessation_date", req.CessationDate)
+
 	for _, v := range req.AlternateGeometries {
 		q.Add("alternate_geometry", v)
 	}
@@ -151,23 +154,23 @@ func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (filter.F
 	}
 
 	for _, v := range req.IsCurrent {
-		q.Add("is_current", strconv.Itoa(v))
+		q.Add("is_current", strconv.FormatInt(v, 10))
 	}
 
 	for _, v := range req.IsCeased {
-		q.Add("is_ceased", strconv.Itoa(v))
+		q.Add("is_ceased", strconv.FormatInt(v, 10))
 	}
 
 	for _, v := range req.IsDeprecated {
-		q.Add("is_deprecated", strconv.Itoa(v))
+		q.Add("is_deprecated", strconv.FormatInt(v, 10))
 	}
 
 	for _, v := range req.IsSuperseded {
-		q.Add("is_superseded", strconv.Itoa(v))
+		q.Add("is_superseded", strconv.FormatInt(v, 10))
 	}
 
 	for _, v := range req.IsSuperseding {
-		q.Add("is_superseding", strconv.Itoa(v))
+		q.Add("is_superseding", strconv.FormatInt(v, 10))
 	}
 
 	return filter.NewSPRFilterFromQuery(q)
