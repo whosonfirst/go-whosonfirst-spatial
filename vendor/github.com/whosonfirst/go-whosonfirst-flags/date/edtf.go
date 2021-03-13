@@ -1,9 +1,23 @@
 package date
 
+/*
+
+This package is not stable yet. Specifically:
+
+* There is no way to define custom ranges (inner, outer) or operations (contains, intersects)
+* As of this writing everything is (outer, intersects)
+* Open-ended queries (things like 2020/ or 2020/.. or /2019) don't work - this is caused by
+  the describeRange method returning nil (if a edtf.Timestamp is nil) and the various methods
+  for operating on dates returning nil in kind. This isn't a feature, it just hasn't been
+  atteneded to yet
+
+*/
+
 import (
 	"github.com/sfomuseum/go-edtf"
 	"github.com/sfomuseum/go-edtf/parser"
 	"github.com/whosonfirst/go-whosonfirst-flags"
+	_ "log"
 )
 
 const CONTAINS int = 0
@@ -52,7 +66,7 @@ func NewEDTFDateFlagWithDate(d *edtf.EDTFDate) (flags.DateFlag, error) {
 
 	fl := EDTFDateFlag{
 		date:     d,
-		mode:     CONTAINS,
+		mode:     INTERSECTS,
 		boundary: OUTER,
 	}
 
@@ -135,12 +149,12 @@ func (fl *EDTFDateFlag) matches(o flags.DateFlag) bool {
 		case INTERSECTS:
 			return fl.intersectsInner(o)
 		default:
-			return fl.intersectsOuter(o)
+			return fl.containsInner(o)
 		}
 	default:
 		switch fl.mode {
 		case INTERSECTS:
-			return fl.containsInner(o)
+			return fl.intersectsOuter(o)
 		default:
 			return fl.containsOuter(o)
 		}
