@@ -33,8 +33,9 @@ func FilterSPR(filters Filter, s spr.StandardPlacesResult) error {
 	if err != nil {
 		msg := fmt.Sprintf("Unable to parse placetype (%s) for ID %s, because '%s' - skipping placetype filters", s.Placetype(), s.Id(), err)
 		log.Println(msg)
-	} else {
+ 	} else {
 
+		
 		ok = filters.HasPlacetypes(pf)
 
 		if !ok {
