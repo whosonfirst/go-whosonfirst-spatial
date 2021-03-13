@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"	
 	"net/url"
 	"strconv"
 )
@@ -16,18 +17,18 @@ type PointInPolygonRequest struct {
 	Placetypes          []string `json:"placetypes,omitempty"`
 	Geometries          string   `json:"geometries,omitempty"`
 	AlternateGeometries []string `json:"alternate_geometries,omitempty"`
-	IsCurrent           []int    `json:"is_current,omitempty"`
-	IsCeased            []int    `json:"is_ceased,omitempty"`
-	IsDeprecated        []int    `json:"is_deprecated,omitempty"`
-	IsSuperseded        []int    `json:"is_superseded,omitempty"`
-	IsSuperseding       []int    `json:"is_superseding,omitempty"`
+	IsCurrent           []int64    `json:"is_current,omitempty"`
+	IsCeased            []int64    `json:"is_ceased,omitempty"`
+	IsDeprecated        []int64    `json:"is_deprecated,omitempty"`
+	IsSuperseded        []int64    `json:"is_superseded,omitempty"`
+	IsSuperseding       []int64    `json:"is_superseding,omitempty"`
 }
 
 func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonRequest, error) {
 
 	req := &PointInPolygonRequest{}
 
-	latitude, err := flags.Float64Var(fs, "latitude")
+	latitude, err := lookup.Float64Var(fs, flags.LATITUDE)
 
 	if err != nil {
 		return nil, err
@@ -35,7 +36,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.Latitude = latitude
 
-	longitude, err := flags.Float64Var(fs, "longitude")
+	longitude, err := lookup.Float64Var(fs, flags.LONGITUDE)
 
 	if err != nil {
 		return nil, err
@@ -43,7 +44,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.Longitude = longitude
 
-	props, err := flags.MultiStringVar(fs, "properties")
+	props, err := lookup.MultiStringVar(fs, flags.PROPERTIES)
 
 	if err != nil {
 		return nil, err
@@ -51,7 +52,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.Properties = props
 
-	placetypes, err := flags.MultiStringVar(fs, "placetype")
+	placetypes, err := lookup.MultiStringVar(fs, flags.PLACETYPES)
 
 	if err != nil {
 		return nil, err
@@ -59,15 +60,22 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.Placetypes = placetypes
 
-	date, err := flags.StringVar(fs, "date")
+	inception_date, err := lookup.StringVar(fs, flags.INCEPTION_DATE)
 
 	if err != nil {
 		return nil, err
 	}
 
-	req.Date = date
+	cessation_date, err := lookup.StringVar(fs, flags.CESSATION_DATE)
 
-	geometries, err := flags.StringVar(fs, "geometries")
+	if err != nil {
+		return nil, err
+	}
+	
+	req.InceptionDate = inception_date
+	req.CessationDate = cessation_date	
+
+	geometries, err := lookup.StringVar(fs, flags.GEOMETRIES)
 
 	if err != nil {
 		return nil, err
@@ -75,7 +83,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.Geometries = geometries
 
-	alt_geoms, err := flags.MultiStringVar(fs, "alternate-geometry")
+	alt_geoms, err := lookup.MultiStringVar(fs, flags.ALTERNATE_GEOMETRIES)
 
 	if err != nil {
 		return nil, err
@@ -83,7 +91,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.AlternateGeometries = alt_geoms
 
-	is_current, err := flags.MultiIntVar(fs, "is-current")
+	is_current, err := lookup.MultiInt64Var(fs, flags.IS_CURRENT)
 
 	if err != nil {
 		return nil, err
@@ -91,7 +99,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.IsCurrent = is_current
 
-	is_ceased, err := flags.MultiIntVar(fs, "is-ceased")
+	is_ceased, err := lookup.MultiInt64Var(fs, flags.IS_CEASED)
 
 	if err != nil {
 		return nil, err
@@ -99,7 +107,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.IsCeased = is_ceased
 
-	is_deprecated, err := flags.MultiIntVar(fs, "is-deprecated")
+	is_deprecated, err := lookup.MultiInt64Var(fs, flags.IS_DEPRECATED)
 
 	if err != nil {
 		return nil, err
@@ -107,7 +115,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.IsDeprecated = is_deprecated
 
-	is_superseded, err := flags.MultiIntVar(fs, "is-superseded")
+	is_superseded, err := lookup.MultiInt64Var(fs, flags.IS_SUPERSEDED)
 
 	if err != nil {
 		return nil, err
@@ -115,7 +123,7 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 
 	req.IsSuperseded = is_superseded
 
-	is_superseding, err := flags.MultiIntVar(fs, "is-superseding")
+	is_superseding, err := lookup.MultiInt64Var(fs, flags.IS_SUPERSEDING)
 
 	if err != nil {
 		return nil, err
@@ -131,6 +139,9 @@ func NewSPRFilterFromPointInPolygonRequest(req *PointInPolygonRequest) (filter.F
 	q := url.Values{}
 	q.Set("geometries", req.Geometries)
 
+	q.Set("inception_date", req.InceptionDate)
+	q.Set("cessation_date", req.CessationDate)	
+	
 	for _, v := range req.AlternateGeometries {
 		q.Add("alternate_geometry", v)
 	}

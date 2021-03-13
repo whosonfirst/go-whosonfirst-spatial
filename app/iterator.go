@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
@@ -22,10 +23,10 @@ import (
 
 func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, properties_r properties.PropertiesReader) (*iterator.Iterator, error) {
 
-	emitter_uri, _ := flags.StringVar(fl, "iterator-uri")
+	emitter_uri, _ := lookup.StringVar(fl, flags.ITERATOR_URI)
 
-	is_wof, _ := flags.BoolVar(fl, "is-wof")
-	index_properties, _ := flags.BoolVar(fl, "index-properties")
+	is_wof, _ := lookup.BoolVar(fl, "is-wof")
+	index_properties, _ := lookup.BoolVar(fl, flags.INDEX_PROPERTIES)
 
 	include_deprecated := true
 	include_superseded := true

@@ -3,6 +3,7 @@ package filter
 import (
 	"flag"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
 func NewSPRFilterFromFlagSet(fs *flag.FlagSet) (Filter, error) {
@@ -24,7 +25,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 		return nil, err
 	}
 
-	placetypes, err := lookup.MultiStringVar(fs, "placetype")
+	placetypes, err := lookup.MultiStringVar(fs, flags.PLACETYPES)
 
 	if err != nil {
 		return nil, err
@@ -32,7 +33,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.Placetypes = placetypes
 
-	inception_date, err := lookup.StringVar(fs, "inception-date")
+	inception_date, err := lookup.StringVar(fs, flags.INCEPTION_DATE)
 
 	if err != nil {
 		return nil, err
@@ -40,7 +41,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.InceptionDate = inception_date
 
-	cessation_date, err := lookup.StringVar(fs, "cessation-date")
+	cessation_date, err := lookup.StringVar(fs, flags.CESSATION_DATE)
 
 	if err != nil {
 		return nil, err
@@ -48,7 +49,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.CessationDate = cessation_date
 
-	geometries, err := lookup.MultiStringVar(fs, "geometries")
+	geometries, err := lookup.MultiStringVar(fs, flags.GEOMETRIES)
 
 	if err != nil {
 		return nil, err
@@ -56,7 +57,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.Geometries = geometries
 
-	alt_geoms, err := lookup.MultiStringVar(fs, "alternate-geometry")
+	alt_geoms, err := lookup.MultiStringVar(fs, flags.ALTERNATE_GEOMETRIES)
 
 	if err != nil {
 		return nil, err
@@ -64,7 +65,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.AlternateGeometries = alt_geoms
 
-	is_current, err := lookup.MultiInt64Var(fs, "is-current")
+	is_current, err := lookup.MultiInt64Var(fs, flags.IS_CURRENT)
 
 	if err != nil {
 		return nil, err
@@ -72,7 +73,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsCurrent = is_current
 
-	is_ceased, err := lookup.MultiInt64Var(fs, "is-ceased")
+	is_ceased, err := lookup.MultiInt64Var(fs, flags.IS_CEASED)
 
 	if err != nil {
 		return nil, err
@@ -80,7 +81,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsCeased = is_ceased
 
-	is_deprecated, err := lookup.MultiInt64Var(fs, "is-deprecated")
+	is_deprecated, err := lookup.MultiInt64Var(fs, flags.IS_DEPRECATED)
 
 	if err != nil {
 		return nil, err
@@ -88,7 +89,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsDeprecated = is_deprecated
 
-	is_superseded, err := lookup.MultiInt64Var(fs, "is-superseded")
+	is_superseded, err := lookup.MultiInt64Var(fs, flags.IS_SUPERSEDED)
 
 	if err != nil {
 		return nil, err
@@ -96,7 +97,7 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.IsSuperseded = is_superseded
 
-	is_superseding, err := lookup.MultiInt64Var(fs, "is-superseding")
+	is_superseding, err := lookup.MultiInt64Var(fs, flags.IS_SUPERSEDING)
 
 	if err != nil {
 		return nil, err
