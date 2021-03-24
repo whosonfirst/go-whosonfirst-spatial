@@ -20,7 +20,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
-	// fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
+	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
 	// property readers
 
