@@ -1,5 +1,8 @@
 package properties
 
+// DEPRECATED... I THINK
+// (20210324/thisisaaronland)
+
 import (
 	"context"
 	"fmt"
