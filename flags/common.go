@@ -33,8 +33,12 @@ func CommonFlags() (*flag.FlagSet, error) {
 	fs.String(PROPERTIES_READER_URI, "rtree://", desc_property_readers)
 
 	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.")
-	fs.String(CUSTOM_PLACETYPES_SOURCE, "", "...")
-	fs.String(CUSTOM_PLACETYPES, "", "...")
+
+	// Pending changes in the app/placetypes.go package to support
+	// alternate sources (20210324/thisisaaronland)
+	// fs.String(CUSTOM_PLACETYPES_SOURCE, "", "...")
+
+	fs.String(CUSTOM_PLACETYPES, "", "A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.")
 
 	fs.Bool(VERBOSE, false, "Be chatty.")
 
