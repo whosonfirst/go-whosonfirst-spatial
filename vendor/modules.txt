@@ -87,6 +87,7 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spr/v2
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
+## explicit
 github.com/whosonfirst/go-whosonfirst-uri
 # github.com/whosonfirst/go-writer v0.4.1
 ## explicit

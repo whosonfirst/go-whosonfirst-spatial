@@ -6,7 +6,6 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
@@ -21,16 +20,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
 	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
-
-	// property readers
-
-	fs.Bool(ENABLE_PROPERTIES, false, "Enable support for 'properties' parameters in queries.")
-	fs.Bool(INDEX_PROPERTIES, false, "Index properties reader.")
-
-	available_property_readers := properties.Schemes()
-	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
-
-	fs.String(PROPERTIES_READER_URI, "rtree://", desc_property_readers)
 
 	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.")
 
