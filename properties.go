@@ -8,20 +8,19 @@ import (
 	"github.com/tidwall/sjson"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
-	"github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
 	_ "log"
 	"strings"
 )
 
-type AppendPropertiesOptions struct {
+type PropertiesResponseOptions struct {
 	Reader       reader.Reader
 	SourcePrefix string
 	TargetPrefix string
 	Keys         []string
 }
 
-func PropertiesResponseResultsWithStandardPlacesResults(ctx context.Context, opts *AppendPropertiesOptions, results spr.StandardPlacesResults) (*PropertiesResponseResults, error) {
+func PropertiesResponseResultsWithStandardPlacesResults(ctx context.Context, opts *PropertiesResponseOptions, results spr.StandardPlacesResults) (*PropertiesResponseResults, error) {
 
 	previous_results := results.Results()
 
@@ -29,21 +28,9 @@ func PropertiesResponseResultsWithStandardPlacesResults(ctx context.Context, opt
 
 	for idx, r := range previous_results {
 
-		spr_id := r.Id()
+		path := r.Path()
 
-		id, uri_args, err := uri.ParseURI(spr_id)
-
-		if err != nil {
-			return nil, err
-		}
-
-		rel_path, err := uri.Id2RelPath(id, uri_args)
-
-		if err != nil {
-			return nil, err
-		}
-
-		fh, err := opts.Reader.Read(ctx, rel_path)
+		fh, err := opts.Reader.Read(ctx, path)
 
 		if err != nil {
 			return nil, err
@@ -86,7 +73,7 @@ func PropertiesResponseResultsWithStandardPlacesResults(ctx context.Context, opt
 	return props_rsp, nil
 }
 
-func AppendPropertiesWithJSON(ctx context.Context, opts *AppendPropertiesOptions, source []byte, target []byte) ([]byte, error) {
+func AppendPropertiesWithJSON(ctx context.Context, opts *PropertiesResponseOptions, source []byte, target []byte) ([]byte, error) {
 
 	var err error
 
