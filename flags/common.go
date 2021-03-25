@@ -19,6 +19,8 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
+	fs.String(PROPERTIES_READER_URI, "", desc_databases)
+
 	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
 	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.")
@@ -44,6 +46,12 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 
 	if spatial_database_uri == "" {
 		return fmt.Errorf("Invalid or missing -%s flag", SPATIAL_DATABASE_URI)
+	}
+
+	_, err = lookup.StringVar(fs, PROPERTIES_READER_URI)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
