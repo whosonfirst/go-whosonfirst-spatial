@@ -6,6 +6,7 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-reader"	
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
@@ -15,11 +16,14 @@ func CommonFlags() (*flag.FlagSet, error) {
 	// spatial databases
 
 	available_databases := database.Schemes()
-	desc_databases := fmt.Sprintf("Valid options are: %s", available_databases)
+	desc_databases := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: %s", available_databases)
 
 	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
-	fs.String(PROPERTIES_READER_URI, "", "A valid whosonfirst/go-reader.Reader URI")
+	available_readers := reader.Schemes()
+	desc_readers := fmt.Sprintf("A valid whosonfirst/go-reader.Reader URI. Available options are: %s", available_readers)
+	
+	fs.String(PROPERTIES_READER_URI, "", desc_readers)
 
 	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
