@@ -19,7 +19,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
-	fs.String(PROPERTIES_READER_URI, "", desc_databases)
+	fs.String(PROPERTIES_READER_URI, "", "A valid whosonfirst/go-reader.Reader URI")
 
 	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
