@@ -46,31 +46,5 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		return fmt.Errorf("Invalid or missing -%s flag", SPATIAL_DATABASE_URI)
 	}
 
-	enable_properties, err := lookup.BoolVar(fs, ENABLE_PROPERTIES)
-
-	if err != nil {
-		return err
-	}
-
-	if enable_properties {
-
-		properties_reader_uri, err := lookup.StringVar(fs, PROPERTIES_READER_URI)
-
-		if err != nil {
-			return err
-		}
-
-		if properties_reader_uri == "" {
-			return fmt.Errorf("Invalid or missing -%s flag", PROPERTIES_READER_URI)
-		}
-
-		_, err = lookup.BoolVar(fs, INDEX_PROPERTIES)
-
-		if err != nil {
-			return err
-		}
-
-	}
-
 	return nil
 }
