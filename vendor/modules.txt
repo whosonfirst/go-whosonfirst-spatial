@@ -13,7 +13,7 @@ github.com/mmcloughlin/geohash
 github.com/natefinch/atomic
 # github.com/paulmach/go.geojson v1.4.0
 github.com/paulmach/go.geojson
-# github.com/sfomuseum/go-edtf v0.2.2
+# github.com/sfomuseum/go-edtf v0.2.3
 github.com/sfomuseum/go-edtf
 github.com/sfomuseum/go-edtf/calendar
 github.com/sfomuseum/go-edtf/common
@@ -31,12 +31,12 @@ github.com/sfomuseum/go-flags/multi
 # github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 ## explicit
 github.com/skelterjohn/geom
-# github.com/tidwall/gjson v1.6.8
+# github.com/tidwall/gjson v1.7.1
 ## explicit
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.0.3
 github.com/tidwall/match
-# github.com/tidwall/pretty v1.0.2
+# github.com/tidwall/pretty v1.1.0
 github.com/tidwall/pretty
 # github.com/tidwall/sjson v1.1.5
 ## explicit
@@ -58,7 +58,7 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.0
+# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.1
 ## explicit
 github.com/whosonfirst/go-whosonfirst-geojson-v2
 github.com/whosonfirst/go-whosonfirst-geojson-v2/feature
