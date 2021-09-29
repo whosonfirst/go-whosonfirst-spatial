@@ -23,7 +23,6 @@ func init() {
 
 	schemes := []string{
 		"fs",
-		"file",
 	}
 
 	for _, scheme := range schemes {
