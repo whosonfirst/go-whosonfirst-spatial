@@ -31,10 +31,10 @@ github.com/sfomuseum/go-flags/multi
 # github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 ## explicit
 github.com/skelterjohn/geom
-# github.com/tidwall/gjson v1.9.1
+# github.com/tidwall/gjson v1.9.2
 ## explicit
 github.com/tidwall/gjson
-# github.com/tidwall/match v1.0.3
+# github.com/tidwall/match v1.1.0
 github.com/tidwall/match
 # github.com/tidwall/pretty v1.2.0
 github.com/tidwall/pretty
@@ -62,18 +62,11 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.3
-## explicit
-# github.com/whosonfirst/go-whosonfirst-iterate v1.2.0
-## explicit
 # github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.0.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
 github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator
-# github.com/whosonfirst/go-whosonfirst-log v0.1.0
-## explicit
-github.com/whosonfirst/go-whosonfirst-log
 # github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-placetypes
