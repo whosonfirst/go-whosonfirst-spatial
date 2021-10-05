@@ -15,6 +15,13 @@ func IndexDatabaseWithIterator(ctx context.Context, db SpatialDatabase, iterator
 
 	iter_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
 
+		select {
+		case <-ctx.Done():
+			return nil
+		default:
+			// pass
+		}
+
 		body, err := io.ReadAll(fh)
 
 		if err != nil {
