@@ -9,13 +9,11 @@ github.com/g8rswimmer/error-chain
 github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874
 github.com/hashicorp/go-multierror
-# github.com/mmcloughlin/geohash v0.10.0
-github.com/mmcloughlin/geohash
 # github.com/natefinch/atomic v1.0.1
 github.com/natefinch/atomic
-# github.com/paulmach/go.geojson v1.4.0
-github.com/paulmach/go.geojson
-# github.com/sfomuseum/go-edtf v0.2.3
+# github.com/paulmach/orb v0.2.2
+github.com/paulmach/orb
+# github.com/sfomuseum/go-edtf v0.3.0
 github.com/sfomuseum/go-edtf
 github.com/sfomuseum/go-edtf/calendar
 github.com/sfomuseum/go-edtf/common
@@ -53,6 +51,10 @@ github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 github.com/whosonfirst/go-whosonfirst-crawl
+# github.com/whosonfirst/go-whosonfirst-feature v0.0.7
+## explicit
+github.com/whosonfirst/go-whosonfirst-feature/geometry
+github.com/whosonfirst/go-whosonfirst-feature/properties
 # github.com/whosonfirst/go-whosonfirst-flags v0.4.3
 ## explicit
 github.com/whosonfirst/go-whosonfirst-flags
@@ -62,19 +64,13 @@ github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
 # github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.16.3
 ## explicit
-github.com/whosonfirst/go-whosonfirst-geojson-v2
-github.com/whosonfirst/go-whosonfirst-geojson-v2/feature
-github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry
-github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry
-github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst
-github.com/whosonfirst/go-whosonfirst-geojson-v2/utils
-# github.com/whosonfirst/go-whosonfirst-hash v0.1.0
-github.com/whosonfirst/go-whosonfirst-hash
 # github.com/whosonfirst/go-whosonfirst-iterate v1.2.0
 ## explicit
-github.com/whosonfirst/go-whosonfirst-iterate/emitter
-github.com/whosonfirst/go-whosonfirst-iterate/filters
-github.com/whosonfirst/go-whosonfirst-iterate/iterator
+# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.0.0
+## explicit
+github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
+github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
+github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator
 # github.com/whosonfirst/go-whosonfirst-log v0.1.0
 ## explicit
 github.com/whosonfirst/go-whosonfirst-log
