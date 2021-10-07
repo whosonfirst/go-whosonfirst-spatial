@@ -6,7 +6,6 @@ require (
 	github.com/aaronland/go-roster v0.0.2
 	github.com/paulmach/orb v0.2.2
 	github.com/sfomuseum/go-flags v0.8.2
-	github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 	github.com/tidwall/gjson v1.9.2
 	github.com/tidwall/sjson v1.2.2
 	github.com/whosonfirst/go-reader v0.9.0
