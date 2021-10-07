@@ -85,7 +85,7 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 		err := p.Iterator.IterateURIs(ctx, paths...)
 
 		if err != nil {
-			p.Logger.Fatal("failed to index paths because %s", err)
+			p.Logger.Fatalf("failed to index paths because %s", err)
 		}
 
 		t2 := time.Since(t1)

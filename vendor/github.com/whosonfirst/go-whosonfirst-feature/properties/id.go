@@ -15,7 +15,7 @@ func Id(body []byte) (int64, error) {
 
 	id := rsp.Int()
 
-	if id < -4 {
+	if id < 0 {
 		return 0, fmt.Errorf("Invalid or unrecognized ID value (%d)", id)
 	}
 

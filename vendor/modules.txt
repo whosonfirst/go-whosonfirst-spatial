@@ -12,7 +12,9 @@ github.com/hashicorp/go-multierror
 # github.com/natefinch/atomic v1.0.1
 github.com/natefinch/atomic
 # github.com/paulmach/orb v0.2.2
+## explicit
 github.com/paulmach/orb
+github.com/paulmach/orb/geojson
 # github.com/sfomuseum/go-edtf v0.3.0
 github.com/sfomuseum/go-edtf
 github.com/sfomuseum/go-edtf/calendar
@@ -51,7 +53,7 @@ github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-feature v0.0.7
+# github.com/whosonfirst/go-whosonfirst-feature v0.0.12
 ## explicit
 github.com/whosonfirst/go-whosonfirst-feature/geometry
 github.com/whosonfirst/go-whosonfirst-feature/properties
