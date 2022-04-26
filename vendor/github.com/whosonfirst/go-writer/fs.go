@@ -3,8 +3,10 @@ package writer
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/natefinch/atomic"
 	"io"
+	"math/rand"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -70,13 +72,31 @@ func (wr *FileWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) 
 	abs_path := wr.WriterURI(ctx, path)
 	abs_root := filepath.Dir(abs_path)
 
-	tmp_file, err := os.CreateTemp("", filepath.Base(abs_path))
+	_, err := os.Stat(abs_root)
+
+	if os.IsNotExist(err) {
+
+		err = os.MkdirAll(abs_root, wr.dir_mode)
+
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	// So this... we can't do this because of cross-device (filesystem) limitations
+	// under Unix. That is /tmp may be on a different filesystem than abs_path
+	// tmp_file, err := os.CreateTemp("", filepath.Base(abs_path))
+	// tmp_path := tmp_file.Name()
+
+	tmp_suffix := fmt.Sprintf("tmp%d", rand.Int63())
+	tmp_path := fmt.Sprintf("%s.%s", abs_path, tmp_suffix)
+
+	tmp_file, err := os.OpenFile(tmp_path, os.O_RDWR|os.O_CREATE, 0600)
 
 	if err != nil {
 		return 0, err
 	}
 
-	tmp_path := tmp_file.Name()
 	defer os.Remove(tmp_path)
 
 	b, err := io.Copy(tmp_file, fh)
@@ -95,17 +115,6 @@ func (wr *FileWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) 
 
 	if err != nil {
 		return 0, err
-	}
-
-	_, err = os.Stat(abs_root)
-
-	if os.IsNotExist(err) {
-
-		err = os.MkdirAll(abs_root, wr.dir_mode)
-
-		if err != nil {
-			return 0, err
-		}
 	}
 
 	err = atomic.ReplaceFile(tmp_path, abs_path)

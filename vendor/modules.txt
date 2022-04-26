@@ -1,4 +1,4 @@
-# github.com/aaronland/go-json-query v0.1.1
+# github.com/aaronland/go-json-query v0.1.2
 github.com/aaronland/go-json-query
 # github.com/aaronland/go-roster v0.0.2
 ## explicit
@@ -11,11 +11,11 @@ github.com/hashicorp/errwrap
 github.com/hashicorp/go-multierror
 # github.com/natefinch/atomic v1.0.1
 github.com/natefinch/atomic
-# github.com/paulmach/orb v0.2.2
+# github.com/paulmach/orb v0.5.0
 ## explicit
 github.com/paulmach/orb
 github.com/paulmach/orb/geojson
-# github.com/sfomuseum/go-edtf v0.3.0
+# github.com/sfomuseum/go-edtf v0.3.1
 github.com/sfomuseum/go-edtf
 github.com/sfomuseum/go-edtf/calendar
 github.com/sfomuseum/go-edtf/common
@@ -30,19 +30,19 @@ github.com/sfomuseum/go-edtf/tests
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
-# github.com/tidwall/gjson v1.9.3
+# github.com/tidwall/gjson v1.14.1
 ## explicit
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.1.1
 github.com/tidwall/match
 # github.com/tidwall/pretty v1.2.0
 github.com/tidwall/pretty
-# github.com/tidwall/sjson v1.2.2
+# github.com/tidwall/sjson v1.2.4
 ## explicit
 github.com/tidwall/sjson
-# github.com/whosonfirst/go-ioutil v1.0.0
+# github.com/whosonfirst/go-ioutil v1.0.1
 github.com/whosonfirst/go-ioutil
-# github.com/whosonfirst/go-reader v0.9.0
+# github.com/whosonfirst/go-reader v0.10.0
 ## explicit
 github.com/whosonfirst/go-reader
 # github.com/whosonfirst/go-sanitize v0.1.0
@@ -50,7 +50,7 @@ github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-feature v0.0.12
+# github.com/whosonfirst/go-whosonfirst-feature v0.0.20
 ## explicit
 github.com/whosonfirst/go-whosonfirst-feature/geometry
 github.com/whosonfirst/go-whosonfirst-feature/properties
@@ -61,7 +61,7 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.0.1
+# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.0.2
 ## explicit
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
@@ -78,7 +78,7 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 github.com/whosonfirst/go-whosonfirst-spr/v2
 # github.com/whosonfirst/go-whosonfirst-uri v1.0.1
 github.com/whosonfirst/go-whosonfirst-uri
-# github.com/whosonfirst/go-writer v0.6.0
+# github.com/whosonfirst/go-writer v0.8.0
 ## explicit
 github.com/whosonfirst/go-writer
 # github.com/whosonfirst/walk v0.0.1

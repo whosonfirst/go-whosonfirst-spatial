@@ -14,6 +14,5 @@ func Name(body []byte) (string, error) {
 	}
 
 	name := rsp.String()
-
 	return name, nil
 }
