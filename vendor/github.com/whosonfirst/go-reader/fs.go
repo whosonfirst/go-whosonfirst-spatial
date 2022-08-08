@@ -1,20 +1,21 @@
 package reader
 
 import (
+	"compress/bzip2"
 	"context"
+	"fmt"
+	"github.com/whosonfirst/go-ioutil"
 	"io"
 	"net/url"
 	"os"
 	"path/filepath"
-	"compress/bzip2"
-	"fmt"
-	"github.com/whosonfirst/go-ioutil"
 	"strconv"
 )
 
+// FileReader is a struct that implements the `Reader` interface for reading documents from files on a local disk.
 type FileReader struct {
 	Reader
-	root string
+	root      string
 	allow_bz2 bool
 }
 
@@ -30,6 +31,12 @@ func init() {
 
 }
 
+// NewFileReader returns a new `FileReader` instance for reading documents from local files on
+// disk, configured by 'uri' in the form of:
+//
+//	fs://{PATH}
+//
+// Where {PATH} is an absolute path to an existing directory where files will be read from.
 func NewFileReader(ctx context.Context, uri string) (Reader, error) {
 
 	u, err := url.Parse(uri)
@@ -48,17 +55,17 @@ func NewFileReader(ctx context.Context, uri string) (Reader, error) {
 	if !info.IsDir() {
 		return nil, fmt.Errorf("Root (%s) is not a directory", root)
 	}
-	
+
 	r := &FileReader{
 		root: root,
 	}
 
 	q := u.Query()
 
-	allow_bz2 := q.Get("allow_bz2")	
+	allow_bz2 := q.Get("allow_bz2")
 
 	if allow_bz2 != "" {
-		
+
 		allow, err := strconv.ParseBool(allow_bz2)
 
 		if err != nil {
@@ -67,10 +74,11 @@ func NewFileReader(ctx context.Context, uri string) (Reader, error) {
 
 		r.allow_bz2 = allow
 	}
-	
+
 	return r, nil
 }
 
+// Read will open an `io.ReadSeekCloser` for a file matching 'path'.
 func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, error) {
 
 	abs_path := r.ReaderURI(ctx, path)
@@ -82,7 +90,7 @@ func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, 
 	}
 
 	var fh io.ReadSeekCloser
-	
+
 	fh, err = os.Open(abs_path)
 
 	if err != nil {
@@ -92,7 +100,7 @@ func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, 
 	if filepath.Ext(abs_path) == ".bz2" && r.allow_bz2 {
 
 		bz_r := bzip2.NewReader(fh)
-		
+
 		rsc, err := ioutil.NewReadSeekCloser(bz_r)
 
 		if err != nil {
@@ -105,6 +113,7 @@ func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, 
 	return fh, nil
 }
 
+// ReaderURI returns the absolute URL for 'path'.
 func (r *FileReader) ReaderURI(ctx context.Context, path string) string {
 	return filepath.Join(r.root, path)
 }
