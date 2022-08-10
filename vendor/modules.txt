@@ -79,9 +79,9 @@ github.com/whosonfirst/go-whosonfirst-sources/sources
 github.com/whosonfirst/go-whosonfirst-spr/v2
 # github.com/whosonfirst/go-whosonfirst-uri v1.2.0
 github.com/whosonfirst/go-whosonfirst-uri
-# github.com/whosonfirst/go-writer v1.0.1
+# github.com/whosonfirst/go-writer/v2 v2.0.0
 ## explicit
-github.com/whosonfirst/go-writer
+github.com/whosonfirst/go-writer/v2
 # github.com/whosonfirst/walk v0.0.1
 github.com/whosonfirst/walk
 # github.com/whosonfirst/warning v0.1.1
