@@ -105,10 +105,17 @@ _Please write me_
 
 _Please write me_
 
-## See also
+## Implementations
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
 * https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
-* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
+
+## Servers and clients
+
 * https://github.com/whosonfirst/go-whosonfirst-spatial-www
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc
+
+## Services
+
+* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
+* https://github.com/whosonfirst/go-whosonfirst-spatial-hierarchy
