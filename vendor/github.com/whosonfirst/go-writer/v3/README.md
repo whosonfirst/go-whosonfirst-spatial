@@ -13,7 +13,7 @@ Writers are instantiated with the `writer.NewWriter` method which takes as its a
 ```
 import (
        "context"
-       "github.com/whosonfirst/go-writer"
+       "github.com/whosonfirst/go-writer/v2"
        "strings"
 )
 
