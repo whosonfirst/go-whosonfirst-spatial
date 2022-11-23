@@ -28,8 +28,8 @@ github.com/sfomuseum/go-edtf v1.1.1/go.mod h1:1rP0EJZ/84j3HO80vGcnG2T9MFBDAFyTNt
 github.com/sfomuseum/go-flags v0.7.0/go.mod h1:ML3DTNbF9xnjExSdS/9FtVLjIUhRU5gm/ehzISv+t2w=
 github.com/sfomuseum/go-flags v0.10.0 h1:1OC1ACxpWMsl3XQ9OeNVMQj7Zi2CzufP3Rym3mPI8HU=
 github.com/sfomuseum/go-flags v0.10.0/go.mod h1:VXOnnX1/yxQpX2yiwHaBV6aCmhtszQOL5bL1/nNo3co=
-github.com/sfomuseum/go-timings v1.1.0 h1:HIXqfk4ThggDPP+MYsK9uK7nPCOEw2bK+Cl5AL3Ggy4=
-github.com/sfomuseum/go-timings v1.1.0/go.mod h1:jZrCwV4uoY5s4sOZWZLn6xQ2LhsMy2ZvdB3tzLPO76c=
+github.com/sfomuseum/go-timings v1.2.1 h1:AthtFBMBYN+kUflQUp9FFBZVHsR9KB/GkMvO1DuEYEE=
+github.com/sfomuseum/go-timings v1.2.1/go.mod h1:jZrCwV4uoY5s4sOZWZLn6xQ2LhsMy2ZvdB3tzLPO76c=
 github.com/sfomuseum/iso8601duration v1.1.0 h1:kMYzbamrZp9dRxi5iFuhjl5CzHXK6s6Bzz/c75wsq8Q=
 github.com/sfomuseum/iso8601duration v1.1.0/go.mod h1:6EenGWM7y8uVquMPEZwoR+ihpIMJluw7iYiHhDTuOAk=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=

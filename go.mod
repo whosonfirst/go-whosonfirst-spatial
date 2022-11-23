@@ -6,7 +6,7 @@ require (
 	github.com/aaronland/go-roster v1.0.0
 	github.com/paulmach/orb v0.7.1
 	github.com/sfomuseum/go-flags v0.10.0
-	github.com/sfomuseum/go-timings v1.1.0
+	github.com/sfomuseum/go-timings v1.2.1
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/whosonfirst/go-reader v1.0.2

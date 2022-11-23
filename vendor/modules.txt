@@ -36,7 +36,7 @@ github.com/sfomuseum/go-edtf/tests
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
-# github.com/sfomuseum/go-timings v1.1.0
+# github.com/sfomuseum/go-timings v1.2.1
 ## explicit; go 1.18
 github.com/sfomuseum/go-timings
 # github.com/sfomuseum/iso8601duration v1.1.0
