@@ -14,8 +14,8 @@ require (
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.24
 	github.com/whosonfirst/go-whosonfirst-flags v0.4.4
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.1
-	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.0
-	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.1
+	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.1
+	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.2
 	github.com/whosonfirst/go-writer/v3 v3.1.0
 	github.com/whosonfirst/warning v0.1.1
 )
