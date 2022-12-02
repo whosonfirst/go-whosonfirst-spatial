@@ -11,11 +11,11 @@ require (
 	github.com/tidwall/sjson v1.2.5
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-sanitize v0.1.0
-	github.com/whosonfirst/go-whosonfirst-feature v0.0.24
+	github.com/whosonfirst/go-whosonfirst-feature v0.0.25
 	github.com/whosonfirst/go-whosonfirst-flags v0.4.4
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.1
-	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.1
-	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.2
+	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.2
+	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.3
 	github.com/whosonfirst/go-writer/v3 v3.1.0
 	github.com/whosonfirst/warning v0.1.1
 )
