@@ -42,6 +42,9 @@ func AppendQueryFlags(fs *flag.FlagSet) error {
 	var is_superseding multi.MultiInt64
 	fs.Var(&is_superseding, IS_SUPERSEDING, "One or more existential flags (-1, 0, 1) to filter results by.")
 
+	var sort multi.MultiString
+	fs.Var(&sort, SORT, "Zero or more whosonfirst/go-whosonfirst-spr/sort URIs.")
+
 	return nil
 }
 

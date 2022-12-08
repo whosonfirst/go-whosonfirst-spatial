@@ -41,3 +41,5 @@ const PROPERTIES_READER_URI string = "properties-reader-uri"
 const VERBOSE string = "verbose"
 
 const IS_WOF string = "is-wof"
+
+const SORT string = "sort-uri"
