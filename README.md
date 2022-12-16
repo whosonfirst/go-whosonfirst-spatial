@@ -42,21 +42,22 @@ It is part of the overall goal of:
 * Supporting as many databases (and delivery (and indexing) choices) as possible
 * Not making database `B` a dependency (in the Go code) in order to use database `A`, as in not bundling everything in a single mono-repo that becomes bigger and has more requirements over time.
 
+Importantly this package does not implement any actual spatial functionality. It defines the interfaces that are implemented by other packages which allows code to function without the need to consider the underlying mechanics of how spatial operations are being performed.
+
 ## Concepts
 
-### Applications
+### SpatialIndex
 
-_Please write me_
 
-### Database
+### SpatialDatabase
+
+Any system that can store and query for one or more Who's On First record, implementing the `database.SpatialDatabase` interface.
+
+### Properties Reader
 
 _Please write me_
 
 ### Filters
-
-_Please write me_
-
-### Indices
 
 _Please write me_
 
@@ -84,7 +85,7 @@ _Please write me_
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-pmtiles
 
-## Services
+## Services and Operations
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-pip
 * https://github.com/whosonfirst/go-whosonfirst-spatial-hierarchy
