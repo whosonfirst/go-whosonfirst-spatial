@@ -8,7 +8,7 @@ Documentation, particularly proper Go documentation, is incomplete at this time.
 
 ## Motivation
 
-The goal of the `go-whosonfirst-spatial` package is to de-couple the various components that make up the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package – indexing, storage, querying and serving – in to separate packages in order to allow for more flexibility.
+The goal of the `go-whosonfirst-spatial` package is to de-couple the various components that made up the now-deprecated [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package – indexing, storage, querying and serving – in to separate packages in order to allow for more flexibility.
 
 It is the "base" package that defines provider-agnostic, but WOF-specific, interfaces for a limited set of spatial queries and reading properties.
 
@@ -44,26 +44,56 @@ It is part of the overall goal of:
 
 Importantly this package does not implement any actual spatial functionality. It defines the interfaces that are implemented by other packages which allows code to function without the need to consider the underlying mechanics of how spatial operations are being performed.
 
-## Concepts
+The layout of this package remains in flux and is likely to change. Things have almost settled but not quite yet.
+
+## Interfaces
 
 ### SpatialIndex
 
+```
+type SpatialIndex interface {
+	IndexFeature(context.Context, []byte) error
+	RemoveFeature(context.Context, string) error
+	PointInPolygon(context.Context, *orb.Point, ...Filter) (spr.StandardPlacesResults, error)
+	PointInPolygonCandidates(context.Context, *orb.Point, ...Filter) ([]*PointInPolygonCandidate, error)
+	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *orb.Point, ...Filter)
+	PointInPolygonCandidatesWithChannels(context.Context, chan *PointInPolygonCandidate, chan error, chan bool, *orb.Point, ...Filter)
+	Disconnect(context.Context) error
+}
+```
+
+_Where `orb.*` and `spr.*` refer to the [paulmach/orb](https://github.com/paulmach/orb) and [whosonfirst/go-whosonfirst-flags](https://github.com/whosonfirst/go-whosonfirst-flags) packages respectively._
 
 ### SpatialDatabase
 
-Any system that can store and query for one or more Who's On First record, implementing the `database.SpatialDatabase` interface.
+```
+type SpatialDatabase interface {
+	reader.Reader
+	writer.Writer
+	spatial.SpatialIndex
+}
+```
 
-### Properties Reader
+_Where `reader.Reader` and `writer.Writer` are the [whosonfirst/go-reader](https://pkg.go.dev/github.com/whosonfirst/go-reader#Reader) and [whosonfirst/go-writer](https://pkg.go.dev/github.com/whosonfirst/go-writer#Writer) interfaces, respectively._
 
-_Please write me_
+### Filter
 
-### Filters
+```
+type Filter interface {
+	HasPlacetypes(flags.PlacetypeFlag) bool
+	MatchesInception(flags.DateFlag) bool
+	MatchesCessation(flags.DateFlag) bool
+	IsCurrent(flags.ExistentialFlag) bool
+	IsDeprecated(flags.ExistentialFlag) bool
+	IsCeased(flags.ExistentialFlag) bool
+	IsSuperseded(flags.ExistentialFlag) bool
+	IsSuperseding(flags.ExistentialFlag) bool
+	IsAlternateGeometry(flags.AlternateGeometryFlag) bool
+	HasAlternateGeometry(flags.AlternateGeometryFlag) bool
+}
+```
 
-_Please write me_
-
-### Standard Places Response (SPR)
-
-_Please write me_
+_Where `flags.*` refers to the [whosonfirst/go-whosonfirst-flags](https://github.com/whosonfirst/go-whosonfirst-flags) package._
 
 ## Implementations
 
@@ -89,3 +119,11 @@ _Please write me_
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-pip
 * https://github.com/whosonfirst/go-whosonfirst-spatial-hierarchy
+
+## See also
+
+* https://github.com/whosonfirst/go-whosonfirst-spr
+* https://github.com/whosonfirst/go-whosonfirst-flags
+* https://github.com/whosonfirst/go-reader
+* https://github.com/whosonfirst/go-writer
+* https://github.com/paulmach/orb
