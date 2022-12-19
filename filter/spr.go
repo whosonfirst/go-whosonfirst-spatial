@@ -196,7 +196,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 	f, err := NewSPRFilter()
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create new SPR filter, %w", err)
 	}
 
 	if len(inputs.Placetypes) != 0 {
@@ -204,7 +204,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := placetypeFlags(inputs.Placetypes)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse placetypes flags, %w", err)
 		}
 
 		f.Placetypes = possible
@@ -215,7 +215,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		fl, err := date.NewEDTFDateFlag(inputs.InceptionDate)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse EDTF inception flags, %w", err)
 		}
 
 		f.InceptionDate = fl
@@ -226,7 +226,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		fl, err := date.NewEDTFDateFlag(inputs.CessationDate)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse EDTF cessation flags, %w", err)			
 		}
 
 		f.CessationDate = fl
@@ -237,7 +237,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsCurrent)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse is current existential flag, %w", err)
 		}
 
 		f.Current = possible
@@ -248,7 +248,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsDeprecated)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse is deprecated existential flag, %w", err)			
 		}
 
 		f.Deprecated = possible
@@ -259,7 +259,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsCeased)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse is ceased existential flag, %w", err)						
 		}
 
 		f.Ceased = possible
@@ -270,7 +270,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsSuperseded)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse is ceased superseded flag, %w", err)									
 		}
 
 		f.Superseded = possible
@@ -281,7 +281,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsSuperseding)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse is ceased superseding flag, %w", err)
 		}
 
 		f.Superseding = possible
@@ -299,7 +299,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 			af, err := geometry.NewIsAlternateGeometryFlag(true)
 
 			if err != nil {
-				return nil, fmt.Errorf("Failed to create alternate geometry flag, %v", err)
+				return nil, fmt.Errorf("Failed to create alternate geometry flag, %w", err)
 			}
 
 			f.AlternateGeometry = af
@@ -309,7 +309,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 			af, err := geometry.NewIsAlternateGeometryFlag(false)
 
 			if err != nil {
-				return nil, fmt.Errorf("Failed to create alternate geometry flag, %v", err)
+				return nil, fmt.Errorf("Failed to create alternate geometry flag, %w", err)
 			}
 
 			f.AlternateGeometry = af
@@ -325,7 +325,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := hasAlternateGeometryFlags(inputs.AlternateGeometries)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse alternate geometries flags, %w", err)
 		}
 
 		f.AlternateGeometries = possible
@@ -343,7 +343,7 @@ func dateFlags(inputs []string) ([]flags.DateFlag, error) {
 		candidates, err := stringList(raw, ",")
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to derive string list from %s, %w", raw, err)
 		}
 
 		for _, edtf_str := range candidates {
@@ -351,7 +351,7 @@ func dateFlags(inputs []string) ([]flags.DateFlag, error) {
 			fl, err := date.NewEDTFDateFlag(edtf_str)
 
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("Failed to derive to EDTF date from '%s', %w", edtf_str, err)
 			}
 
 			possible = append(possible, fl)
@@ -370,7 +370,7 @@ func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {
 		candidates, err := stringList(raw, ",")
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to derive string list from '%s', %w", raw, err)
 		}
 
 		for _, pt := range candidates {
@@ -378,7 +378,7 @@ func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {
 			fl, err := placetypes.NewPlacetypeFlag(pt)
 
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("Failed to create placetype flag for '%s', %w", pt, err)
 			}
 
 			possible = append(possible, fl)
@@ -397,7 +397,7 @@ func existentialFlags(inputs []int64) ([]flags.ExistentialFlag, error) {
 		fl, err := existential.NewKnownUnknownFlag(i)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to create known unknown flag for '%s', %w", i, err)
 		}
 
 		possible = append(possible, fl)
@@ -415,7 +415,7 @@ func hasAlternateGeometryFlags(input []string) ([]flags.AlternateGeometryFlag, e
 		candidates, err := stringList(raw, ",")
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to derive string list from '%s', %w", raw, err)
 		}
 
 		for _, alt_label := range candidates {
@@ -425,7 +425,7 @@ func hasAlternateGeometryFlags(input []string) ([]flags.AlternateGeometryFlag, e
 			fl, err := geometry.NewAlternateGeometryFlag(uri_str)
 
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("Failed to derive alternate geometry flag from '%s', %w", uri_str, err)
 			}
 
 			possible = append(possible, fl)
@@ -484,7 +484,7 @@ func int64List(raw string, sep string) ([]int64, error) {
 		i, err := strconv.ParseInt(str_i, 10, 64)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse '%s', %w", str_i, err)
 		}
 
 		int64_list = append(int64_list, i)
