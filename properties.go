@@ -13,6 +13,12 @@ import (
 	"strings"
 )
 
+type PropertiesResponse map[string]interface{}
+
+type PropertiesResponseResults struct {
+	Properties []*PropertiesResponse `json:"places"` // match spr response
+}
+
 type PropertiesResponseOptions struct {
 	Reader       reader.Reader
 	SourcePrefix string

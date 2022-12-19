@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"io"
 )
 
 // IndexDatabaseWithIterator is a general-purpose method for indexing a `database.Spatial.Database` instance with a
 // whosonfirst/go-whosonfirst-iterate/v2 iterator. Only records whose geometry type are 'Polygon' or 'MultiPolygon'
 // will be indexed.
-func IndexDatabaseWithIterator(ctx context.Context, db SpatialDatabase, iterator_uri string, iterator_sources ...string) error {
+func IndexDatabaseWithIterator(ctx context.Context, db spatial.SpatialDatabase, iterator_uri string, iterator_sources ...string) error {
 
 	iter_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
 

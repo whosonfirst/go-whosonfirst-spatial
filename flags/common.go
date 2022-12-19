@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
@@ -26,12 +25,12 @@ func AppendCommonFlags(fs *flag.FlagSet) error {
 
 	// spatial databases
 
-	available_databases := database.Schemes()
+	available_databases := spatial.DatabaseSchemes()
 	desc_databases := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: %s", available_databases)
 
 	fs.String(SpatialDatabaseURIFlag, "", desc_databases)
 
-	available_readers := reader.Schemes()
+	available_readers := spatial.DatabaseSchemes()
 	desc_readers := fmt.Sprintf("A valid whosonfirst/go-reader.Reader URI. Available options are: %s", available_readers)
 
 	fs.String(PropertiesReaderURIFlag, "", fmt.Sprintf("%s. If the value is {spatial-database-uri} then the value of the '-spatial-database-uri' implements the reader.Reader interface and will be used.", desc_readers))

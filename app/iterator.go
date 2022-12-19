@@ -7,16 +7,16 @@ import (
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"
 )
 
-func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase) (*iterator.Iterator, error) {
+func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db spatial.SpatialDatabase) (*iterator.Iterator, error) {
 
-	emitter_uri, _ := lookup.StringVar(fl, flags.ITERATOR_URI)
+	emitter_uri, _ := lookup.StringVar(fl, flags.IteratorURIFlag)
 	is_wof, _ := lookup.BoolVar(fl, flags.IS_WOF)
 
 	emitter_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {

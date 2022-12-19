@@ -11,20 +11,20 @@ import (
 
 func NewPropertiesReaderWithFlagsSet(ctx context.Context, fs *flag.FlagSet) (reader.Reader, error) {
 
-	reader_uri, _ := lookup.StringVar(fs, flags.PROPERTIES_READER_URI)
+	reader_uri, _ := lookup.StringVar(fs, flags.PropertiesReaderURIFlag)
 
 	if reader_uri == "" {
 		return nil, nil
 	}
 
-	use_spatial_uri := fmt.Sprintf("{%s}", flags.SPATIAL_DATABASE_URI)
+	use_spatial_uri := fmt.Sprintf("{%s}", flags.SpatialDatabaseURIFlag)
 
 	if reader_uri == use_spatial_uri {
 
-		spatial_database_uri, err := lookup.StringVar(fs, flags.SPATIAL_DATABASE_URI)
+		spatial_database_uri, err := lookup.StringVar(fs, flags.SpatialDatabaseURIFlag)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to retrieve %s flag", flags.SPATIAL_DATABASE_URI)
+			return nil, fmt.Errorf("Failed to retrieve %s flag", flags.SpatialDatabaseURIFlag)
 		}
 
 		reader_uri = spatial_database_uri

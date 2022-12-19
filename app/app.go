@@ -9,7 +9,7 @@ import (
 	"github.com/sfomuseum/go-timings"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"io"
 	"log"
 	"runtime/debug"
@@ -19,7 +19,7 @@ import (
 
 type SpatialApplication struct {
 	mode             string
-	SpatialDatabase  database.SpatialDatabase
+	SpatialDatabase  spatial.SpatialDatabase
 	PropertiesReader reader.Reader
 	Iterator         *iterator.Iterator
 	Logger           *log.Logger

@@ -1,11 +1,10 @@
-package database
+package spatial
 
 import (
 	"context"
 	"fmt"
 	"github.com/aaronland/go-roster"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-writer/v3"
 	"net/url"
 	"sort"
@@ -15,7 +14,7 @@ import (
 type SpatialDatabase interface {
 	reader.Reader
 	writer.Writer
-	spatial.SpatialIndex
+	SpatialIndex
 }
 
 type SpatialDatabaseInitializeFunc func(ctx context.Context, uri string) (SpatialDatabase, error)
@@ -49,7 +48,7 @@ func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDataba
 	return spatial_databases.Register(ctx, scheme, f)
 }
 
-func Schemes() []string {
+func DatabaseSchemes() []string {
 
 	ctx := context.Background()
 	schemes := []string{}
