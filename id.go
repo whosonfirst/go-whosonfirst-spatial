@@ -5,6 +5,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 )
 
+// SpatialIdWithFeature derives a unique string identifier to associate with 'body' (and 'extra').
 func SpatialIdWithFeature(body []byte, extra ...interface{}) (string, error) {
 
 	id, err := properties.Id(body)

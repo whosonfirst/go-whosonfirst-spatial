@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"errors"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-flags/date"
 	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
@@ -11,6 +10,7 @@ import (
 	"log"
 )
 
+// FilterSPR applies 'filters' to 's' and returns an error if any conditions fail.
 func FilterSPR(filters spatial.Filter, s spr.StandardPlacesResult) error {
 
 	var ok bool
@@ -25,7 +25,7 @@ func FilterSPR(filters spatial.Filter, s spr.StandardPlacesResult) error {
 		ok = filters.HasPlacetypes(pf)
 
 		if !ok {
-			return errors.New("Failed 'placetype' test")
+			return fmt.Errorf("Failed 'placetype' test")
 		}
 	}
 
@@ -58,31 +58,31 @@ func FilterSPR(filters spatial.Filter, s spr.StandardPlacesResult) error {
 	ok = filters.IsCurrent(s.IsCurrent())
 
 	if !ok {
-		return errors.New("Failed 'is current' test")
+		return fmt.Errorf("Failed 'is current' test")
 	}
 
 	ok = filters.IsDeprecated(s.IsDeprecated())
 
 	if !ok {
-		return errors.New("Failed 'is deprecated' test")
+		return fmt.Errorf("Failed 'is deprecated' test")
 	}
 
 	ok = filters.IsCeased(s.IsCeased())
 
 	if !ok {
-		return errors.New("Failed 'is ceased' test")
+		return fmt.Errorf("Failed 'is ceased' test")
 	}
 
 	ok = filters.IsSuperseded(s.IsSuperseded())
 
 	if !ok {
-		return errors.New("Failed 'is superseded' test")
+		return fmt.Errorf("Failed 'is superseded' test")
 	}
 
 	ok = filters.IsSuperseding(s.IsSuperseding())
 
 	if !ok {
-		return errors.New("Failed 'is superseding' test")
+		return fmt.Errorf("Failed 'is superseding' test")
 	}
 
 	af, err := geometry.NewAlternateGeometryFlag(s.Path())
@@ -97,13 +97,13 @@ func FilterSPR(filters spatial.Filter, s spr.StandardPlacesResult) error {
 		ok = filters.IsAlternateGeometry(af)
 
 		if !ok {
-			return errors.New("Failed 'is alternate geometry' test")
+			return fmt.Errorf("Failed 'is alternate geometry' test")
 		}
 
 		ok = filters.HasAlternateGeometry(af)
 
 		if !ok {
-			return errors.New("Failed 'has alternate geometry' test")
+			return fmt.Errorf("Failed 'has alternate geometry' test")
 		}
 	}
 
