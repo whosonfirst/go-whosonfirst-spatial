@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"bufio"
@@ -33,7 +33,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 	logger, err := NewApplicationLoggerWithFlagSet(ctx, fl)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create application logger, %w", err)
 	}
 
 	spatial_db, err := NewSpatialDatabaseWithFlagSet(ctx, fl)

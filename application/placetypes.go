@@ -1,8 +1,9 @@
-package app
+package application
 
 import (
 	"context"
 	"flag"
+	"fmt"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
@@ -38,7 +39,7 @@ func AppendCustomPlacetypesWithFlagSet(ctx context.Context, fs *flag.FlagSet) er
 	spec, err := placetypes.NewWOFPlacetypeSpecificationWithReader(custom_reader)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to create custom placetypes specification, %w", err)
 	}
 
 	return placetypes.AppendPlacetypeSpecification(spec)
