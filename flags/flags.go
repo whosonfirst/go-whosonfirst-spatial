@@ -1,3 +1,4 @@
+// Package flags provides constants and methods for common application commandline and URL query parameters.
 package flags
 
 const AlternateGeometriesFlag string = "alternate-geometry"
@@ -24,6 +25,8 @@ const IsSupersededFlag string = "is-superseded"
 
 const IsSupersedingFlag string = "is-superseding"
 
+const IsWhosOnFirstFlag string = "is-wof"
+
 const IteratorURIFlag string = "iterator-uri"
 
 const LatitudeFlag string = "latitude"
@@ -32,58 +35,12 @@ const LongitudeFlag string = "longitude"
 
 const PlacetypeFlag string = "placetype"
 
-const PropertyFlag string = "property"
-
-const SpatialDatabaseURIFlag string = "spatial-database-uri"
-
 const PropertiesReaderURIFlag string = "properties-reader-uri"
 
-const VerboseFlag string = "verbose"
+const PropertyFlag string = "property"
 
 const SortURIFlag string = "sort-uri"
 
-// Deprecated. These will be removed once this package reaches v1.0.0
+const SpatialDatabaseURIFlag string = "spatial-database-uri"
 
-const ALTERNATE_GEOMETRIES string = AlternateGeometriesFlag
-
-const CESSATION_DATE string = CessationDateFlag
-
-const CUSTOM_PLACETYPES string = CustomPlacetypesFlag
-
-const CUSTOM_PLACETYPES_SOURCE string = CustomPlacetypesSourceFlag
-
-const ENABLE_CUSTOM_PLACETYPES string = EnableCustomPlacetypesFlag
-
-const GEOMETRIES string = GeometriesFlag
-
-const INCEPTION_DATE string = InceptionDateFlag
-
-const IS_CEASED string = IsCeasedFlag
-
-const IS_CURRENT string = IsCurrentFlag
-
-const IS_DEPRECATED string = IsDeprecatedFlag
-
-const IS_SUPERSEDED string = IsSupersededFlag
-
-const IS_SUPERSEDING string = IsSupersedingFlag
-
-const ITERATOR_URI string = IteratorURIFlag
-
-const LATITUDE string = LatitudeFlag
-
-const LONGITUDE string = LongitudeFlag
-
-const PLACETYPES string = PlacetypeFlag
-
-const PROPERTIES string = PropertyFlag
-
-const SPATIAL_DATABASE_URI string = SpatialDatabaseURIFlag
-
-const PROPERTIES_READER_URI string = PropertiesReaderURIFlag
-
-const VERBOSE string = VerboseFlag
-
-const IS_WOF string = "is-wof"
-
-const SORT string = SortURIFlag
+const VerboseFlag string = "verbose"

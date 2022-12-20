@@ -17,7 +17,7 @@ import (
 func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db spatial.SpatialDatabase) (*iterator.Iterator, error) {
 
 	emitter_uri, _ := lookup.StringVar(fl, flags.IteratorURIFlag)
-	is_wof, _ := lookup.BoolVar(fl, flags.IS_WOF)
+	is_wof, _ := lookup.BoolVar(fl, flags.IsWhosOnFirstFlag)
 
 	emitter_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
 

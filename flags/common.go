@@ -35,7 +35,7 @@ func AppendCommonFlags(fs *flag.FlagSet) error {
 
 	fs.String(PropertiesReaderURIFlag, "", fmt.Sprintf("%s. If the value is {spatial-database-uri} then the value of the '-spatial-database-uri' implements the reader.Reader interface and will be used.", desc_readers))
 
-	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
+	fs.Bool(IsWhosOnFirstFlag, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
 	fs.Bool(EnableCustomPlacetypesFlag, false, "Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.")
 
