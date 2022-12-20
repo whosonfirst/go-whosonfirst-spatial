@@ -1,18 +1,19 @@
 package geo
 
 import (
-	"errors"
+	"fmt"
 	"github.com/paulmach/orb"
 )
 
+// NewCoordinate returns a new `orb.Point` instance derived from 'x' and 'y'.
 func NewCoordinate(x float64, y float64) (*orb.Point, error) {
 
-	if !IsValidLatitude(y) {
-		return nil, errors.New("Invalid latitude")
+	if !IsValidLongitude(x) {
+		return nil, fmt.Errorf("Invalid longitude")
 	}
 
-	if !IsValidLongitude(y) {
-		return nil, errors.New("Invalid longitude")
+	if !IsValidLatitude(y) {
+		return nil, fmt.Errorf("Invalid latitude")
 	}
 
 	coord := &orb.Point{x, y}
