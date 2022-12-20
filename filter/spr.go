@@ -226,7 +226,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		fl, err := date.NewEDTFDateFlag(inputs.CessationDate)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse EDTF cessation flags, %w", err)			
+			return nil, fmt.Errorf("Failed to parse EDTF cessation flags, %w", err)
 		}
 
 		f.CessationDate = fl
@@ -248,7 +248,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsDeprecated)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse is deprecated existential flag, %w", err)			
+			return nil, fmt.Errorf("Failed to parse is deprecated existential flag, %w", err)
 		}
 
 		f.Deprecated = possible
@@ -259,7 +259,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsCeased)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse is ceased existential flag, %w", err)						
+			return nil, fmt.Errorf("Failed to parse is ceased existential flag, %w", err)
 		}
 
 		f.Ceased = possible
@@ -270,7 +270,7 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (spatial.Filter, error) {
 		possible, err := existentialFlags(inputs.IsSuperseded)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse is ceased superseded flag, %w", err)									
+			return nil, fmt.Errorf("Failed to parse is ceased superseded flag, %w", err)
 		}
 
 		f.Superseded = possible
