@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// AppendIndexingFlag will append indexing (whosonfirst/go-whosonfirst-iterate/v2) related flags to 'fs'.
 func AppendIndexingFlags(fs *flag.FlagSet) error {
 
 	modes := emitter.Schemes()
@@ -22,6 +23,7 @@ func AppendIndexingFlags(fs *flag.FlagSet) error {
 	return nil
 }
 
+// ValidateIndexingFlags will ensure that all indexing (whosonfirst/go-whosonfirst-iterate/v2) related flags have been assigned to 'fs'.
 func ValidateIndexingFlags(fs *flag.FlagSet) error {
 
 	_, err := lookup.StringVar(fs, IteratorURIFlag)

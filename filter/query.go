@@ -72,7 +72,7 @@ func atoi(strings []string) ([]int64, error) {
 		i, err := strconv.ParseInt(str, 10, 64)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse '%s', %w", i, err)
+			return nil, fmt.Errorf("Failed to parse '%s', %w", str, err)
 		}
 
 		numbers[idx] = i

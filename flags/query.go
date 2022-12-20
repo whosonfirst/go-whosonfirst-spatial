@@ -8,6 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 )
 
+// AppendQueryFlag will append all common query-related flags to 'fs'.
 func AppendQueryFlags(fs *flag.FlagSet) error {
 
 	fs.Float64(LatitudeFlag, 0.0, "A valid latitude.")
@@ -48,6 +49,7 @@ func AppendQueryFlags(fs *flag.FlagSet) error {
 	return nil
 }
 
+// ValidateQueryFlags ensures that common query-related flags are present in 'fs'.
 func ValidateQueryFlags(fs *flag.FlagSet) error {
 
 	lat, err := lookup.Float64Var(fs, LatitudeFlag)

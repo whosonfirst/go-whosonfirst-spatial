@@ -397,7 +397,7 @@ func existentialFlags(inputs []int64) ([]flags.ExistentialFlag, error) {
 		fl, err := existential.NewKnownUnknownFlag(i)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to create known unknown flag for '%s', %w", i, err)
+			return nil, fmt.Errorf("Failed to create known unknown flag for '%d', %w", i, err)
 		}
 
 		possible = append(possible, fl)

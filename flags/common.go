@@ -8,6 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 )
 
+// CommonFlags returns a `flag.FlagSet` instance will common go-whosonfirst-spatial flags assigned.
 func CommonFlags() (*flag.FlagSet, error) {
 
 	fs := flagset.NewFlagSet("common")
@@ -21,6 +22,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 	return fs, nil
 }
 
+// AppendCommonFlags assigns common go-whosonfirst-spatial flags to 'fs'.
 func AppendCommonFlags(fs *flag.FlagSet) error {
 
 	// spatial databases
@@ -50,6 +52,7 @@ func AppendCommonFlags(fs *flag.FlagSet) error {
 	return nil
 }
 
+// ValidateCommonFlags ensure that common go-whosonfirst-spatial flags are present in 'fs'.
 func ValidateCommonFlags(fs *flag.FlagSet) error {
 
 	spatial_database_uri, err := lookup.StringVar(fs, SpatialDatabaseURIFlag)
