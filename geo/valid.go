@@ -13,7 +13,7 @@ func IsValidLatitude(lat float64) bool {
 }
 
 func IsValidMinLongitude(lon float64) bool {
-	return lon >= -180.00
+	return lon <= -180.00
 }
 
 func IsValidMaxLongitude(lon float64) bool {
