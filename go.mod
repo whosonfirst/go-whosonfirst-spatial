@@ -12,17 +12,17 @@ require (
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.26
-	github.com/whosonfirst/go-whosonfirst-flags v0.4.5
+	github.com/whosonfirst/go-whosonfirst-flags v0.5.0
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.1
-	github.com/whosonfirst/go-whosonfirst-placetypes v0.6.0
-	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.4
+	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.0
+	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.5
 	github.com/whosonfirst/go-writer/v3 v3.1.0
 	github.com/whosonfirst/warning v0.1.1
 )
 
 require (
 	github.com/aaronland/go-json-query v0.1.3 // indirect
-	github.com/dominikbraun/graph v0.16.0 // indirect
+	github.com/dominikbraun/graph v0.16.1 // indirect
 	github.com/g8rswimmer/error-chain v1.0.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
