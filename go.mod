@@ -12,10 +12,10 @@ require (
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.26
-	github.com/whosonfirst/go-whosonfirst-flags v0.5.0
-	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.1
+	github.com/whosonfirst/go-whosonfirst-flags v0.5.1
+	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.2
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.0
-	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.5
+	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.6
 	github.com/whosonfirst/go-writer/v3 v3.1.0
 	github.com/whosonfirst/warning v0.1.1
 )
@@ -32,9 +32,9 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
-	github.com/whosonfirst/go-whosonfirst-crawl v0.2.1 // indirect
+	github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0 // indirect
-	github.com/whosonfirst/walk v0.0.1 // indirect
+	github.com/whosonfirst/walk v0.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.11.1 // indirect
 )
