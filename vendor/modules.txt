@@ -1,4 +1,4 @@
-# github.com/aaronland/go-json-query v0.1.3
+# github.com/aaronland/go-json-query v0.1.4
 ## explicit; go 1.18
 github.com/aaronland/go-json-query
 # github.com/aaronland/go-roster v1.0.0
@@ -20,7 +20,7 @@ github.com/hashicorp/go-multierror
 # github.com/natefinch/atomic v1.0.1
 ## explicit; go 1.12
 github.com/natefinch/atomic
-# github.com/paulmach/orb v0.9.0
+# github.com/paulmach/orb v0.10.0
 ## explicit; go 1.15
 github.com/paulmach/orb
 github.com/paulmach/orb/geojson
@@ -46,7 +46,7 @@ github.com/sfomuseum/go-timings
 # github.com/sfomuseum/iso8601duration v1.1.0
 ## explicit; go 1.18
 github.com/sfomuseum/iso8601duration
-# github.com/tidwall/gjson v1.14.4
+# github.com/tidwall/gjson v1.16.0
 ## explicit; go 1.12
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.1.1
@@ -82,7 +82,7 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.2
+# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.4
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
@@ -109,7 +109,7 @@ github.com/whosonfirst/walk
 # github.com/whosonfirst/warning v0.1.1
 ## explicit; go 1.12
 github.com/whosonfirst/warning
-# go.mongodb.org/mongo-driver v1.11.1
+# go.mongodb.org/mongo-driver v1.11.4
 ## explicit; go 1.13
 go.mongodb.org/mongo-driver/bson
 go.mongodb.org/mongo-driver/bson/bsoncodec
