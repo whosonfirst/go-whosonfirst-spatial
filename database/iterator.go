@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
-	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"	
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 )
 
 // IndexDatabaseWithIterator is a general-purpose method for indexing a `database.Spatial.Database` instance with a
