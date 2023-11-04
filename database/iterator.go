@@ -22,7 +22,7 @@ func IndexDatabaseWithIterator(ctx context.Context, db SpatialDatabase, iterator
 			// pass
 		}
 
-		return IndexReader(ctx, db, r)
+		return IndexDatabaseWithReader(ctx, db, r)
 	}
 
 	iter, err := iterator.NewIterator(ctx, iterator_uri, iter_cb)

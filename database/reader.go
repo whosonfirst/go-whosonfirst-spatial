@@ -10,7 +10,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 )
 
-func IndexReader(ctx context.Context, db SpatialDatabase, r io.Reader) error {
+func IndexDatabaseWithReader(ctx context.Context, db SpatialDatabase, r io.Reader) error {
 
 	index_func := func(ctx context.Context, body []byte, geom_type string) error {
 
@@ -35,7 +35,7 @@ func IndexReader(ctx context.Context, db SpatialDatabase, r io.Reader) error {
 	}
 
 	// Check to see if this is a FeatureCollection
-	
+
 	t_rsp := gjson.GetBytes(body, "type")
 
 	if !t_rsp.Exists() || t_rsp.String() != "FeatureCollection" {
@@ -43,7 +43,7 @@ func IndexReader(ctx context.Context, db SpatialDatabase, r io.Reader) error {
 	}
 
 	// If it is process each file
-	
+
 	fc, err := geojson.UnmarshalFeatureCollection(body)
 
 	if err != nil {

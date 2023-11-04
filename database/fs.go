@@ -22,7 +22,7 @@ func IndexDatabaseWithFS(ctx context.Context, db SpatialDatabase, index_fs fs.FS
 
 		defer r.Close()
 
-		return IndexReader(ctx, db, r)
+		return IndexDatabaseWithReader(ctx, db, r)
 	}
 
 	return fs.WalkDir(index_fs, ".", walk_func)
