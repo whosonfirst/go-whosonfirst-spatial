@@ -4,6 +4,7 @@ go 1.22.1
 
 require (
 	github.com/aaronland/go-roster v1.0.0
+	github.com/aws/aws-lambda-go v1.46.0
 	github.com/paulmach/orb v0.11.1
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-timings v1.2.1
