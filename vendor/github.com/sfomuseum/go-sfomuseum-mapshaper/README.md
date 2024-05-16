@@ -38,13 +38,42 @@ Valid options are:
 ```
 $> docker build -t mapshaper-server .
 
-$> docker run -it -p 8080:8080 -e MAPSHAPER_SERVER_URI=http://0.0.0.0:8080 mapshaper-server
+$> docker run -it -p 8080:8080 -e MAPSHAPER_SERVER_URI=http://0.0.0.0:8080 mapshaper-server /usr/local/bin/mapshaper-server
 
 $> curl -s http://localhost:8080/api/innerpoint \
-	-d @/usr/local/data/sfomuseum-data-architecture/data/174/588/208/3/1745882083.geojson \
+	-d @fixtures/1745882083.geojson \
 
 | jq '.features[].geometry'
 
+{
+  "type": "Point",
+  "coordinates": [
+    -122.38875600604932,
+    37.61459515528007
+  ]
+}
+```
+
+## AWS
+
+### Lambda
+
+It is possible to run the `mapshaper-server` tool as an AWS Lambda Function URL.
+
+1. Start by create a container image by running the `docker build -t mapshaper-server .` command.
+2. Upload the container to an AWS ECS repository.
+3. Create a new Lambda function and configure to use the container image you've just uploaded to ECS.
+4. Update the "Image Configuration" of your Lambda function and assign the following container override: `/usr/local/bin/mapshaper-server, -server-uri, functionurl://`
+5. Configure your function to a "Function URL". The details of whether your function URL requires authentication or not are left to you to decide.
+
+That's it. You can test your function URL like this (where `{FUNCTION_URL_ID}` and `{AWS_REGION}` should be replace with the relevant values in your specific function URL):
+
+```
+$> curl -s https://{FUNCTION_URL_ID}.lambda-url.{AWS_REGION}.on.aws/api/innerpoint \
+	-d @fixtures/1745882083.geojson \
+	
+| jq '.features[].geometry'
+	
 {
   "type": "Point",
   "coordinates": [

@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS builder
+FROM golang:1.22-alpine AS builder
 
 RUN mkdir /build
 
@@ -9,7 +9,7 @@ RUN apk update && apk upgrade \
     && go build -mod vendor -ldflags="-s -w" -o /usr/local/bin/mapshaper-server cmd/server/main.go \
     && cd && rm -rf /build
 
-FROM node:18-alpine
+FROM node:alpine
 
 COPY --from=builder /usr/local/bin/mapshaper-server /usr/local/bin/mapshaper-server
 
