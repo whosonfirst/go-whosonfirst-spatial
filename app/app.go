@@ -7,7 +7,8 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
+	"os"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -23,19 +24,12 @@ type SpatialApplication struct {
 	SpatialDatabase  database.SpatialDatabase
 	PropertiesReader reader.Reader
 	Iterator         *iterator.Iterator
-	Logger           *log.Logger
 	Timings          []*timings.SinceResponse
 	Monitor          timings.Monitor
 	mu               *sync.RWMutex
 }
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
-
-	logger, err := NewApplicationLoggerWithFlagSet(ctx, fl)
-
-	if err != nil {
-		return nil, err
-	}
 
 	spatial_db, err := NewSpatialDatabaseWithFlagSet(ctx, fl)
 
@@ -89,7 +83,6 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_r,
 		Iterator:         iter,
-		Logger:           logger,
 		Timings:          app_timings,
 		Monitor:          m,
 		mu:               mu,
@@ -105,7 +98,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 				err := json.Unmarshal(body, &tr)
 
 				if err != nil {
-					logger.Printf("Failed to decoder since response, %v", err)
+					slog.Warn("Failed to decoder since response", "error", err)
 					return
 				}
 
@@ -140,12 +133,11 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 		err := p.Iterator.IterateURIs(ctx, paths...)
 
 		if err != nil {
-			p.Logger.Fatalf("failed to index paths because %s", err)
+			slog.Error("failed to index paths", "error", err)
+			os.Exit(1)
 		}
 
-		t2 := time.Since(t1)
-
-		p.Logger.Printf("finished indexing in %v", t2)
+		slog.Info("finished indexing", "time", time.Since(t1))
 		debug.FreeOSMemory()
 	}()
 
@@ -161,7 +153,7 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 				continue
 			}
 
-			p.Logger.Printf("indexing %d records indexed", p.Iterator.Seen)
+			slog.Info("indexing records", "indexed", p.Iterator.Seen)
 		}
 	}()
 
