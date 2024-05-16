@@ -3,11 +3,9 @@ package hierarchy
 import (
 	"context"
 	"fmt"
-	"io"
-	"log"
+	"log/slog"
 	"strconv"
 
-	aa_log "github.com/aaronland/go-log/v2"
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
 	"github.com/sfomuseum/go-sfomuseum-mapshaper"
@@ -31,8 +29,6 @@ type PointInPolygonHierarchyResolverOptions struct {
 	Mapshaper *mapshaper.Client
 	// PlacetypesDefinition is an optional `go-whosonfirst-placetypes.Definition` instance used to resolve custom or bespoke placetypes.
 	PlacetypesDefinition placetypes.Definition
-	// Logger is an optional `log.Logger` instance for logging feedback.
-	Logger *log.Logger
 	// SkipPlacetypeFilter is an optional boolean flag to signal whether or not point-in-polygon operations should be performed using
 	// the list of known ancestors for a given placetype. Default is false.
 	SkipPlacetypeFilter bool
@@ -50,8 +46,6 @@ type PointInPolygonHierarchyResolver struct {
 	Mapshaper *mapshaper.Client
 	// PlacetypesDefinition is an optional `go-whosonfirst-placetypes.Definition` instance used to resolve custom or bespoke placetypes.
 	PlacetypesDefinition placetypes.Definition
-	// Logger is a `log.Logger` instance for logging feedback. The default logger sends all messages to `io.Discard`.
-	Logger *log.Logger
 	// reader is the `reader.Reader` instance used to retrieve ancestor records. By default it is the same as `Database` but can be assigned
 	// explicitly using the `SetReader` method.
 	reader reader.Reader
@@ -116,14 +110,7 @@ func DefaultPointInPolygonHierarchyResolverUpdateCallback() PointInPolygonHierar
 // to use for point-in-polygon operations.
 func NewPointInPolygonHierarchyResolver(ctx context.Context, opts *PointInPolygonHierarchyResolverOptions) (*PointInPolygonHierarchyResolver, error) {
 
-	var logger *log.Logger
 	var pt_def placetypes.Definition
-
-	if opts.Logger != nil {
-		logger = opts.Logger
-	} else {
-		logger = log.New(io.Discard, "", 0)
-	}
 
 	roles := placetypes.AllRoles()
 
@@ -150,7 +137,6 @@ func NewPointInPolygonHierarchyResolver(ctx context.Context, opts *PointInPolygo
 		Database:              opts.Database,
 		Mapshaper:             opts.Mapshaper,
 		PlacetypesDefinition:  pt_def,
-		Logger:                logger,
 		reader:                opts.Database,
 		skip_placetype_filter: opts.SkipPlacetypeFilter,
 		roles:                 roles,
@@ -227,7 +213,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		aa_log.Debug(t.Logger, "Perform point in polygon at %f, %f with no placetype filter\n", lat, lon)
+		slog.Debug("Perform point in polygon with no placetype filter", "lat", lat, "lon", lon)
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -284,7 +270,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		aa_log.Debug(t.Logger, "Perform point in polygon at %f, %f for %s\n", lat, lon, pt_name)
+		slog.Debug("Perform point in polygon", "lat", lat, "lon", lon, "placetype", pt_name)
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -301,7 +287,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		results := rsp.Results()
 		count := len(results)
 
-		aa_log.Debug(t.Logger, "Point in polygon results at %f, %f for %s: %d\n", lat, lon, pt_name, count)
+		slog.Debug("Point in polygon results", "lat", lat, "lon", lon, "placetype", pt_name, "count", count)
 
 		if count == 0 {
 			continue

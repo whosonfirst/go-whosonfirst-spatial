@@ -3,7 +3,6 @@ module github.com/whosonfirst/go-whosonfirst-spatial
 go 1.22.2
 
 require (
-	github.com/aaronland/go-log/v2 v2.0.0
 	github.com/aaronland/go-roster v1.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/paulmach/orb v0.11.1
@@ -30,6 +29,7 @@ require (
 	github.com/aaronland/go-artisanal-integers v0.9.1 // indirect
 	github.com/aaronland/go-brooklynintegers-api v1.2.7 // indirect
 	github.com/aaronland/go-json-query v0.1.4 // indirect
+	github.com/aaronland/go-log/v2 v2.0.0 // indirect
 	github.com/aaronland/go-pool/v2 v2.0.0 // indirect
 	github.com/aaronland/go-string v1.0.0 // indirect
 	github.com/aaronland/go-uid v0.4.0 // indirect
