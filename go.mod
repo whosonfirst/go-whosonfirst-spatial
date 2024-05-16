@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/aaronland/go-log/v2 v2.0.0
 	github.com/aaronland/go-roster v1.0.0
-	github.com/aws/aws-lambda-go v1.46.0
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/paulmach/orb v0.11.1
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-sfomuseum-mapshaper v0.0.2

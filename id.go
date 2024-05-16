@@ -2,6 +2,7 @@ package spatial
 
 import (
 	"fmt"
+
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 )
 
