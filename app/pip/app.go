@@ -11,7 +11,7 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
-	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	app "github.com/whosonfirst/go-whosonfirst-spatial/app/spatial"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/pip"
 )

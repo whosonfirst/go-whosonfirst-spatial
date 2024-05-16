@@ -1,4 +1,4 @@
-package app
+package spatial
 
 import (
 	"bufio"
@@ -13,10 +13,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/sfomuseum/go-timings"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
 type SpatialApplication struct {
@@ -31,21 +33,53 @@ type SpatialApplication struct {
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
 
-	spatial_db, err := NewSpatialDatabaseWithFlagSet(ctx, fl)
+	spatial_db_uri, err := lookup.StringVar(fl, flags.SPATIAL_DATABASE_URI)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed look up '%s' flag, %w", flags.SPATIAL_DATABASE_URI, err)
+	}
+
+	spatial_db, err := database.NewSpatialDatabase(ctx, spatial_db_uri)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed instantiate spatial database, %v", err)
 	}
 
-	properties_r, err := NewPropertiesReaderWithFlagsSet(ctx, fl)
+	// Set up properties reader
 
-	if err != nil {
-		return nil, fmt.Errorf("Failed to create properties reader, %v", err)
+	var properties_reader reader.Reader
+
+	properties_reader_uri, _ := lookup.StringVar(fl, flags.PROPERTIES_READER_URI)
+
+	if properties_reader_uri != "" {
+
+		use_spatial_uri := fmt.Sprintf("{%s}", flags.SPATIAL_DATABASE_URI)
+
+		if properties_reader_uri == use_spatial_uri {
+
+			spatial_database_uri, err := lookup.StringVar(fl, flags.SPATIAL_DATABASE_URI)
+
+			if err != nil {
+				return nil, fmt.Errorf("Failed to retrieve %s flag", flags.SPATIAL_DATABASE_URI)
+			}
+
+			properties_reader_uri = spatial_database_uri
+		}
+
+		r, err := reader.NewReader(ctx, properties_reader_uri)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to create properties reader, %v", err)
+		}
+
+		properties_reader = r
 	}
 
-	if properties_r == nil {
-		properties_r = spatial_db
+	if properties_reader == nil {
+		properties_reader = spatial_db
 	}
+
+	// Set up iterator (to index records at start up if necessary)
 
 	iter, err := NewIteratorWithFlagSet(ctx, fl, spatial_db)
 
@@ -53,11 +87,15 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, fmt.Errorf("Failed to instantiate iterator, %v", err)
 	}
 
+	// Enable custom placetypes
+
 	err = AppendCustomPlacetypesWithFlagSet(ctx, fl)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to append custom placetypes, %v", err)
 	}
+
+	// Set up monitor (for tracking indexing)
 
 	m, err := timings.NewMonitor(ctx, "since://")
 
@@ -81,7 +119,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 
 	sp := SpatialApplication{
 		SpatialDatabase:  spatial_db,
-		PropertiesReader: properties_r,
+		PropertiesReader: properties_reader,
 		Iterator:         iter,
 		Timings:          app_timings,
 		Monitor:          m,
@@ -114,9 +152,7 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 }
 
 func (p *SpatialApplication) Close(ctx context.Context) error {
-
 	p.SpatialDatabase.Disconnect(ctx)
-
 	p.Monitor.Stop(ctx)
 	return nil
 }
