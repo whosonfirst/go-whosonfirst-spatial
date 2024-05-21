@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-sfomuseum-mapshaper"
 	"github.com/whosonfirst/go-whosonfirst-export/v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/hierarchy"
-	hierarchy_filter "github.com/whosonfirst/go-whosonfirst-spatial/hierarchy/filter"
 	"github.com/whosonfirst/go-writer/v3"
 )
 
@@ -29,33 +26,16 @@ func Run(ctx context.Context, logger *log.Logger) error {
 
 func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) error {
 
-	flagset.Parse(fs)
+	opts, err := RunOptionsFromFlagSet(ctx, fs)
 
-	inputs := &filter.SPRInputs{}
-
-	inputs.IsCurrent = is_current
-	inputs.IsCeased = is_ceased
-	inputs.IsDeprecated = is_deprecated
-	inputs.IsSuperseded = is_superseded
-	inputs.IsSuperseding = is_superseding
-
-	opts := &UpdateApplicationOptions{
-		WriterURI:          writer_uri,
-		ExporterURI:        exporter_uri,
-		SpatialDatabaseURI: spatial_database_uri,
-		MapshaperServerURI: mapshaper_server,
-		SPRResultsFunc:     hierarchy_filter.FirstButForgivingSPRResultsFunc, // sudo make me configurable
-		SPRFilterInputs:    inputs,
-		ToIterator:         iterator_uri,
-		FromIterator:       spatial_iterator_uri,
+	if err != nil {
+		return fmt.Errorf("Failed to derive run options, %w", err)
 	}
 
-	hierarchy_paths := fs.Args()
+	return RunWithOptions(ctx, opts, logger)
+}
 
-	paths := &UpdateApplicationPaths{
-		To:   hierarchy_paths,
-		From: spatial_paths,
-	}
+func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) error {
 
 	var ex export.Exporter
 	var wr writer.Writer
@@ -149,13 +129,17 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		to:                  opts.ToIterator,
 		from:                opts.FromIterator,
 		spatial_db:          spatial_db,
-		tool:                resolver,
+		resolver:            resolver,
 		exporter:            ex,
 		writer:              wr,
 		sprFilterInputs:     opts.SPRFilterInputs,
 		sprResultsFunc:      opts.SPRResultsFunc,
 		hierarchyUpdateFunc: update_cb,
-		logger:              logger,
+	}
+
+	paths := &UpdateApplicationPaths{
+		To:   opts.To,
+		From: opts.From,
 	}
 
 	return app.Run(ctx, paths)

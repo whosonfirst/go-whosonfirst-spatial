@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 
 	"github.com/whosonfirst/go-whosonfirst-export/v2"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
@@ -17,21 +16,6 @@ import (
 	"github.com/whosonfirst/go-writer/v3"
 )
 
-type UpdateApplicationOptions struct {
-	Writer             writer.Writer
-	WriterURI          string
-	Exporter           export.Exporter
-	ExporterURI        string
-	MapshaperServerURI string
-	SpatialDatabase    database.SpatialDatabase
-	SpatialDatabaseURI string
-	ToIterator         string
-	FromIterator       string
-	SPRFilterInputs    *filter.SPRInputs
-	SPRResultsFunc     hierarchy_filter.FilterSPRResultsFunc                   // This one chooses one result among many (or nil)
-	PIPUpdateFunc      hierarchy.PointInPolygonHierarchyResolverUpdateCallback // This one constructs a map[string]interface{} to update the target record (or not)
-}
-
 type UpdateApplicationPaths struct {
 	To   []string
 	From []string
@@ -40,14 +24,13 @@ type UpdateApplicationPaths struct {
 type UpdateApplication struct {
 	to                  string
 	from                string
-	tool                *hierarchy.PointInPolygonHierarchyResolver
+	resolver            *hierarchy.PointInPolygonHierarchyResolver
 	writer              writer.Writer
 	exporter            export.Exporter
 	spatial_db          database.SpatialDatabase
 	sprResultsFunc      hierarchy_filter.FilterSPRResultsFunc
 	sprFilterInputs     *filter.SPRInputs
 	hierarchyUpdateFunc hierarchy.PointInPolygonHierarchyResolverUpdateCallback
-	logger              *log.Logger
 }
 
 func (app *UpdateApplication) Run(ctx context.Context, paths *UpdateApplicationPaths) error {
@@ -167,7 +150,7 @@ func (app *UpdateApplication) UpdateAndPublishFeature(ctx context.Context, body 
 // associated with 'app' using 'body' as its input.
 func (app *UpdateApplication) UpdateFeature(ctx context.Context, body []byte) (bool, []byte, error) {
 
-	return app.tool.PointInPolygonAndUpdate(ctx, app.sprFilterInputs, app.sprResultsFunc, app.hierarchyUpdateFunc, body)
+	return app.resolver.PointInPolygonAndUpdate(ctx, app.sprFilterInputs, app.sprResultsFunc, app.hierarchyUpdateFunc, body)
 }
 
 // PublishFeature exports 'body' using the `whosonfirst/go-writer/v3` instance associated with 'app'.
