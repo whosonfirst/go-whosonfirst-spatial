@@ -17,7 +17,6 @@ type RunOptions struct {
 	EnableCustomPlacetypes bool     `json:"enable_custom_placetypes"`
 	CustomPlacetypes       string   `json:"custom_placetypes"`
 	IsWhosOnFirst          bool     `json:"is_whosonfirst"`
-
 	Latitude            float64  `json:"latitude"`
 	Longitude           float64  `json:"longitude"`
 	Placetypes          []string `json:"placetypes,omitempty"`

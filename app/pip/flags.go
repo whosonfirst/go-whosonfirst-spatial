@@ -9,6 +9,7 @@ import (
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"sort"
 	"strings"
 )
@@ -52,10 +53,10 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	fs := flagset.NewFlagSet("pip")
 
-	// available_databases := database.Schemes()
-	desc_databases := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: %s", "...")
+	available_databases := database.Schemes()
+	desc_databases := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: %s", available_databases)
 
-	fs.StringVar(&spatial_database_uri, "spatial-database-uri", "", desc_databases)
+	fs.StringVar(&spatial_database_uri, "spatial-database-uri", "rtree://", desc_databases)
 
 	available_readers := reader.Schemes()
 	desc_readers := fmt.Sprintf("A valid whosonfirst/go-reader.Reader URI. Available options are: %s", available_readers)
