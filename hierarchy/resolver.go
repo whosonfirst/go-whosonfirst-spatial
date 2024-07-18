@@ -147,11 +147,13 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygonAndFilter(ctx context.Co
 func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, inputs *filter.SPRInputs, body []byte) ([]spr.StandardPlacesResult, error) {
 
 	id_rsp := gjson.GetBytes(body, "properties.wof:id")
+	name_rsp := gjson.GetBytes(body, "properties.wof:name")	
 	id := id_rsp.String()
+	name := name_rsp.String()	
 
 	logger := slog.Default()
-	logger = logger.With("context", "PIP")
 	logger = logger.With("id", id)
+	logger = logger.With("name", name)	
 
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
@@ -171,6 +173,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		return nil, fmt.Errorf("Failed to create new coordinate, %w", err)
 	}
 
+	
 	if t.skip_placetype_filter {
 
 		spr_filter, err := filter.NewSPRFilterFromInputs(inputs)
@@ -190,10 +193,13 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		// This should never happen...
 
 		if rsp == nil {
+			logger.Warn("Failed to point in polygon with empty response, returning nil")
 			return nil, fmt.Errorf("Failed to point in polygon for %v, null response", coord)
 		}
 
 		possible := rsp.Results()
+
+		logger.Debug("Return unfiltered-by-placetype results", "count", len(possible))
 		return possible, nil
 	}
 
@@ -226,7 +232,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 	ancestors := pt_spec.AncestorsForRoles(pt, t.roles)
 
-	logger.Debug("Ancestors", "roles", t.roles, "ancestors", ancestors)
+	// logger.Debug("Ancestors", "roles", t.roles, "ancestors", ancestors)
 
 	for _, a := range ancestors {
 
@@ -240,7 +246,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		logger.Debug("Perform point in polygon with placetype", "placetype", pt_name)
+		logger.Debug("Perform point in polygon with placetype filter", "placetype", pt_name)
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
