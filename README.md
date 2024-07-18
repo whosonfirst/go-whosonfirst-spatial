@@ -108,8 +108,14 @@ _Where `flags.*` refers to the [whosonfirst/go-whosonfirst-flags](https://github
 ### WWW
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-www
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-sqlite
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-pmtiles
+
+### SQLite
+
+* https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
+
+### PMTiles
+
+* https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles
 
 ### gRPC
 
@@ -117,10 +123,6 @@ _Where `flags.*` refers to the [whosonfirst/go-whosonfirst-flags](https://github
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-pmtiles
 
-## Services and Operations
-
-* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
-* https://github.com/whosonfirst/go-whosonfirst-spatial-hierarchy
 
 ## See also
 
