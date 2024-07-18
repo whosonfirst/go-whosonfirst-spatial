@@ -150,7 +150,8 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 	id := id_rsp.String()
 
 	logger := slog.Default()
-	logger.With("id", id)
+	logger = logger.With("context", "PIP")
+	logger = logger.With("id", id)
 
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
@@ -161,8 +162,8 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 	lon := centroid.X()
 	lat := centroid.Y()
 
-	logger.With("latitude", lat)
-	logger.With("longitude", lon)
+	logger = logger.With("latitude", lat)
+	logger = logger.With("longitude", lon)
 
 	coord, err := geo.NewCoordinate(lon, lat)
 
@@ -256,7 +257,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		results := rsp.Results()
 		count := len(results)
 
-		logger.Debug("Point in polygon results", "count", count)
+		logger.Debug("Point in polygon results after input filtering", "placetype", pt_name, "count", count)
 
 		if count == 0 {
 			continue
@@ -269,6 +270,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		break
 	}
 
+	logger.Debug("Return possible candidates", "count", len(possible))
 	return possible, nil
 }
 
