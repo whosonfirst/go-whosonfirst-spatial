@@ -27,7 +27,12 @@ type PointInPolygonHierarchyResolverOptions struct {
 	// PlacetypesDefinition is an optional `go-whosonfirst-placetypes.Definition` instance used to resolve custom or bespoke placetypes.
 	PlacetypesDefinition placetypes.Definition
 	// SkipPlacetypeFilter is an optional boolean flag to signal whether or not point-in-polygon operations should be performed using
-	// the list of known ancestors for a given placetype. Default is false.
+	// the list of known ancestors for a given placetype. If you are using a custom placetypes defintion (see whosonfirst/go-whosonfirst-placetypes)
+	// and do not enable this flag you will need to manually re-assign the `wof:placetype` property of each record being ingested in to your spatial
+	// database to take the form of "{CUSTOM_PLACETYPE}#{CUSTOM_PLACETYPE_DEFINITION_URI}". This is necessary because by the time placetype filtering
+	// occurs the code is working with `whosonfirst/go-whosonfirst-spr.StandardPlacesResult` instances which only have access to a generic `Placetype`
+	// method. There is no guarantee that changing the default value of the `wof:placetype` property will not have unintended consequences so it might
+	// be easiest just to enable this flag and deal with placetype filtering in a custom `FilterSPRResultsFunc` callback. Default is false.
 	SkipPlacetypeFilter bool
 	// Roles is an optional list of Who's On First placetype roles used to derive ancestors during point-in-polygon operations.
 	// If missing (or zero length) then all possible roles will be assumed.
@@ -147,13 +152,13 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygonAndFilter(ctx context.Co
 func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, inputs *filter.SPRInputs, body []byte) ([]spr.StandardPlacesResult, error) {
 
 	id_rsp := gjson.GetBytes(body, "properties.wof:id")
-	name_rsp := gjson.GetBytes(body, "properties.wof:name")	
+	name_rsp := gjson.GetBytes(body, "properties.wof:name")
 	id := id_rsp.String()
-	name := name_rsp.String()	
+	name := name_rsp.String()
 
 	logger := slog.Default()
 	logger = logger.With("id", id)
-	logger = logger.With("name", name)	
+	logger = logger.With("name", name)
 
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
@@ -173,7 +178,6 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		return nil, fmt.Errorf("Failed to create new coordinate, %w", err)
 	}
 
-	
 	if t.skip_placetype_filter {
 
 		spr_filter, err := filter.NewSPRFilterFromInputs(inputs)
