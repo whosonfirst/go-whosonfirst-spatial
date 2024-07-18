@@ -133,11 +133,24 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygonAndUpdate(ctx context.Co
 	return has_changed, body, nil
 }
 
+// PointInPolygonAndFilter will ...
+func (t *PointInPolygonHierarchyResolver) PointInPolygonAndFilter(ctx context.Context, inputs *filter.SPRInputs, results_cb hierarchy_filter.FilterSPRResultsFunc, body []byte) (spr.StandardPlacesResult, error) {
+
+	return nil, fmt.Errorf("Not implemented")
+
+}
+
 // PointInPolygon will perform a point-in-polygon (reverse geocoding) operation for 'body' using zero or more 'inputs' as query filters.
 // This is known to not work as expected if the `wof:placetype` property is "common". There needs to be a way to a) retrieve placetypes
 // using a custom WOFPlacetypeSpecification (go-whosonfirst-placetypes v0.6.0+) and b) specify an alternate property to retrieve placetypes
 // from if `wof:placetype=custom`.
 func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, inputs *filter.SPRInputs, body []byte) ([]spr.StandardPlacesResult, error) {
+
+	id_rsp := gjson.GetBytes(body, "properties.wof:id")
+	id := id_rsp.String()
+
+	logger := slog.Default()
+	logger.With("id", id)
 
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
@@ -147,6 +160,9 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 	lon := centroid.X()
 	lat := centroid.Y()
+
+	logger.With("latitude", lat)
+	logger.With("longitude", lon)
 
 	coord, err := geo.NewCoordinate(lon, lat)
 
@@ -162,7 +178,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		slog.Debug("Perform point in polygon with no placetype filter", "lat", lat, "lon", lon)
+		logger.Debug("Perform point in polygon with no placetype filter")
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -205,7 +221,11 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		return nil, fmt.Errorf("Failed to create new placetype for '%s', %v", pt_str, err)
 	}
 
+	logger = logger.With("placetype", pt_str)
+
 	ancestors := pt_spec.AncestorsForRoles(pt, t.roles)
+
+	logger.Debug("Ancestors", "roles", t.roles, "ancestors", ancestors)
 
 	for _, a := range ancestors {
 
@@ -219,7 +239,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		slog.Debug("Perform point in polygon", "lat", lat, "lon", lon, "placetype", pt_name)
+		logger.Debug("Perform point in polygon with placetype", "placetype", pt_name)
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -236,13 +256,16 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		results := rsp.Results()
 		count := len(results)
 
-		slog.Debug("Point in polygon results", "lat", lat, "lon", lon, "placetype", pt_name, "count", count)
+		logger.Debug("Point in polygon results", "count", count)
 
 		if count == 0 {
 			continue
 		}
 
 		possible = results
+
+		// Something something something filter here something something something
+
 		break
 	}
 
