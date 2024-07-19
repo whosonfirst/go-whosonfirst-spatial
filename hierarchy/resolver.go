@@ -138,13 +138,6 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygonAndUpdate(ctx context.Co
 	return has_changed, body, nil
 }
 
-// PointInPolygonAndFilter will ...
-func (t *PointInPolygonHierarchyResolver) PointInPolygonAndFilter(ctx context.Context, inputs *filter.SPRInputs, results_cb hierarchy_filter.FilterSPRResultsFunc, body []byte) (spr.StandardPlacesResult, error) {
-
-	return nil, fmt.Errorf("Not implemented")
-
-}
-
 // PointInPolygon will perform a point-in-polygon (reverse geocoding) operation for 'body' using zero or more 'inputs' as query filters.
 // This is known to not work as expected if the `wof:placetype` property is "common". There needs to be a way to a) retrieve placetypes
 // using a custom WOFPlacetypeSpecification (go-whosonfirst-placetypes v0.6.0+) and b) specify an alternate property to retrieve placetypes
