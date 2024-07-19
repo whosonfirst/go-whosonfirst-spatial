@@ -10,7 +10,7 @@ Documentation, particularly proper Go documentation, is incomplete at this time.
 
 The goal of the `go-whosonfirst-spatial` package is to de-couple the various components that made up the now-deprecated [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package – indexing, storage, querying and serving – in to separate packages in order to allow for more flexibility.
 
-It is the "base" package that defines provider-agnostic, but WOF-specific, interfaces for a limited set of spatial queries and reading properties.
+It (this) is the "base" package that defines provider-agnostic, but WOF-specific, interfaces for a limited set of spatial queries and reading properties.
 
 These interfaces are then implemented in full or in part by provider-specific classes. For example, an in-memory RTree index (which is part of this package) or a SQLite database or even a Protomaps database:
 
@@ -34,10 +34,36 @@ import (
 
 Here is a concrete example, implementing a point-in-polygon service over HTTP using a SQLite backend:
 
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www/blob/main/application/server
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-sqlite/blob/main/cmd/server/main.go
+```
+package main
 
-It is part of the overall goal of:
+import (
+	"context"
+	"log"
+
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-sqlite"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
+)
+
+func main() {
+
+	ctx := context.Background()
+	logger := log.Default()
+
+	err := server.Run(ctx, logger)
+
+	if err != nil {
+		logger.Fatal(err)
+	}
+}
+```
+
+Where:
+
+* The bulk of the application code is implemented by the `whosonfirst/go-whosonfirst-spatial-www` package.
+* The specific SQLite implementation of the spatial database is implemented by the `whosonfirst/go-whosonfirst-spatial-sqlite` package.
+
+The overall motivation for this approach is:
 
 * Staying out people's database or delivery choices (or needs)
 * Supporting as many databases (and delivery (and indexing) choices) as possible

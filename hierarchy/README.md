@@ -9,9 +9,11 @@ At a high-level a point-in-polygon "hierarchy resolver" consists of (4) parts:
 
 These functionalities are implemented by the `hierarchy.PointInPolygonHierarchyResolver` package. In addition to wrapping all those moving pieces the `hierachy` package also exports a handful of predefined callback functions to use for filtering results and applying updates.
 
+Importantly, hierarchy resolvers are not responsible for reading Who's On First documents, writing updates to those documents or populating the spatial databases used to perform point-in-polygon operations. These tasks are left to other bits of code. The principal goal of a hierarchy resolver is to perform a point-in-polygon operation, resolve multiple overlapping candidates down to a single result and then generate/apply updates (to a source document) derive from that result.
+
 ## Example
 
-The following examples describe how to use the `hierarchy.PointInPolygonHierarchyResolver` package in abbreviated (incomplete) and annotated code.
+The following examples describe how to use the `hierarchy.PointInPolygonHierarchyResolver` package in abbreviated (incomplete) and annotated code. These example do not reflect all the functionality of the `hierarchy.PointInPolygonHierarchyResolver` package. For details consult the [Go reference documentation](https://pkg.go.dev/github.com/whosonfirst/go-whosonfirst-spatial/hierarchy).
 
 _Note: For the sake of brevity all error-handling has been removed from these examples._
 
