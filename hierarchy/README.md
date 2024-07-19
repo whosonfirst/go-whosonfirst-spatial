@@ -163,4 +163,9 @@ func main() {
 	// Apply updates to body here
 
 }
-```	
+```
+
+## See also
+
+* https://github.com/whosonfirst/go-whosonfirst-placetypes
+* https://github.com/whosonfirst/go-whosonfirst-flags
