@@ -12,9 +12,8 @@ The goal of the `go-whosonfirst-spatial` package is to de-couple the various com
 
 It is the "base" package that defines provider-agnostic, but WOF-specific, interfaces for a limited set of spatial queries and reading properties.
 
-These interfaces are then implemented in full or in part by provider-specific classes. For example, an in-memory RTree index or a SQLite database or even a Protomaps database:
+These interfaces are then implemented in full or in part by provider-specific classes. For example, an in-memory RTree index (which is part of this package) or a SQLite database or even a Protomaps database:
 
-* https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
 * https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles
 
@@ -97,19 +96,23 @@ type Filter interface {
 
 _Where `flags.*` refers to the [whosonfirst/go-whosonfirst-flags](https://github.com/whosonfirst/go-whosonfirst-flags) package._
 
-## Implementations
+## Database Implementations
 
-* https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
+### SQLite
+
 * https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
+
+### PMTiles
+
 * https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles
 
 ## Servers and clients
 
-### WWW
+### Web (HTTP)
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-www
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-sqlite
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-pmtiles
+
+_Remember, this package implements the guts of a web application but does not support any particular database by default. It is meant to be imported by a database-specific implementation (see above) and exposed as a `cmd/server` application (for example) by that package._
 
 ### gRPC
 
@@ -117,11 +120,7 @@ _Where `flags.*` refers to the [whosonfirst/go-whosonfirst-flags](https://github
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-sqlite
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc-pmtiles
 
-## Services and Operations
-
-* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
-* https://github.com/whosonfirst/go-whosonfirst-spatial-hierarchy
-
+_Note, the gRPC code has not been updated in a while and needs to be refactored to follow the model of the `go-whosonfirst-spatial-www` pacakge._
 ## See also
 
 * https://github.com/whosonfirst/go-whosonfirst-spr

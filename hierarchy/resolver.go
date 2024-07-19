@@ -27,7 +27,12 @@ type PointInPolygonHierarchyResolverOptions struct {
 	// PlacetypesDefinition is an optional `go-whosonfirst-placetypes.Definition` instance used to resolve custom or bespoke placetypes.
 	PlacetypesDefinition placetypes.Definition
 	// SkipPlacetypeFilter is an optional boolean flag to signal whether or not point-in-polygon operations should be performed using
-	// the list of known ancestors for a given placetype. Default is false.
+	// the list of known ancestors for a given placetype. If you are using a custom placetypes defintion (see whosonfirst/go-whosonfirst-placetypes)
+	// and do not enable this flag you will need to manually re-assign the `wof:placetype` property of each record being ingested in to your spatial
+	// database to take the form of "{CUSTOM_PLACETYPE}#{CUSTOM_PLACETYPE_DEFINITION_URI}". This is necessary because by the time placetype filtering
+	// occurs the code is working with `whosonfirst/go-whosonfirst-spr.StandardPlacesResult` instances which only have access to a generic `Placetype`
+	// method. There is no guarantee that changing the default value of the `wof:placetype` property will not have unintended consequences so it might
+	// be easiest just to enable this flag and deal with placetype filtering in a custom `FilterSPRResultsFunc` callback. Default is false.
 	SkipPlacetypeFilter bool
 	// Roles is an optional list of Who's On First placetype roles used to derive ancestors during point-in-polygon operations.
 	// If missing (or zero length) then all possible roles will be assumed.
@@ -139,6 +144,15 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygonAndUpdate(ctx context.Co
 // from if `wof:placetype=custom`.
 func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, inputs *filter.SPRInputs, body []byte) ([]spr.StandardPlacesResult, error) {
 
+	id_rsp := gjson.GetBytes(body, "properties.wof:id")
+	name_rsp := gjson.GetBytes(body, "properties.wof:name")
+	id := id_rsp.String()
+	name := name_rsp.String()
+
+	logger := slog.Default()
+	logger = logger.With("id", id)
+	logger = logger.With("name", name)
+
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
 	if err != nil {
@@ -147,6 +161,9 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 	lon := centroid.X()
 	lat := centroid.Y()
+
+	logger = logger.With("latitude", lat)
+	logger = logger.With("longitude", lon)
 
 	coord, err := geo.NewCoordinate(lon, lat)
 
@@ -162,7 +179,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		slog.Debug("Perform point in polygon with no placetype filter", "lat", lat, "lon", lon)
+		logger.Debug("Perform point in polygon with no placetype filter")
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -173,10 +190,13 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		// This should never happen...
 
 		if rsp == nil {
+			logger.Warn("Failed to point in polygon with empty response, returning nil")
 			return nil, fmt.Errorf("Failed to point in polygon for %v, null response", coord)
 		}
 
 		possible := rsp.Results()
+
+		logger.Debug("Return unfiltered-by-placetype results", "count", len(possible))
 		return possible, nil
 	}
 
@@ -205,7 +225,11 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		return nil, fmt.Errorf("Failed to create new placetype for '%s', %v", pt_str, err)
 	}
 
+	logger = logger.With("placetype", pt_str)
+
 	ancestors := pt_spec.AncestorsForRoles(pt, t.roles)
+
+	// logger.Debug("Ancestors", "roles", t.roles, "ancestors", ancestors)
 
 	for _, a := range ancestors {
 
@@ -219,7 +243,7 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 			return nil, fmt.Errorf("Failed to create SPR filter from input, %v", err)
 		}
 
-		slog.Debug("Perform point in polygon", "lat", lat, "lon", lon, "placetype", pt_name)
+		logger.Debug("Perform point in polygon with placetype filter", "placetype", pt_name)
 
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
@@ -236,16 +260,20 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		results := rsp.Results()
 		count := len(results)
 
-		slog.Debug("Point in polygon results", "lat", lat, "lon", lon, "placetype", pt_name, "count", count)
+		logger.Debug("Point in polygon results after input filtering", "placetype", pt_name, "count", count)
 
 		if count == 0 {
 			continue
 		}
 
 		possible = results
+
+		// Something something something filter here something something something
+
 		break
 	}
 
+	logger.Debug("Return possible candidates", "count", len(possible))
 	return possible, nil
 }
 
