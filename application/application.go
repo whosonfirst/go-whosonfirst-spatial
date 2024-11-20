@@ -43,11 +43,11 @@ type SpatialApplication struct {
 	SpatialDatabase  database.SpatialDatabase
 	PropertiesReader reader.Reader
 	/* Iterator         *iterator.Iterator */
-	Timings          []*timings.SinceResponse
-	Monitor          timings.Monitor
-	mu               *sync.RWMutex
+	Timings  []*timings.SinceResponse
+	Monitor  timings.Monitor
+	mu       *sync.RWMutex
 	indexing int64
-	indexed int64
+	indexed  int64
 }
 
 // SpatialApplicationOptions defines properties used to instantiate a new `SpatialApplication` instance.
@@ -56,10 +56,10 @@ type SpatialApplicationOptions struct {
 	SpatialDatabaseURI string
 	// A valid `whosonfirst/go-reader` URI.
 	PropertiesReaderURI string
-	
+
 	// A valid `whosonfirst/go-whosonfirst-iterator/v2` URI.
 	// IteratorURI string
-	
+
 	// IsWhosOnFirst signals that input files (to index) are assumed to be valid Who's On First records
 	// and not arbitrary GeoJSON
 	IsWhosOnFirst bool
@@ -107,65 +107,65 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 
 	/*
 
-	iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
+		iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
 
-		body, err := io.ReadAll(r)
+			body, err := io.ReadAll(r)
 
-		if err != nil {
-			return fmt.Errorf("Failed to read '%s', %w", path, err)
-		}
+			if err != nil {
+				return fmt.Errorf("Failed to read '%s', %w", path, err)
+			}
 
-		if opts.IsWhosOnFirst {
+			if opts.IsWhosOnFirst {
+
+				if err != nil {
+
+					// it's still not clear (to me) what the expected or desired
+					// behaviour is / in this instance we might be issuing a warning
+					// from the geojson-v2 package because a feature might have a
+					// placetype defined outside of "core" (in the go-whosonfirst-placetypes)
+					// package but that shouldn't necessarily trigger a fatal error
+					// (20180405/thisisaaronland)
+
+					if !warning.IsWarning(err) {
+						return err
+					}
+
+					slog.Warn("Feature triggered the following warning", "path", path, "error", err)
+				}
+			}
+
+			geom_type, err := geometry.Type(body)
+
+			if err != nil {
+				return fmt.Errorf("Failed to derive geometry type for %s, %w", path, err)
+			}
+
+			if geom_type == "Point" {
+				return nil
+			}
+
+			err = spatial_db.IndexFeature(ctx, body)
 
 			if err != nil {
 
-				// it's still not clear (to me) what the expected or desired
-				// behaviour is / in this instance we might be issuing a warning
-				// from the geojson-v2 package because a feature might have a
-				// placetype defined outside of "core" (in the go-whosonfirst-placetypes)
-				// package but that shouldn't necessarily trigger a fatal error
-				// (20180405/thisisaaronland)
+				// something something something wrapping errors in Go 1.13
+				// something something something waiting to see if the GOPROXY is
+				// disabled by default in Go > 1.13 (20190919/thisisaaronland)
 
-				if !warning.IsWarning(err) {
-					return err
-				}
-
-				slog.Warn("Feature triggered the following warning", "path", path, "error", err)
+				return fmt.Errorf("Failed to index %s %d", path, err)
 			}
-		}
 
-		geom_type, err := geometry.Type(body)
-
-		if err != nil {
-			return fmt.Errorf("Failed to derive geometry type for %s, %w", path, err)
-		}
-
-		if geom_type == "Point" {
 			return nil
 		}
 
-		err = spatial_db.IndexFeature(ctx, body)
+		iter, err := iterator.NewIterator(ctx, opts.IteratorURI, iter_cb)
 
 		if err != nil {
-
-			// something something something wrapping errors in Go 1.13
-			// something something something waiting to see if the GOPROXY is
-			// disabled by default in Go > 1.13 (20190919/thisisaaronland)
-
-			return fmt.Errorf("Failed to index %s %d", path, err)
+			return nil, fmt.Errorf("Failed to create iterator, %w", err)
 		}
 
-		return nil
-	}
-
-	iter, err := iterator.NewIterator(ctx, opts.IteratorURI, iter_cb)
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to create iterator, %w", err)
-	}
-
 	*/
-	
+
 	// Enable custom placetypes
 
 	if opts.EnableCustomPlacetypes {
@@ -227,9 +227,9 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_reader,
 		// Iterator:         iter,
-		Timings:          app_timings,
-		Monitor:          m,
-		mu:               mu,
+		Timings: app_timings,
+		Monitor: m,
+		mu:      mu,
 	}
 
 	go func() {
@@ -311,8 +311,8 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 // IndexPaths() will index 'paths' using p's `Iterator` instance storing each document in p's `SpatialDatabase` instance.
 func (p *SpatialApplication) IndexDatabaseWithIterators(ctx context.Context, sources map[string][]string) error {
 
-	iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {	
-		
+	iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
+
 		err := database.IndexDatabaseWithReader(ctx, p.SpatialDatabase, r)
 
 		if err != nil {
@@ -324,12 +324,12 @@ func (p *SpatialApplication) IndexDatabaseWithIterators(ctx context.Context, sou
 	}
 
 	defer debug.FreeOSMemory()
-	
+
 	for iter_uri, iter_sources := range sources {
 
 		atomic.AddInt64(&p.indexing, 1)
-		defer atomic.AddInt64(&p.indexing, -1)		
-		
+		defer atomic.AddInt64(&p.indexing, -1)
+
 		iter, err := iterator.NewIterator(ctx, iter_uri, iter_cb)
 
 		if err != nil {
@@ -344,6 +344,6 @@ func (p *SpatialApplication) IndexDatabaseWithIterators(ctx context.Context, sou
 
 		debug.FreeOSMemory()
 	}
-	
+
 	return nil
 }

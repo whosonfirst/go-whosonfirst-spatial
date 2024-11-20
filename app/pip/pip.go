@@ -43,7 +43,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 	spatial_opts := &app.SpatialApplicationOptions{
 		SpatialDatabaseURI:     opts.SpatialDatabaseURI,
 		PropertiesReaderURI:    opts.PropertiesReaderURI,
-		// IteratorURI:            opts.IteratorURI,
 		EnableCustomPlacetypes: opts.EnableCustomPlacetypes,
 		CustomPlacetypes:       opts.CustomPlacetypes,
 		IsWhosOnFirst:          opts.IsWhosOnFirst,
@@ -55,12 +54,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 		return fmt.Errorf("Failed to create new spatial application, %w", err)
 	}
 
-	/*
 	done_ch := make(chan bool)
 
 	go func() {
 
-		err := spatial_app.Iterator.IterateURIs(ctx, opts.Sources...)
+		err := spatial_app.IndexDatabaseWithIterators(ctx, opts.IteratorSources)
 
 		if err != nil {
 			logger.Printf("Failed to iterate URIs, %v", err)
@@ -68,15 +66,14 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 
 		done_ch <- true
 	}()
-	*/
-	
+
 	switch mode {
 
 	case "cli":
 
 		props := opts.Properties
 
-		// <-done_ch
+		<-done_ch
 
 		req := &pip.PointInPolygonRequest{
 			Latitude:            opts.Latitude,
@@ -132,7 +129,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 
 	case "lambda":
 
-		// <-done_ch
+		<-done_ch
 
 		handler := func(ctx context.Context, req *pip.PointInPolygonRequest) (interface{}, error) {
 			return pip.QueryPointInPolygon(ctx, spatial_app, req)

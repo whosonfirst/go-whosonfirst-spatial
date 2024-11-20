@@ -47,7 +47,7 @@ var verbose bool
 
 var sort_uris multi.MultiString
 
-var iterator_uri string
+var iterator_uris multi.MultiCSVString
 
 func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
@@ -100,9 +100,9 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 	sort.Strings(modes)
 
 	valid_modes := strings.Join(modes, ", ")
-	desc_modes := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-iterate/v2 URI. Supported schemes are: %s.", valid_modes)
+	desc_modes := fmt.Sprintf("Zero or more URIs denoting data sources to use for indexing the spatial database at startup. URIs take the form of {ITERATOR_URI} + \"#\" + {PIPE-SEPARATED LIST OF ITERATOR SOURCES}. Where {ITERATOR_URI} is expected to be a registered whosonfirst/go-whosonfirst-iterate/v2 iterator (emitter) URI and {ITERATOR SOURCES} are valid input paths for that iterator. Supported whosonfirst/go-whosonfirst-iterate/v2 iterator schemes are: %s.", valid_modes)
 
-	fs.StringVar(&iterator_uri, "iterator-uri", "repo://", desc_modes)
+	fs.Var(&iterator_uris, "iterator-uri", desc_modes)
 
 	// Runtime / server flags
 
