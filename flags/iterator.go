@@ -32,7 +32,18 @@ func (fl *MultiIteratorURIFlag) Value() interface{} {
 	return fl
 }
 
-func (fl *MultiIteratorURIFlag) Map() map[string][]string {
+func (fl *MultiIteratorURIFlag) String() string {
+
+	str_flags := make([]string, len(*fl))
+
+	for i, iter_fl := range *fl {
+		str_flags[i] = iter_fl.String()
+	}
+
+	return strings.Join(str_flags, ",")
+}
+
+func (fl *MultiIteratorURIFlag) AsMap() map[string][]string {
 
 	iter_map := make(map[string][]string)
 

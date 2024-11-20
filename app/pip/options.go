@@ -3,8 +3,8 @@ package pip
 import (
 	"context"
 	"flag"
-	"log/slog"
-	"strings"
+	// "log/slog"
+	// "strings"
 
 	"github.com/sfomuseum/go-flags/flagset"
 )
@@ -71,21 +71,7 @@ func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, 
 
 	if len(iterator_uris) > 0 {
 
-		iter_sources := make(map[string][]string)
-
-		for _, uri := range iterator_uris {
-
-			parts := strings.Split(uri, "#")
-
-			switch len(parts) {
-			case 2:
-				iter_sources[parts[0]] = strings.Split(parts[1], "|")
-			default:
-				slog.Warn("Invalid iterator_uri", "uri", uri, "count", len(parts))
-			}
-		}
-
-		opts.IteratorSources = iter_sources
+		opts.IteratorSources = iterator_uris.AsMap()
 	}
 
 	return opts, nil
