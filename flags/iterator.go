@@ -8,6 +8,45 @@ import (
 const SEP_FRAGMENT string = "#"
 const SEP_PIPE string = "|"
 
+type MultiIteratorURIFlag []*IteratorURIFlag
+
+func (fl *MultiIteratorURIFlag) Set(value string) error {
+
+	iter_fl := new(IteratorURIFlag)
+
+	err := iter_fl.Set(value)
+
+	if err != nil {
+		return err
+	}
+
+	*fl = append(*fl, iter_fl)
+	return nil
+}
+
+func (fl *MultiIteratorURIFlag) Key() string {
+	return ""
+}
+
+func (fl *MultiIteratorURIFlag) Value() interface{} {
+	return fl
+}
+
+func (fl *MultiIteratorURIFlag) Map() map[string][]string {
+
+	iter_map := make(map[string][]string)
+
+	for _, iter_fl := range *fl {
+
+		iter_uri := iter_fl.Key()
+		iter_sources := iter_fl.Value().([]string)
+
+		iter_map[iter_uri] = iter_sources
+	}
+
+	return iter_map
+}
+
 type IteratorURIFlag struct {
 	iter_uri     string
 	iter_sources []string
