@@ -7,19 +7,20 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"os"
+	// "os"
 	"runtime/debug"
 	"strings"
 	"sync"
-	"time"
+	"sync/atomic"
+	// "time"
 
 	"github.com/sfomuseum/go-timings"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
+	// "github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/warning"
+	// "github.com/whosonfirst/warning"
 )
 
 // SpatialApplication a bunch of different operations related to indexing and querying spatial
@@ -41,10 +42,12 @@ import (
 type SpatialApplication struct {
 	SpatialDatabase  database.SpatialDatabase
 	PropertiesReader reader.Reader
-	Iterator         *iterator.Iterator
+	/* Iterator         *iterator.Iterator */
 	Timings          []*timings.SinceResponse
 	Monitor          timings.Monitor
 	mu               *sync.RWMutex
+	indexing int64
+	indexed int64
 }
 
 // SpatialApplicationOptions defines properties used to instantiate a new `SpatialApplication` instance.
@@ -53,8 +56,10 @@ type SpatialApplicationOptions struct {
 	SpatialDatabaseURI string
 	// A valid `whosonfirst/go-reader` URI.
 	PropertiesReaderURI string
+	
 	// A valid `whosonfirst/go-whosonfirst-iterator/v2` URI.
-	IteratorURI string
+	// IteratorURI string
+	
 	// IsWhosOnFirst signals that input files (to index) are assumed to be valid Who's On First records
 	// and not arbitrary GeoJSON
 	IsWhosOnFirst bool
@@ -99,6 +104,8 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 	}
 
 	// Set up iterator (to index records at start up if necessary)
+
+	/*
 
 	iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
 
@@ -157,6 +164,8 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 		return nil, fmt.Errorf("Failed to create iterator, %w", err)
 	}
 
+	*/
+	
 	// Enable custom placetypes
 
 	if opts.EnableCustomPlacetypes {
@@ -217,7 +226,7 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 	sp := SpatialApplication{
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_reader,
-		Iterator:         iter,
+		// Iterator:         iter,
 		Timings:          app_timings,
 		Monitor:          m,
 		mu:               mu,
@@ -254,6 +263,8 @@ func (p *SpatialApplication) Close(ctx context.Context) error {
 	p.Monitor.Stop(ctx)
 	return nil
 }
+
+/*
 
 // IndexPaths() will index 'paths' using p's `Iterator` instance storing each document in p's `SpatialDatabase` instance.
 func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) error {
@@ -292,5 +303,47 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 		}
 	}()
 
+	return nil
+}
+
+*/
+
+// IndexPaths() will index 'paths' using p's `Iterator` instance storing each document in p's `SpatialDatabase` instance.
+func (p *SpatialApplication) IndexDatabaseWithIterators(ctx context.Context, sources map[string][]string) error {
+
+	iter_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {	
+		
+		err := database.IndexDatabaseWithReader(ctx, p.SpatialDatabase, r)
+
+		if err != nil {
+			return fmt.Errorf("Failed to index %s, %w", path, err)
+		}
+
+		atomic.AddInt64(&p.indexed, 1)
+		return nil
+	}
+
+	defer debug.FreeOSMemory()
+	
+	for iter_uri, iter_sources := range sources {
+
+		atomic.AddInt64(&p.indexing, 1)
+		defer atomic.AddInt64(&p.indexing, -1)		
+		
+		iter, err := iterator.NewIterator(ctx, iter_uri, iter_cb)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create iterator for %s, %w", iter_uri, err)
+		}
+
+		err = iter.IterateURIs(ctx, iter_sources...)
+
+		if err != nil {
+			return fmt.Errorf("Failed to iterate sources for %s (%w), %w", iter_uri, iter_sources, err)
+		}
+
+		debug.FreeOSMemory()
+	}
+	
 	return nil
 }
