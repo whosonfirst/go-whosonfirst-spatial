@@ -10,7 +10,7 @@ import (
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"	
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"sort"
 	"strings"
 )
@@ -48,7 +48,7 @@ var verbose bool
 
 var sort_uris multi.MultiString
 
-var iterator_uris spatial_flags.MultiIteratorURIFlag	// multi.MultiCSVString
+var iterator_uris spatial_flags.MultiIteratorURIFlag
 
 func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 

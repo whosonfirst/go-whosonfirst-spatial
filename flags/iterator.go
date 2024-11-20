@@ -7,6 +7,7 @@ import (
 
 const SEP_FRAGMENT string = "#"
 const SEP_PIPE string = "|"
+const SEP_SPACE string = " "
 
 type MultiIteratorURIFlag []*IteratorURIFlag
 
@@ -40,7 +41,7 @@ func (fl *MultiIteratorURIFlag) String() string {
 		str_flags[i] = iter_fl.String()
 	}
 
-	return strings.Join(str_flags, ",")
+	return strings.Join(str_flags, SEP_SPACE)
 }
 
 func (fl *MultiIteratorURIFlag) AsMap() map[string][]string {

@@ -140,11 +140,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 		return fmt.Errorf("Failed to create PIP tool, %v", err)
 	}
 
-	// This is where the actual work happens
-
 	app := &updateApplication{
-		to:                  opts.ToIterator,
-		from:                opts.FromIterator,
 		spatial_db:          spatial_db,
 		resolver:            resolver,
 		exporter:            ex,
@@ -155,10 +151,5 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 		hierarchyUpdateFunc: update_cb,
 	}
 
-	paths := &updateApplicationPaths{
-		To:   opts.To,
-		From: opts.From,
-	}
-
-	return app.Run(ctx, paths)
+	return app.Run(ctx, opts.FromIteratorSources, opts.ToIteratorSources)
 }
