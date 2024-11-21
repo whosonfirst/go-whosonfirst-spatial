@@ -12,31 +12,27 @@ const SEP_PIPE string = "|"
 const SEP_SPACE string = " "
 const SEP_CSV string = ","
 
+// IteratorURIFlag parses a string in to components necessary for use with a `whosonfirst/go-whosonfirst-iterate/v2/iterator.Iterator` instance.
+// Flags are expected to take the form of:
+//
+//	{ITERATOR_URI_STRING} + "#" + {PIPE_SEPARATED_LIST_OF_ITERATOR_SOURCES}
+//
+// Where:
+// * `{ITERATOR_URI_STRING}` is a URI that can be passed to the `iterator.NewIterator` constructor.
+// * `{PIPE_SEPARATED_LIST_OF_ITERATOR_SOURCES}` is a list of one or more paths (URIs) to be passed to the `iterator.IterateURIs` method.
 type IteratorURIFlag struct {
 	iter_uri     string
 	iter_sources []string
 }
 
-func (fl *IteratorURIFlag) Key() string {
-	return fl.iter_uri
-}
-
-func (fl *IteratorURIFlag) Value() interface{} {
-	return fl.iter_sources
-}
-
-func (fl *IteratorURIFlag) String() string {
-
-	str_sources := strings.Join(fl.iter_sources, SEP_PIPE)
-
-	parts := []string{
-		fl.iter_uri,
-		str_sources,
-	}
-
-	return strings.Join(parts, SEP_FRAGMENT)
-}
-
+// Set parses 'value' in to components necessary for use with a `whosonfirst/go-whosonfirst-iterate/v2/iterator.Iterator` instance.
+// 'value' is expected to take the form of:
+//
+//	{ITERATOR_URI_STRING} + "#" + {PIPE_SEPARATED_LIST_OF_ITERATOR_SOURCES}
+//
+// Where:
+// * `{ITERATOR_URI_STRING}` is a URI that can be passed to the `iterator.NewIterator` constructor.
+// * `{PIPE_SEPARATED_LIST_OF_ITERATOR_SOURCES}` is a list of one or more paths (URIs) to be passed to the `iterator.IterateURIs` method.
 func (fl *IteratorURIFlag) Set(value string) error {
 
 	parts := strings.Split(value, SEP_FRAGMENT)
@@ -58,6 +54,30 @@ func (fl *IteratorURIFlag) Set(value string) error {
 	return nil
 }
 
+// Key returns the value of the `{ITERATOR_URI_STRING}` string.
+func (fl *IteratorURIFlag) Key() string {
+	return fl.iter_uri
+}
+
+// Values returns the list of URIs defined in the `{PIPE_SEPARATED_LIST_OF_ITERATOR_SOURCES}` string.
+func (fl *IteratorURIFlag) Value() interface{} {
+	return fl.iter_sources
+}
+
+// String returns value of the flag.
+func (fl *IteratorURIFlag) String() string {
+
+	str_sources := strings.Join(fl.iter_sources, SEP_PIPE)
+
+	parts := []string{
+		fl.iter_uri,
+		str_sources,
+	}
+
+	return strings.Join(parts, SEP_FRAGMENT)
+}
+
+// MultiIteratorURIFlag is a flag that can hold multiple `IteratorURIFlag` instances.
 type MultiIteratorURIFlag []*IteratorURIFlag
 
 func (fl *MultiIteratorURIFlag) Set(value string) error {
@@ -108,6 +128,8 @@ func (fl *MultiIteratorURIFlag) AsMap() map[string][]string {
 	return iter_map
 }
 
+// MultiCSVIteratorURIFlag is a flag that can hold multiple `IteratorURIFlag` instances
+// defined using a single comma-separated string.
 type MultiCSVIteratorURIFlag []*IteratorURIFlag
 
 func (fl *MultiCSVIteratorURIFlag) Set(value string) error {
