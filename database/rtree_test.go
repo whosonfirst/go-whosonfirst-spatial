@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 	"testing"
 
@@ -38,7 +39,13 @@ func TestSpatialDatabase(t *testing.T) {
 		t.Fatalf("Failed to create new spatial database, %v", err)
 	}
 
-	err = IndexDatabaseWithIterator(ctx, db, "directory://", "fixtures/microhoods")
+	path_microhoods, err := filepath.Abs("../fixtures/microhoods")
+
+	if err != nil {
+		t.Fatalf("Failed to derive path for microhoods, %v", err)
+	}
+
+	err = IndexDatabaseWithIterator(ctx, db, "directory://", path_microhoods)
 
 	if err != nil {
 		t.Fatalf("Failed to index spatial database, %v", err)

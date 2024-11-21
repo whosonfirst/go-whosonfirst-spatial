@@ -218,7 +218,7 @@ func (p *SpatialApplication) IndexDatabaseWithIterators(ctx context.Context, sou
 		err = iter.IterateURIs(ctx, iter_sources...)
 
 		if err != nil {
-			return fmt.Errorf("Failed to iterate sources for %s (%w), %w", iter_uri, iter_sources, err)
+			return fmt.Errorf("Failed to iterate sources for %s (%v), %w", iter_uri, iter_sources, err)
 		}
 
 		debug.FreeOSMemory()
