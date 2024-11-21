@@ -14,20 +14,18 @@ import (
 )
 
 type RunOptions struct {
-	Writer              writer.Writer
-	WriterURI           string
-	Exporter            export.Exporter
-	ExporterURI         string
-	MapshaperServerURI  string
-	SpatialDatabase     database.SpatialDatabase
-	SpatialDatabaseURI  string
-	ToIteratorSources   map[string][]string
-	FromIteratorSources map[string][]string
-	SPRFilterInputs     *filter.SPRInputs
-	SPRResultsFunc      hierarchy_filter.FilterSPRResultsFunc                   // This one chooses one result among many (or nil)
-	PIPUpdateFunc       hierarchy.PointInPolygonHierarchyResolverUpdateCallback // This one constructs a map[string]interface{} to update the target record (or not)
-	To                  []string
-	From                []string
+	Writer                writer.Writer
+	WriterURI             string
+	Exporter              export.Exporter
+	ExporterURI           string
+	MapshaperServerURI    string
+	SpatialDatabase       database.SpatialDatabase
+	SpatialDatabaseURI    string
+	TargetIteratorSources map[string][]string
+	SourceIteratorSources map[string][]string
+	SPRFilterInputs       *filter.SPRInputs
+	SPRResultsFunc        hierarchy_filter.FilterSPRResultsFunc                   // This one chooses one result among many (or nil)
+	PIPUpdateFunc         hierarchy.PointInPolygonHierarchyResolverUpdateCallback // This one constructs a map[string]interface{} to update the target record (or not)
 }
 
 func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, error) {
@@ -51,12 +49,12 @@ func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, 
 		SPRFilterInputs:    inputs,
 	}
 
-	if len(from_iterator_uris) > 0 {
-		opts.FromIteratorSources = from_iterator_uris.AsMap()
+	if len(source_iterator_uris) > 0 {
+		opts.SourceIteratorSources = source_iterator_uris.AsMap()
 	}
 
-	if len(to_iterator_uris) > 0 {
-		opts.ToIteratorSources = to_iterator_uris.AsMap()
+	if len(target_iterator_uris) > 0 {
+		opts.TargetIteratorSources = target_iterator_uris.AsMap()
 	}
 
 	return opts, nil

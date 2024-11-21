@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	_ "log/slog"
+	"log/slog"
 
 	"github.com/whosonfirst/go-whosonfirst-export/v2"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
@@ -31,20 +31,24 @@ type updateApplication struct {
 	hierarchyUpdateFunc hierarchy.PointInPolygonHierarchyResolverUpdateCallback
 }
 
-func (app *updateApplication) Run(ctx context.Context, from map[string][]string, to map[string][]string) error {
+func (app *updateApplication) Run(ctx context.Context, sources map[string][]string, targets map[string][]string) error {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// These are the data we are indexing to HIERARCHY from
+	// These are the data we are indexing hierarchies FROM
 
-	from_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
+	sources_cb := func(ctx context.Context, path string, r io.ReadSeeker, args ...interface{}) error {
+
+		slog.Debug("Process source", "path", path)
 		return database.IndexDatabaseWithReader(ctx, app.spatial_db, r)
 	}
 
-	// These are the data we are HIERARCHY-ing
+	// These are the data we are hierarchy-ing TO
 
-	to_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
+	targets_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
+
+		slog.Debug("Process target", "path", path)
 
 		body, err := io.ReadAll(fh)
 
@@ -61,11 +65,11 @@ func (app *updateApplication) Run(ctx context.Context, from map[string][]string,
 		return nil
 	}
 
-	iterate := func(ctx context.Context, sources map[string][]string, cb emitter.EmitterCallbackFunc) error {
+	iterate := func(ctx context.Context, iter_map map[string][]string, iter_cb emitter.EmitterCallbackFunc) error {
 
-		for iter_uri, iter_sources := range sources {
+		for iter_uri, iter_sources := range iter_map {
 
-			iter, err := iterator.NewIterator(ctx, iter_uri, from_cb)
+			iter, err := iterator.NewIterator(ctx, iter_uri, iter_cb)
 
 			if err != nil {
 				return fmt.Errorf("Failed to create iterator for %s, %w", iter_uri, err)
@@ -81,13 +85,13 @@ func (app *updateApplication) Run(ctx context.Context, from map[string][]string,
 		return nil
 	}
 
-	err := iterate(ctx, from, from_cb)
+	err := iterate(ctx, sources, sources_cb)
 
 	if err != nil {
 		return err
 	}
 
-	err = iterate(ctx, to, to_cb)
+	err = iterate(ctx, targets, targets_cb)
 
 	if err != nil {
 		return err

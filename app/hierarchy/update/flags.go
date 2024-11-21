@@ -11,8 +11,8 @@ import (
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
-var from_iterator_uris spatial_flags.MultiIteratorURIFlag
-var to_iterator_uris spatial_flags.MultiIteratorURIFlag
+var source_iterator_uris spatial_flags.MultiIteratorURIFlag
+var target_iterator_uris spatial_flags.MultiIteratorURIFlag
 
 var exporter_uri string
 var writer_uri string
@@ -30,8 +30,8 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	fs := flagset.NewFlagSet("pip")
 
-	fs.Var(&from_iterator_uris, "from-iterator-uri", "...")
-	fs.Var(&to_iterator_uris, "to-iterator-uri", "...")
+	fs.Var(&source_iterator_uris, "source-iterator-uri", "...")
+	fs.Var(&target_iterator_uris, "target-iterator-uri", "...")
 
 	fs.StringVar(&exporter_uri, "exporter-uri", "whosonfirst://", "A valid whosonfirst/go-whosonfirst-export URI.")
 	fs.StringVar(&writer_uri, "writer-uri", "null://", "A valid whosonfirst/go-writer URI. This is where updated records will be written to.")

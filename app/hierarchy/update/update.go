@@ -151,5 +151,5 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 		hierarchyUpdateFunc: update_cb,
 	}
 
-	return app.Run(ctx, opts.FromIteratorSources, opts.ToIteratorSources)
+	return app.Run(ctx, opts.SourceIteratorSources, opts.TargetIteratorSources)
 }
