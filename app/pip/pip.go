@@ -45,7 +45,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *log.Logger) e
 		PropertiesReaderURI:    opts.PropertiesReaderURI,
 		EnableCustomPlacetypes: opts.EnableCustomPlacetypes,
 		CustomPlacetypes:       opts.CustomPlacetypes,
-		IsWhosOnFirst:          opts.IsWhosOnFirst,
 	}
 
 	spatial_app, err := app.NewSpatialApplication(ctx, spatial_opts)
