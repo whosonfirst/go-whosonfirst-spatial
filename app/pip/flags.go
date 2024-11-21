@@ -8,11 +8,8 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"sort"
-	"strings"
 )
 
 var spatial_database_uri string
@@ -97,13 +94,10 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	// Indexing flags
 
-	modes := emitter.Schemes()
-	sort.Strings(modes)
+	desc_iter := spatial_flags.IteratorURIFlagDescription()
+	desc_iter = fmt.Sprintf("Zero or more URIs denoting data sources to use for indexing the spatial database at startup. %s", desc_iter)
 
-	valid_modes := strings.Join(modes, ", ")
-	desc_modes := fmt.Sprintf("Zero or more URIs denoting data sources to use for indexing the spatial database at startup. URIs take the form of {ITERATOR_URI} + \"#\" + {PIPE-SEPARATED LIST OF ITERATOR SOURCES}. Where {ITERATOR_URI} is expected to be a registered whosonfirst/go-whosonfirst-iterate/v2 iterator (emitter) URI and {ITERATOR SOURCES} are valid input paths for that iterator. Supported whosonfirst/go-whosonfirst-iterate/v2 iterator schemes are: %s.", valid_modes)
-
-	fs.Var(&iterator_uris, "iterator-uri", desc_modes)
+	fs.Var(&iterator_uris, "iterator-uri", desc_iter)
 
 	// Runtime / server flags
 

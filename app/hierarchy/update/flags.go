@@ -30,8 +30,13 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	fs := flagset.NewFlagSet("pip")
 
-	fs.Var(&source_iterator_uris, "source-iterator-uri", "...")
-	fs.Var(&target_iterator_uris, "target-iterator-uri", "...")
+	desc_iter := spatial_flags.IteratorURIFlagDescription()
+
+	source_desc := fmt.Sprintf("Zero or more URIs denoting data sources to use for indexing the spatial database at startup. %s", desc_iter)
+	target_desc := fmt.Sprintf("Zero or more URIs denoting target data sources whose hierarchies need updating. %s", desc_iter)
+
+	fs.Var(&source_iterator_uris, "source-iterator-uri", source_desc)
+	fs.Var(&target_iterator_uris, "target-iterator-uri", target_desc)
 
 	fs.StringVar(&exporter_uri, "exporter-uri", "whosonfirst://", "A valid whosonfirst/go-whosonfirst-export URI.")
 	fs.StringVar(&writer_uri, "writer-uri", "null://", "A valid whosonfirst/go-writer URI. This is where updated records will be written to.")

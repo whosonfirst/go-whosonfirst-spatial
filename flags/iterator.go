@@ -4,13 +4,29 @@ package flags
 
 import (
 	"fmt"
+	"sort"
 	"strings"
+
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
 )
 
 const SEP_FRAGMENT string = "#"
 const SEP_PIPE string = "|"
 const SEP_SPACE string = " "
 const SEP_CSV string = ","
+
+// IteratorURIDescription returns a string describing the use the of the `IteratorURIFlag` flag.
+func IteratorURIFlagDescription() string {
+
+	modes := emitter.Schemes()
+	sort.Strings(modes)
+
+	valid_modes := strings.Join(modes, ", ")
+
+	desc := fmt.Sprintf("URIs take the form of {ITERATOR_URI} + \"#\" + {PIPE-SEPARATED LIST OF ITERATOR SOURCES}. Where {ITERATOR_URI} is expected to be a registered whosonfirst/go-whosonfirst-iterate/v2 iterator (emitter) URI and {ITERATOR SOURCES} are valid input paths for that iterator. Supported whosonfirst/go-whosonfirst-iterate/v2 iterator schemes are: %s.", valid_modes)
+
+	return desc
+}
 
 // IteratorURIFlag parses a string in to components necessary for use with a `whosonfirst/go-whosonfirst-iterate/v2/iterator.Iterator` instance.
 // Flags are expected to take the form of:
