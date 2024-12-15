@@ -181,20 +181,28 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 		logger.Debug("Perform point in polygon with no placetype filter")
 
-		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
+		possible := make([]spr.StandardPlacesResult, 0)
+		var pip_err error
 
-		if err != nil {
-			return nil, fmt.Errorf("Failed to point in polygon for %v, %v", coord, err)
+		for rsp, err := range t.Database.PointInPolygon(ctx, coord, spr_filter) {
+
+			if err != nil {
+				pip_err = err
+				break
+			}
+
+			if rsp == nil {
+				logger.Warn("Failed to point in polygon with empty response, returning nil")
+				pip_err = fmt.Errorf("Failed to point in polygon for %v, null response", coord)
+				break
+			}
+
+			possible = append(possible, rsp)
 		}
 
-		// This should never happen...
-
-		if rsp == nil {
-			logger.Warn("Failed to point in polygon with empty response, returning nil")
-			return nil, fmt.Errorf("Failed to point in polygon for %v, null response", coord)
+		if pip_err != nil {
+			return nil, err
 		}
-
-		possible := rsp.Results()
 
 		logger.Debug("Return unfiltered-by-placetype results", "count", len(possible))
 		return possible, nil
@@ -245,19 +253,30 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 		logger.Debug("Perform point in polygon with placetype filter", "placetype", pt_name)
 
-		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
+		results := make([]spr.StandardPlacesResult, 0)
+		var pip_err error
 
-		if err != nil {
-			return nil, fmt.Errorf("Failed to point in polygon for %v, %v", coord, err)
+		for rsp, err := range t.Database.PointInPolygon(ctx, coord, spr_filter) {
+
+			if err != nil {
+				pip_err = fmt.Errorf("Failed to point in polygon for %v, %v", coord, err)
+				break
+			}
+
+			// This should never happen...
+
+			if rsp == nil {
+				pip_err = fmt.Errorf("Failed to point in polygon for %v, null response", coord)
+				break
+			}
+
+			results = append(results, rsp)
 		}
 
-		// This should never happen...
-
-		if rsp == nil {
-			return nil, fmt.Errorf("Failed to point in polygon for %v, null response", coord)
+		if pip_err != nil {
+			return nil, err
 		}
 
-		results := rsp.Results()
 		count := len(results)
 
 		logger.Debug("Point in polygon results after input filtering", "placetype", pt_name, "count", count)

@@ -3,7 +3,7 @@ package spatial
 import (
 	"context"
 	"iter"
-	
+
 	"github.com/paulmach/orb"
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"

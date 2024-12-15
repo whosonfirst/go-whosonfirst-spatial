@@ -55,7 +55,23 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 	app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQueryPointInPolygon)
 
 	db := app.SpatialDatabase
-	rsp, err := db.PointInPolygon(ctx, c, f)
+
+	results := make([]spr.StandardPlacesResult, 0)
+	var pip_err error
+
+	for rsp, err := range db.PointInPolygon(ctx, c, f) {
+
+		if err != nil {
+			pip_err = err
+			break
+		}
+
+		results = append(results, rsp)
+	}
+
+	if pip_err != nil {
+		return nil, err
+	}
 
 	app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQueryPointInPolygon)
 
@@ -67,7 +83,7 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 
 		app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQuerySort)
 
-		sorted, err := principal_sorter.Sort(ctx, rsp, follow_on_sorters...)
+		sorted, err := principal_sorter.Sort(ctx, results, follow_on_sorters...)
 
 		app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQuerySort)
 
@@ -75,9 +91,9 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 			return nil, fmt.Errorf("Failed to sort results, %w", err)
 		}
 
-		rsp = sorted
+		results = sorted
 	}
 
 	app.Monitor.Signal(ctx, "complete point in polygon")
-	return rsp, nil
+	return results, nil
 }

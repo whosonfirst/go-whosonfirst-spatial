@@ -313,9 +313,9 @@ func (r *RTreeSpatialDatabase) RemoveFeature(ctx context.Context, id string) err
 func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
 
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
-		
+
 		rows, err := r.getIntersectsByCoord(coord)
-		
+
 		if err != nil {
 			yield(nil, err)
 			return
@@ -324,23 +324,22 @@ func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Po
 		rsp_ch := make(chan spr.StandardPlacesResult)
 		err_ch := make(chan error)
 		done_ch := make(chan bool)
-		
+
 		go r.inflateResultsWithChannels(ctx, rsp_ch, err_ch, rows, coord, filters...)
 
 		for {
 			select {
-			case <- done_ch:
+			case <-done_ch:
 				break
-			case err := <- err_ch:
+			case err := <-err_ch:
 				yield(nil, err)
 				break
-			case rsp := <- rsp_ch:
+			case rsp := <-rsp_ch:
 				yield(rsp, nil)
 			}
 		}
 	}
 }
-
 
 func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego.Spatial, error) {
 
