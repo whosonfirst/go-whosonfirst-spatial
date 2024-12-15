@@ -181,7 +181,7 @@ func NewSpatialApplication(ctx context.Context, opts *SpatialApplicationOptions)
 
 // Close() will terminate an spatial database connections and stop any internal timing monitors.
 func (p *SpatialApplication) Close(ctx context.Context) error {
-	p.SpatialDatabase.Disconnect(ctx)
+	p.SpatialDatabase.Disconnect()
 	p.Monitor.Stop(ctx)
 	return nil
 }

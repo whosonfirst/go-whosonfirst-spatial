@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"iter"
 	"log"
 	"log/slog"
 	"net/url"
@@ -147,7 +148,7 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, 
 	return db, nil
 }
 
-func (r *RTreeSpatialDatabase) Disconnect(ctx context.Context) error {
+func (r *RTreeSpatialDatabase) Disconnect() error {
 	return nil
 }
 
@@ -309,127 +310,37 @@ func (r *RTreeSpatialDatabase) RemoveFeature(ctx context.Context, id string) err
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
 
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	rsp_ch := make(chan spr.StandardPlacesResult)
-	err_ch := make(chan error)
-	done_ch := make(chan bool)
-
-	results := make([]spr.StandardPlacesResult, 0)
-	working := true
-
-	go r.PointInPolygonWithChannels(ctx, rsp_ch, err_ch, done_ch, coord, filters...)
-
-	for {
-		select {
-		case <-ctx.Done():
-			return nil, nil
-		case <-done_ch:
-			working = false
-		case rsp := <-rsp_ch:
-			results = append(results, rsp)
-		case err := <-err_ch:
-			return nil, err
+	return func(yield func(spr.StandardPlacesResult, error) bool) {
+		
+		rows, err := r.getIntersectsByCoord(coord)
+		
+		if err != nil {
+			yield(nil, err)
+			return
 		}
 
-		if !working {
-			break
+		rsp_ch := make(chan spr.StandardPlacesResult)
+		err_ch := make(chan error)
+		done_ch := make(chan bool)
+		
+		go r.inflateResultsWithChannels(ctx, rsp_ch, err_ch, rows, coord, filters...)
+
+		for {
+			select {
+			case <- done_ch:
+				break
+			case err := <- err_ch:
+				yield(nil, err)
+				break
+			case rsp := <- rsp_ch:
+				yield(rsp, nil)
+			}
 		}
 	}
-
-	spr_results := &RTreeResults{
-		Places: results,
-	}
-
-	return spr_results, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool, coord *orb.Point, filters ...spatial.Filter) {
-
-	defer func() {
-		done_ch <- true
-	}()
-
-	rows, err := r.getIntersectsByCoord(coord)
-
-	if err != nil {
-		err_ch <- err
-		return
-	}
-
-	r.inflateResultsWithChannels(ctx, rsp_ch, err_ch, rows, coord, filters...)
-	return
-}
-
-func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) ([]*spatial.PointInPolygonCandidate, error) {
-
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	rsp_ch := make(chan *spatial.PointInPolygonCandidate)
-	err_ch := make(chan error)
-	done_ch := make(chan bool)
-
-	candidates := make([]*spatial.PointInPolygonCandidate, 0)
-	working := true
-
-	go r.PointInPolygonCandidatesWithChannels(ctx, rsp_ch, err_ch, done_ch, coord, filters...)
-
-	for {
-		select {
-		case <-ctx.Done():
-			return nil, nil
-		case <-done_ch:
-			working = false
-		case rsp := <-rsp_ch:
-			candidates = append(candidates, rsp)
-		case err := <-err_ch:
-			return nil, err
-		}
-
-		if !working {
-			break
-		}
-	}
-
-	return candidates, nil
-}
-
-func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *orb.Point, filters ...spatial.Filter) {
-
-	defer func() {
-		done_ch <- true
-	}()
-
-	intersects, err := r.getIntersectsByCoord(coord)
-
-	if err != nil {
-		err_ch <- err
-		return
-	}
-
-	for _, raw := range intersects {
-
-		sp := raw.(*RTreeSpatialIndex)
-
-		// bounds := sp.Bounds()
-
-		c := &spatial.PointInPolygonCandidate{
-			Id:        sp.Id,
-			FeatureId: sp.FeatureId,
-			AltLabel:  sp.AltLabel,
-			// FIX ME
-			// Bounds:   bounds,
-		}
-
-		rsp_ch <- c
-	}
-
-	return
-}
 
 func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego.Spatial, error) {
 
