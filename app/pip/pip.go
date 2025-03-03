@@ -8,9 +8,12 @@ import (
 	"log/slog"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
-	"github.com/whosonfirst/go-whosonfirst-spatial/pip"
+	// "github.com/whosonfirst/go-whosonfirst-spatial/pip"
+	"github.com/whosonfirst/go-whosonfirst-spatial/request"
 )
 
 func Run(ctx context.Context) error {
@@ -71,6 +74,12 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		done_ch <- true
 	}()
 
+	q, err := request.NewPointInPolygonQuery(ctx, "pip://")
+
+	if err != nil {
+		return fmt.Errorf("Failed to create point in polygon query, %w", err)
+	}
+
 	switch mode {
 
 	case "cli":
@@ -79,9 +88,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		<-done_ch
 
-		req := &pip.PointInPolygonRequest{
-			Latitude:            opts.Latitude,
-			Longitude:           opts.Longitude,
+		pt := orb.Point([2]float64{opts.Longitude, opts.Latitude})
+		geom := geojson.NewGeometry(pt)
+
+		req := &request.SpatialRequest{
+			Geometry:            geom,
 			Placetypes:          opts.Placetypes,
 			Geometries:          opts.Geometries,
 			AlternateGeometries: opts.AlternateGeometries,
@@ -98,7 +109,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		var rsp interface{}
 
-		pip_rsp, err := pip.QueryPointInPolygon(ctx, spatial_app, req)
+		pip_rsp, err := request.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
 
 		if err != nil {
 			return fmt.Errorf("Failed to query, %v", err)
@@ -135,8 +146,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		<-done_ch
 
-		handler := func(ctx context.Context, req *pip.PointInPolygonRequest) (interface{}, error) {
-			return pip.QueryPointInPolygon(ctx, spatial_app, req)
+		handler := func(ctx context.Context, req *request.SpatialRequest) (interface{}, error) {
+			return request.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
 		}
 
 		lambda.Start(handler)

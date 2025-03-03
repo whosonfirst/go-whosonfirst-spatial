@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"time"
-	
+
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
 	"github.com/sfomuseum/go-sfomuseum-mapshaper"
@@ -156,10 +156,10 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 
 	t1 := time.Now()
 
-	defer func(){
+	defer func() {
 		logger.Debug("Time to PIP", "final", time.Since(t1))
 	}()
-	
+
 	centroid, err := t.PointInPolygonCentroid(ctx, body)
 
 	if err != nil {
@@ -253,11 +253,11 @@ func (t *PointInPolygonHierarchyResolver) PointInPolygon(ctx context.Context, in
 		logger.Debug("Perform point in polygon with placetype filter", "placetype", pt_name)
 
 		t2 := time.Now()
-		
+
 		rsp, err := t.Database.PointInPolygon(ctx, coord, spr_filter)
 
 		logger = logger.With(pt_name, time.Since(t2))
-		
+
 		if err != nil {
 			return nil, fmt.Errorf("Failed to point in polygon for %v, %v", coord, err)
 		}

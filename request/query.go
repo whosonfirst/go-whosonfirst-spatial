@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/paulmach/orb"
-	"github.com/whosonfirst/go-whosonfirst-spatial"	
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	// "github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
@@ -17,10 +17,10 @@ import (
 // const timingsPIPQuerySort string = "PIP query sort"
 
 type Query interface {
-	Execute(context.Context, database.SpatialDatabase, orb.Geometry, spatial.Filter) (spr.StandardPlacesResults, error) 
+	Execute(context.Context, database.SpatialDatabase, orb.Geometry, ...spatial.Filter) (spr.StandardPlacesResults, error)
 }
 
-func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, q Query, geom orb.Geometry, req *SpatialRequest) (spr.StandardPlacesResults, error) {
+func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, q Query, req *SpatialRequest) (spr.StandardPlacesResults, error) {
 
 	f, err := NewSPRFilterFromSpatialRequest(req)
 
@@ -46,7 +46,10 @@ func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, q Query, geo
 		}
 	}
 
-	rsp, err := q.Execute(ctx, db, geom, f)
+	geojson_geom := req.Geometry
+	orb_geom := geojson_geom.Geometry()
+
+	rsp, err := q.Execute(ctx, db, orb_geom, f)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to perform point in polygon query, %w", err)

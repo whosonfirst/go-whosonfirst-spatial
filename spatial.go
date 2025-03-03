@@ -23,6 +23,7 @@ type SpatialIndex interface {
 	// PointInPolygon returns the initial candidates for a point-in-polygon operation to a set of user-defined channels.
 	PointInPolygonCandidatesWithChannels(context.Context, chan *PointInPolygonCandidate, chan error, chan bool, *orb.Point, ...Filter)
 	// Disconnect closes any underlying connections used by the index.
+	Intersects(context.Context, *orb.Geometry, ...Filter) (spr.StandardPlacesResults, error)
 	Disconnect(context.Context) error
 }
 

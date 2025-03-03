@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/whosonfirst/go-whosonfirst-spatial"
-	"github.com/whosonfirst/go-whosonfirst-spatial/filter"		
+	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 )
 
 func NewSPRFilterFromSpatialRequest(req *SpatialRequest) (spatial.Filter, error) {
@@ -46,4 +46,3 @@ func NewSPRFilterFromSpatialRequest(req *SpatialRequest) (spatial.Filter, error)
 
 	return filter.NewSPRFilterFromQuery(q)
 }
-
