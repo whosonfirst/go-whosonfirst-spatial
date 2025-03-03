@@ -13,7 +13,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
 	// "github.com/whosonfirst/go-whosonfirst-spatial/pip"
-	"github.com/whosonfirst/go-whosonfirst-spatial/request"
+	"github.com/whosonfirst/go-whosonfirst-spatial/query"
 )
 
 func Run(ctx context.Context) error {
@@ -74,7 +74,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		done_ch <- true
 	}()
 
-	q, err := request.NewPointInPolygonQuery(ctx, "pip://")
+	q, err := query.NewPointInPolygonQuery(ctx, "pip://")
 
 	if err != nil {
 		return fmt.Errorf("Failed to create point in polygon query, %w", err)
@@ -91,7 +91,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		pt := orb.Point([2]float64{opts.Longitude, opts.Latitude})
 		geom := geojson.NewGeometry(pt)
 
-		req := &request.SpatialRequest{
+		req := &query.SpatialRequest{
 			Geometry:            geom,
 			Placetypes:          opts.Placetypes,
 			Geometries:          opts.Geometries,
@@ -109,7 +109,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		var rsp interface{}
 
-		pip_rsp, err := request.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
+		pip_rsp, err := query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
 
 		if err != nil {
 			return fmt.Errorf("Failed to query, %v", err)
@@ -146,8 +146,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		<-done_ch
 
-		handler := func(ctx context.Context, req *request.SpatialRequest) (interface{}, error) {
-			return request.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
+		handler := func(ctx context.Context, req *query.SpatialRequest) (interface{}, error) {
+			return query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
 		}
 
 		lambda.Start(handler)

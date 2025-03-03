@@ -1,4 +1,4 @@
-package request
+package query
 
 import (
 	"github.com/paulmach/orb/geojson"

@@ -1,4 +1,4 @@
-package request
+package query
 
 import (
 	"context"
@@ -7,14 +7,9 @@ import (
 	"github.com/paulmach/orb"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	// "github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/sort"
 )
-
-// const timingsPIPQuery string = "PIP query"
-// const timingsPIPQueryPointInPolygon string = "PIP query point in polygon"
-// const timingsPIPQuerySort string = "PIP query sort"
 
 type Query interface {
 	Execute(context.Context, database.SpatialDatabase, orb.Geometry, ...spatial.Filter) (spr.StandardPlacesResults, error)
