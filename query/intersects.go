@@ -32,5 +32,5 @@ func (q *IntersectsQuery) Execute(ctx context.Context, db database.SpatialDataba
 		return nil, fmt.Errorf("Invalid geometry type")
 	}
 
-	return db.Intersects(ctx, &poly, f...)
+	return db.Intersects(ctx, poly, f...)
 }
