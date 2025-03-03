@@ -74,10 +74,10 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		done_ch <- true
 	}()
 
-	q, err := query.NewPointInPolygonQuery(ctx, "pip://")
+	fn, err := query.NewSpatialFunction(ctx, "pip://")
 
 	if err != nil {
-		return fmt.Errorf("Failed to create point in polygon query, %w", err)
+		return fmt.Errorf("Failed to create point in polygon function, %w", err)
 	}
 
 	switch mode {
@@ -91,7 +91,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		pt := orb.Point([2]float64{opts.Longitude, opts.Latitude})
 		geom := geojson.NewGeometry(pt)
 
-		req := &query.SpatialRequest{
+		req := &query.SpatialQuery{
 			Geometry:            geom,
 			Placetypes:          opts.Placetypes,
 			Geometries:          opts.Geometries,
@@ -109,7 +109,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		var rsp interface{}
 
-		pip_rsp, err := query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
+		pip_rsp, err := query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, fn, req)
 
 		if err != nil {
 			return fmt.Errorf("Failed to query, %v", err)
@@ -146,8 +146,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		<-done_ch
 
-		handler := func(ctx context.Context, req *query.SpatialRequest) (interface{}, error) {
-			return query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, q, req)
+		handler := func(ctx context.Context, req *query.SpatialQuery) (interface{}, error) {
+			return query.ExecuteQuery(ctx, spatial_app.SpatialDatabase, fn, req)
 		}
 
 		lambda.Start(handler)

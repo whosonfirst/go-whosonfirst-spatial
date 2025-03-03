@@ -10,16 +10,25 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 )
 
-type PointInPolygonQuery struct {
-	Query
+type PointInPolygonSpatialFunction struct {
+	SpatialFunction
 }
 
-func NewPointInPolygonQuery(ctx context.Context, uri string) (Query, error) {
-	q := &PointInPolygonQuery{}
+func init() {
+
+	err := RegisterSpatialFunction(context.Background(), "pip", NewPointInPolygonSpatialFunction)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+func NewPointInPolygonSpatialFunction(ctx context.Context, uri string) (SpatialFunction, error) {
+	q := &PointInPolygonSpatialFunction{}
 	return q, nil
 }
 
-func (q *PointInPolygonQuery) Execute(ctx context.Context, db database.SpatialDatabase, geom orb.Geometry, f ...spatial.Filter) (spr.StandardPlacesResults, error) {
+func (q *PointInPolygonSpatialFunction) Execute(ctx context.Context, db database.SpatialDatabase, geom orb.Geometry, f ...spatial.Filter) (spr.StandardPlacesResults, error) {
 
 	var pt orb.Point
 

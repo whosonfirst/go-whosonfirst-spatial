@@ -10,16 +10,25 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 )
 
-type IntersectsQuery struct {
-	Query
+type IntersectsSpatialFunction struct {
+	SpatialFunction
 }
 
-func NewIntersectsQuery(ctx context.Context, uri string) (Query, error) {
-	q := &IntersectsQuery{}
+func init() {
+
+	err := RegisterSpatialFunction(context.Background(), "intersects", NewIntersectsSpatialFunction)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
+func NewIntersectsSpatialFunction(ctx context.Context, uri string) (SpatialFunction, error) {
+	q := &IntersectsSpatialFunction{}
 	return q, nil
 }
 
-func (q *IntersectsQuery) Execute(ctx context.Context, db database.SpatialDatabase, geom orb.Geometry, f ...spatial.Filter) (spr.StandardPlacesResults, error) {
+func (q *IntersectsSpatialFunction) Execute(ctx context.Context, db database.SpatialDatabase, geom orb.Geometry, f ...spatial.Filter) (spr.StandardPlacesResults, error) {
 
 	var poly orb.Geometry
 

@@ -8,7 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 )
 
-func NewSPRFilterFromSpatialRequest(req *SpatialRequest) (spatial.Filter, error) {
+func NewSPRFilterFromSpatialQuery(req *SpatialQuery) (spatial.Filter, error) {
 
 	q := url.Values{}
 	q.Set("geometries", req.Geometries)

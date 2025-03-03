@@ -4,20 +4,31 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/paulmach/orb"
-	"github.com/whosonfirst/go-whosonfirst-spatial"
+	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/sort"
 )
 
-type Query interface {
-	Execute(context.Context, database.SpatialDatabase, orb.Geometry, ...spatial.Filter) (spr.StandardPlacesResults, error)
+type SpatialQuery struct {
+	Geometry            *geojson.Geometry `json:"geometry"`
+	Placetypes          []string          `json:"placetypes,omitempty"`
+	Geometries          string            `json:"geometries,omitempty"`
+	AlternateGeometries []string          `json:"alternate_geometries,omitempty"`
+	IsCurrent           []int64           `json:"is_current,omitempty"`
+	IsCeased            []int64           `json:"is_ceased,omitempty"`
+	IsDeprecated        []int64           `json:"is_deprecated,omitempty"`
+	IsSuperseded        []int64           `json:"is_superseded,omitempty"`
+	IsSuperseding       []int64           `json:"is_superseding,omitempty"`
+	InceptionDate       string            `json:"inception_date,omitempty"`
+	CessationDate       string            `json:"cessation_date,omitempty"`
+	Properties          []string          `json:"properties,omitempty"`
+	Sort                []string          `json:"sort,omitempty"`
 }
 
-func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, q Query, req *SpatialRequest) (spr.StandardPlacesResults, error) {
+func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, fn SpatialFunction, req *SpatialQuery) (spr.StandardPlacesResults, error) {
 
-	f, err := NewSPRFilterFromSpatialRequest(req)
+	f, err := NewSPRFilterFromSpatialQuery(req)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create point in polygon filter from request, %w", err)
@@ -44,7 +55,7 @@ func ExecuteQuery(ctx context.Context, db database.SpatialDatabase, q Query, req
 	geojson_geom := req.Geometry
 	orb_geom := geojson_geom.Geometry()
 
-	rsp, err := q.Execute(ctx, db, orb_geom, f)
+	rsp, err := fn.Execute(ctx, db, orb_geom, f)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to perform point in polygon query, %w", err)
