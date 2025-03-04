@@ -352,11 +352,11 @@ func (db *RTreeSpatialDatabase) PointInPolygonWithIterator(ctx context.Context, 
 	}
 }
 
-func (db *RTreeSpatialDatabase)	Intersects(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
+func (db *RTreeSpatialDatabase) Intersects(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
 	return nil, fmt.Errorf("Not implemented")
 }
 
-func (db *RTreeSpatialDatabase)	IntersectsWithIterator(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
+func (db *RTreeSpatialDatabase) IntersectsWithIterator(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
 
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 		yield(nil, fmt.Errorf("Not implemeted"))

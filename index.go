@@ -5,7 +5,6 @@ import (
 	"iter"
 
 	"github.com/paulmach/orb"
-	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 )
 
@@ -22,23 +21,4 @@ type SpatialIndex interface {
 	IntersectsWithIterator(context.Context, orb.Geometry, ...Filter) iter.Seq2[spr.StandardPlacesResult, error]
 	// Disconnect closes any underlying connections used by the index.
 	Disconnect(context.Context) error
-}
-
-type PropertiesResponse map[string]interface{}
-
-type PropertiesResponseResults struct {
-	Properties []*PropertiesResponse `json:"places"` // match spr response
-}
-
-type Filter interface {
-	HasPlacetypes(flags.PlacetypeFlag) bool
-	MatchesInception(flags.DateFlag) bool
-	MatchesCessation(flags.DateFlag) bool
-	IsCurrent(flags.ExistentialFlag) bool
-	IsDeprecated(flags.ExistentialFlag) bool
-	IsCeased(flags.ExistentialFlag) bool
-	IsSuperseded(flags.ExistentialFlag) bool
-	IsSuperseding(flags.ExistentialFlag) bool
-	IsAlternateGeometry(flags.AlternateGeometryFlag) bool
-	HasAlternateGeometry(flags.AlternateGeometryFlag) bool
 }
