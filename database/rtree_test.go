@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/fixtures"
 	"github.com/whosonfirst/go-whosonfirst-spatial/fixtures/microhoods"
@@ -19,6 +20,69 @@ type PointInPolygonCriteria struct {
 	IsCurrent int64
 	Latitude  float64
 	Longitude float64
+}
+
+func TestSpatialDatabaseIntersects(t *testing.T) {
+
+	ctx := context.Background()
+
+	database_uri := "rtree://"
+
+	db, err := NewSpatialDatabase(ctx, database_uri)
+
+	if err != nil {
+		t.Fatalf("Failed to create new spatial database, %v", err)
+	}
+
+	path_microhoods, err := filepath.Abs("../fixtures/microhoods")
+
+	if err != nil {
+		t.Fatalf("Failed to derive path for microhoods, %v", err)
+	}
+
+	err = IndexDatabaseWithIterator(ctx, db, "directory://", path_microhoods)
+
+	if err != nil {
+		t.Fatalf("Failed to index spatial database, %v", err)
+	}
+
+	path_south_side, err := filepath.Abs("../fixtures/boroughs/958036681.geojson")
+
+	if err != nil {
+		t.Fatalf("Failed to derive absolute path for 958036681.geojson, %v", err)
+	}
+
+	r, err := os.Open(path_south_side)
+
+	if err != nil {
+		t.Fatalf("Failed to open 958036681.geojson for reading, %v", err)
+	}
+
+	defer r.Close()
+
+	body, err := io.ReadAll(r)
+
+	if err != nil {
+		t.Fatalf("Failed to read 958036681.geojson, %v", err)
+	}
+
+	f, err := geojson.UnmarshalFeature(body)
+
+	if err != nil {
+		t.Fatalf("Failed to unmarshal 958036681.geojson, %v", err)
+	}
+
+	orb_geom := f.Geometry
+
+	rsp, err := db.Intersects(ctx, orb_geom)
+
+	if err != nil {
+		t.Fatalf("Failed to perform intersects, %v", err)
+	}
+
+	count := len(rsp.Results())
+	fmt.Println("COUNT", count)
+
 }
 
 func TestSpatialDatabasePointInPolygon(t *testing.T) {
