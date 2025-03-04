@@ -2,6 +2,7 @@ package spatial
 
 import (
 	"context"
+	"iter"
 
 	"github.com/paulmach/orb"
 	"github.com/whosonfirst/go-whosonfirst-flags"
@@ -16,23 +17,11 @@ type SpatialIndex interface {
 	RemoveFeature(context.Context, string) error
 	// PointInPolygon performs a point-in-polygon operation to retrieve matching records from the index.
 	PointInPolygon(context.Context, *orb.Point, ...Filter) (spr.StandardPlacesResults, error)
-	// PointInPolygon returns the initial candidates for a point-in-polygon operation.
-	PointInPolygonCandidates(context.Context, *orb.Point, ...Filter) ([]*PointInPolygonCandidate, error)
-	// PointInPolygon performs a point-in-polygon operation to retrieve matching records from the index returning each match (or errors) to user-defined channels.
-	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *orb.Point, ...Filter)
-	// PointInPolygon returns the initial candidates for a point-in-polygon operation to a set of user-defined channels.
-	PointInPolygonCandidatesWithChannels(context.Context, chan *PointInPolygonCandidate, chan error, chan bool, *orb.Point, ...Filter)
-	// Disconnect closes any underlying connections used by the index.
+	PointInPolygonWithIterator(context.Context, *orb.Point, ...Filter) iter.Seq2[spr.StandardPlacesResult, error]
 	Intersects(context.Context, orb.Geometry, ...Filter) (spr.StandardPlacesResults, error)
+	IntersectsWithIterator(context.Context, orb.Geometry, ...Filter) iter.Seq2[spr.StandardPlacesResult, error]
+	// Disconnect closes any underlying connections used by the index.
 	Disconnect(context.Context) error
-}
-
-type PointInPolygonCandidate struct {
-	Id        string
-	FeatureId string
-	IsAlt     bool
-	AltLabel  string
-	Bounds    orb.Bound
 }
 
 type PropertiesResponse map[string]interface{}
