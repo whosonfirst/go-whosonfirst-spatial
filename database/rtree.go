@@ -353,13 +353,53 @@ func (db *RTreeSpatialDatabase) PointInPolygonWithIterator(ctx context.Context, 
 }
 
 func (db *RTreeSpatialDatabase) Intersects(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
-	return nil, fmt.Errorf("Not implemented")
+
+	results := make([]spr.StandardPlacesResult, 0)
+
+	for r, err := range db.IntersectsWithIterator(ctx, geom, filters...) {
+
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, r)
+	}
+
+	spr_results := &RTreeResults{
+		Places: results,
+	}
+
+	return spr_results, nil
 }
 
 func (db *RTreeSpatialDatabase) IntersectsWithIterator(ctx context.Context, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
 
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
-		yield(nil, fmt.Errorf("Not implemeted"))
+
+		bound := geom.Bound()
+		min := bound.Min
+		max := bound.Max
+
+		sw := rtreego.Point{min[0], min[1]}
+		ne := rtreego.Point{max[0], max[1]}
+
+		rect, err := rtreego.NewRect(sw, ne)
+
+		rows, err := db.getIntersectsByRect(&rect)
+
+		if err != nil {
+			yield(nil, err)
+			return
+		}
+
+		for r, err := range db.inflateIntersectsResults(ctx, rows, geom, filters...) {
+
+			if !yield(r, err) {
+				return
+			}
+		}
+
+		return
 	}
 }
 
@@ -467,6 +507,13 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, possible []rt
 		}
 
 		wg.Wait()
+	}
+}
+
+func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, possible []rtreego.Spatial, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
+
+	return func(yield func(spr.StandardPlacesResult, error) bool) {
+
 	}
 }
 
