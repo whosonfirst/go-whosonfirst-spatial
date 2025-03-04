@@ -384,7 +384,7 @@ func (db *RTreeSpatialDatabase) IntersectsWithIterator(ctx context.Context, geom
 		sw := rtreego.Point{min[0], min[1]}
 		ne := rtreego.Point{max[0], max[1]}
 
-		rect, err := rtreego.NewRect(sw, ne)
+		rect, err := rtreego.NewRectFromPoints(sw, ne)
 
 		rows, err := db.getIntersectsByRect(&rect)
 
@@ -421,6 +421,7 @@ func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego
 
 func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
 
+	slog.Info("Search", "rect", rect)
 	results := r.rtree.SearchIntersect(*rect)
 	return results, nil
 }
@@ -512,6 +513,8 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, possible []rt
 }
 
 func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, possible []rtreego.Spatial, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
+
+	slog.Info("possible", "count", len(possible))
 
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 

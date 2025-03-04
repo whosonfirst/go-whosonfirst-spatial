@@ -80,8 +80,20 @@ func TestSpatialDatabaseIntersects(t *testing.T) {
 		t.Fatalf("Failed to perform intersects, %v", err)
 	}
 
-	count := len(rsp.Results())
-	fmt.Println("COUNT", count)
+	results := rsp.Results()
+	count := len(results)
+
+	expected := 15
+
+	if count != expected {
+		t.Fatalf("Invalid count (%d), expected %d", count, expected)
+	}
+
+	/*
+		for _, s := range results {
+			fmt.Printf("Match %s %s\n", s.Id(), s.Name())
+		}
+	*/
 
 }
 
