@@ -26,6 +26,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 )
@@ -514,6 +515,91 @@ func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, po
 
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 
+		seen := make(map[string]bool)
+
+		mu := new(sync.RWMutex)
+		wg := new(sync.WaitGroup)
+
+		for _, row := range possible {
+
+			sp := row.(*RTreeSpatialIndex)
+			wg.Add(1)
+
+			go func(sp *RTreeSpatialIndex) {
+
+				sp_id := sp.Id
+				feature_id := sp.FeatureId
+
+				defer wg.Done()
+
+				select {
+				case <-ctx.Done():
+					return
+				default:
+					// pass
+				}
+
+				mu.RLock()
+				_, ok := seen[feature_id]
+				mu.RUnlock()
+
+				if ok {
+					return
+				}
+
+				mu.Lock()
+				seen[feature_id] = true
+				mu.Unlock()
+
+				cache_item, err := db.retrieveCache(ctx, sp)
+
+				if err != nil {
+					slog.Error("Failed to retrieve cache item", "id", sp_id, "error", err)
+					return
+				}
+
+				s := cache_item.SPR
+
+				for _, f := range filters {
+
+					err = filter.FilterSPR(f, s)
+
+					if err != nil {
+						return
+					}
+				}
+
+				item_geom := cache_item.Geometry
+
+				item_orb_geom := item_geom.Geometry()
+				item_geom_type := item_orb_geom.GeoJSONType()
+
+				intersects := false
+
+				switch item_geom_type {
+				case "Polygon", "MultiPolygon":
+
+					ok, err := geo.Intersects(item_orb_geom, geom)
+
+					if err != nil {
+						slog.Error("Failed to determine intersection", "error", err)
+					}
+
+					intersects = ok
+
+				default:
+					slog.Debug("Geometry has unsupported geometry", "type", item_geom_type)
+				}
+
+				if !intersects {
+					return
+				}
+
+				yield(s, nil)
+			}(sp)
+		}
+
+		wg.Wait()
 	}
 }
 

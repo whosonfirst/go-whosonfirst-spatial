@@ -15,22 +15,22 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 )
 
-type Criteria struct {
+type PointInPolygonCriteria struct {
 	IsCurrent int64
 	Latitude  float64
 	Longitude float64
 }
 
-func TestSpatialDatabase(t *testing.T) {
+func TestSpatialDatabasePointInPolygon(t *testing.T) {
 
 	ctx := context.Background()
 
 	database_uri := "rtree://"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
@@ -186,10 +186,10 @@ func TestSpatialDatabaseWithFS(t *testing.T) {
 
 	database_uri := "rtree://?dsn=:memory:"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
@@ -254,10 +254,10 @@ func TestSpatialDatabaseWithFeatureCollection(t *testing.T) {
 
 	database_uri := "rtree://?dsn=:memory:"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)

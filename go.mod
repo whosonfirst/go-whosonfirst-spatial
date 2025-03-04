@@ -8,6 +8,7 @@ require (
 	github.com/dhconnelly/rtreego v1.2.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/paulmach/orb v0.11.1
+	github.com/peterstace/simplefeatures v0.53.0
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-sfomuseum-mapshaper v0.0.3
 	github.com/sfomuseum/go-timings v1.4.0
@@ -26,7 +27,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 	github.com/whosonfirst/go-whosonfirst-writer/v3 v3.1.4
 	github.com/whosonfirst/go-writer/v3 v3.1.1
-	github.com/whosonfirst/warning v0.1.1
 )
 
 require (
