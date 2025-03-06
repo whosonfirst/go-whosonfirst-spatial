@@ -396,7 +396,7 @@ func (db *RTreeSpatialDatabase) IntersectsWithIterator(ctx context.Context, geom
 		for r, err := range db.inflateIntersectsResults(ctx, rows, geom, filters...) {
 
 			if !yield(r, err) {
-				return
+				break
 			}
 		}
 
@@ -421,7 +421,6 @@ func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego
 
 func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
 
-	slog.Info("Search", "rect", rect)
 	results := r.rtree.SearchIntersect(*rect)
 	return results, nil
 }
@@ -514,26 +513,30 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, possible []rt
 
 func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, possible []rtreego.Spatial, geom orb.Geometry, filters ...spatial.Filter) iter.Seq2[spr.StandardPlacesResult, error] {
 
-	slog.Info("possible", "count", len(possible))
-
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 
 		seen := make(map[string]bool)
 
 		mu := new(sync.RWMutex)
-		wg := new(sync.WaitGroup)
+
+		done_ch := make(chan bool)
+		spr_ch := make(chan spr.StandardPlacesResult)
+
+		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
 
 		for _, row := range possible {
 
 			sp := row.(*RTreeSpatialIndex)
-			wg.Add(1)
 
 			go func(sp *RTreeSpatialIndex) {
 
+				defer func() {
+					done_ch <- true
+				}()
+
 				sp_id := sp.Id
 				feature_id := sp.FeatureId
-
-				defer wg.Done()
 
 				select {
 				case <-ctx.Done():
@@ -598,11 +601,20 @@ func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, po
 					return
 				}
 
-				yield(s, nil)
+				spr_ch <- s
 			}(sp)
 		}
 
-		wg.Wait()
+		remaining := len(possible)
+
+		for remaining > 0 {
+			select {
+			case <-done_ch:
+				remaining -= 1
+			case s := <-spr_ch:
+				yield(s, nil)
+			}
+		}
 	}
 }
 
