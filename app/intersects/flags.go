@@ -1,4 +1,4 @@
-package pip
+package intersects
 
 import (
 	"context"
@@ -18,8 +18,6 @@ var properties_reader_uri string
 var enable_custom_placetypes bool
 var custom_placetypes string
 
-var latitude float64
-var longitude float64
 var geometries string
 
 var inception string
@@ -36,8 +34,6 @@ var is_superseded multi.MultiInt64
 var is_superseding multi.MultiInt64
 
 var mode string
-var server_uri string
-var enable_geojson bool
 
 var verbose bool
 
@@ -66,9 +62,6 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 	fs.BoolVar(&verbose, "verbose", false, "Enable verbose (debug) logging.")
 
 	// query flags
-
-	fs.Float64Var(&latitude, "latitude", 0.0, "A valid latitude.")
-	fs.Float64Var(&longitude, "longitude", 0.0, "A valid longitude.")
 
 	fs.StringVar(&geometries, "geometries", "all", "Valid options are: all, alt, default.")
 
