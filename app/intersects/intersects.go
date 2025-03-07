@@ -5,10 +5,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log/slog"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	// "github.com/paulmach/orb"
+	"github.com/paulmach/orb/encoding/wkt"
 	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
@@ -87,7 +90,74 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		<-done_ch
 
+		// bounding box
+		// geojson
+		// wkt
+		//
+		// flag
+		// stdin
+		// file
+
+		var geom_raw []byte
 		var geom *geojson.Geometry
+
+		switch opts.GeometrySource {
+		case "file":
+
+			r, err := os.Open(opts.GeometryValue)
+
+			if err != nil {
+				return fmt.Errorf("Failed to open %s for reading, %w", opts.GeometryValue, err)
+			}
+
+			defer r.Close()
+
+			body, err := io.ReadAll(r)
+
+			if err != nil {
+				return fmt.Errorf("Failed to read data from %s, %w", opts.GeometryValue, err)
+			}
+
+			geom_raw = body
+
+		case "stdin":
+
+			body, err := io.ReadAll(os.Stdin)
+
+			if err != nil {
+				return fmt.Errorf("Failed to read from STDIN, %w", err)
+			}
+
+			geom_raw = body
+		default:
+			geom_raw = []byte(opts.GeometryValue)
+		}
+
+		switch opts.GeometryType {
+		case "geojson":
+
+			f, err := geojson.UnmarshalFeature(geom_raw)
+
+			if err != nil {
+				return fmt.Errorf("Failed to unmarshal GeoJSON, %w", err)
+			}
+
+			orb_geom := f.Geometry
+			geom = geojson.NewGeometry(orb_geom)
+
+		case "wkt":
+
+			orb_geom, err := wkt.Unmarshal(string(geom_raw))
+
+			if err != nil {
+				return fmt.Errorf("Failed to unmarshal WKT, %w", err)
+			}
+
+			geom = geojson.NewGeometry(orb_geom)
+
+		default:
+			// bbox
+		}
 
 		intersects_q := &query.SpatialQuery{
 			Geometry:            geom,

@@ -16,21 +16,21 @@ type RunOptions struct {
 	EnableCustomPlacetypes bool                `json:"enable_custom_placetypes"`
 	CustomPlacetypes       string              `json:"custom_placetypes"`
 	IsWhosOnFirst          bool                `json:"is_whosonfirst"`
-
-	//
-
-	Placetypes          []string `json:"placetypes,omitempty"`
-	Geometries          string   `json:"geometries,omitempty"`
-	AlternateGeometries []string `json:"alternate_geometries,omitempty"`
-	IsCurrent           []int64  `json:"is_current,omitempty"`
-	IsCeased            []int64  `json:"is_ceased,omitempty"`
-	IsDeprecated        []int64  `json:"is_deprecated,omitempty"`
-	IsSuperseded        []int64  `json:"is_superseded,omitempty"`
-	IsSuperseding       []int64  `json:"is_superseding,omitempty"`
-	InceptionDate       string   `json:"inception_date,omitempty"`
-	CessationDate       string   `json:"cessation_date,omitempty"`
-	Properties          []string `json:"properties,omitempty"`
-	Sort                []string `json:"sort,omitempty"`
+	GeometrySource         string              `json:"geometry_source"`
+	GeometryType           string              `json:"geometry_type"`
+	GeometryValue          string              `json:"geometry_value"`
+	Placetypes             []string            `json:"placetypes,omitempty"`
+	Geometries             string              `json:"geometries,omitempty"`
+	AlternateGeometries    []string            `json:"alternate_geometries,omitempty"`
+	IsCurrent              []int64             `json:"is_current,omitempty"`
+	IsCeased               []int64             `json:"is_ceased,omitempty"`
+	IsDeprecated           []int64             `json:"is_deprecated,omitempty"`
+	IsSuperseded           []int64             `json:"is_superseded,omitempty"`
+	IsSuperseding          []int64             `json:"is_superseding,omitempty"`
+	InceptionDate          string              `json:"inception_date,omitempty"`
+	CessationDate          string              `json:"cessation_date,omitempty"`
+	Properties             []string            `json:"properties,omitempty"`
+	Sort                   []string            `json:"sort,omitempty"`
 }
 
 func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, error) {
@@ -50,21 +50,21 @@ func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, 
 		PropertiesReaderURI:    properties_reader_uri,
 		EnableCustomPlacetypes: enable_custom_placetypes,
 		CustomPlacetypes:       custom_placetypes,
-
-		//
-
-		Placetypes:          placetypes,
-		Geometries:          geometries,
-		AlternateGeometries: alt_geoms,
-		IsCurrent:           is_current,
-		IsCeased:            is_ceased,
-		IsDeprecated:        is_deprecated,
-		IsSuperseded:        is_superseded,
-		IsSuperseding:       is_superseding,
-		InceptionDate:       inception,
-		CessationDate:       cessation,
-		Properties:          props,
-		Sort:                sort_uris,
+		GeometrySource:         geom_source,
+		GeometryType:           geom_type,
+		GeometryValue:          geom_value,
+		Placetypes:             placetypes,
+		Geometries:             geometries,
+		AlternateGeometries:    alt_geoms,
+		IsCurrent:              is_current,
+		IsCeased:               is_ceased,
+		IsDeprecated:           is_deprecated,
+		IsSuperseded:           is_superseded,
+		IsSuperseding:          is_superseding,
+		InceptionDate:          inception,
+		CessationDate:          cessation,
+		Properties:             props,
+		Sort:                   sort_uris,
 	}
 
 	if len(iterator_uris) > 0 {

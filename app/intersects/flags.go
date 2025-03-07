@@ -18,6 +18,10 @@ var properties_reader_uri string
 var enable_custom_placetypes bool
 var custom_placetypes string
 
+var geom_source string
+var geom_type string
+var geom_value string
+
 var geometries string
 
 var inception string
@@ -62,6 +66,10 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 	fs.BoolVar(&verbose, "verbose", false, "Enable verbose (debug) logging.")
 
 	// query flags
+
+	fs.StringVar(&geom_source, "geometry-source", "flag", "Valid options are: file, flag, stdin")
+	fs.StringVar(&geom_type, "geometry-type", "", "Valid options are: geojson, wkt, bbox")
+	fs.StringVar(&geom_value, "geometry-value", "", "...")
 
 	fs.StringVar(&geometries, "geometries", "all", "Valid options are: all, alt, default.")
 
