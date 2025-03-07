@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/multi"
@@ -67,9 +68,9 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	// query flags
 
-	fs.StringVar(&geom_source, "geometry-source", "flag", "Valid options are: file, flag, stdin")
-	fs.StringVar(&geom_type, "geometry-type", "", "Valid options are: geojson, wkt, bbox")
-	fs.StringVar(&geom_value, "geometry-value", "", "...")
+	fs.StringVar(&geom_source, "geometry-source", "flag", "Where to 'read' a geometry (to intersect) from. Valid options are: file, flag, stdin")
+	fs.StringVar(&geom_type, "geometry-type", "", "The type of encoding used to perform an intersects operation. Valid options are: geojson, wkt, bbox")
+	fs.StringVar(&geom_value, "geometry-value", "", "The value of geometry used to perform an intersects operation. This will vary depending on the value of the -geometry-source flag. For example if -geometry-source=flag then -geometry-value= will be that geometry passed as a string. If -geometry-source=file then -geometry-value= will be the path to a file on disk. If -geometry-source=stdin then -geometry-value will be left empty.")
 
 	fs.StringVar(&geometries, "geometries", "all", "Valid options are: all, alt, default.")
 
@@ -98,7 +99,14 @@ func DefaultFlagSet(ctx context.Context) (*flag.FlagSet, error) {
 
 	// Runtime / server flags
 
-	fs.StringVar(&mode, "mode", "cli", "Valid options are: cli")
+	fs.StringVar(&mode, "mode", "cli", "Valid options are: cli, lambda.")
+
+	fs.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Perform an intersects operation (as in intersecting geometries) for an input geometry and on a set of Who's on First records stored in a spatial database.\n")
+		fmt.Fprintf(os.Stderr, "Usage:\n\t %s [options]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Valid options are:\n\n")
+		fs.PrintDefaults()
+	}
 
 	return fs, nil
 }

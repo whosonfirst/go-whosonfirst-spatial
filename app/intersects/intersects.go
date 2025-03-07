@@ -1,5 +1,21 @@
 package intersects
 
+/*
+
+$> ./bin/intersects -geometry-source flag -geometry-type bbox -geometry-value '-122.408061,37.601617,-122.354907,37.640167' -iterator-uri repo://#/usr/local/data/sfomuseum-data-whosonfirst | jq -r '.places[]["wof:name"]'
+2025/03/07 08:55:43 INFO time to index paths (1) 26.923220625s
+
+Earth
+94128
+Burlingame
+San Mateo
+San Francisco International Airport
+California
+United States
+North America
+
+*/
+
 import (
 	"context"
 	"encoding/json"
@@ -10,11 +26,11 @@ import (
 	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	// "github.com/paulmach/orb"
 	"github.com/paulmach/orb/encoding/wkt"
 	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spatial/query"
 )
 
@@ -156,7 +172,17 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			geom = geojson.NewGeometry(orb_geom)
 
 		default:
-			// bbox
+
+			is_latlon := false
+
+			f, err := geo.BoundingBoxToFeature(string(geom_raw), is_latlon)
+
+			if err != nil {
+				return fmt.Errorf("Failed to parse bounding box, %w", err)
+			}
+
+			orb_geom := f.Geometry
+			geom = geojson.NewGeometry(orb_geom)
 		}
 
 		intersects_q := &query.SpatialQuery{
