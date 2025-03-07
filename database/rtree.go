@@ -430,21 +430,26 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, possible []rt
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 
 		seen := make(map[string]bool)
-
 		mu := new(sync.RWMutex)
-		wg := new(sync.WaitGroup)
+
+		done_ch := make(chan bool)
+		spr_ch := make(chan spr.StandardPlacesResult)
+
+		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
 
 		for _, row := range possible {
 
 			sp := row.(*RTreeSpatialIndex)
-			wg.Add(1)
 
 			go func(sp *RTreeSpatialIndex) {
 
 				sp_id := sp.Id
 				feature_id := sp.FeatureId
 
-				defer wg.Done()
+				defer func() {
+					done_ch <- true
+				}()
 
 				select {
 				case <-ctx.Done():
@@ -503,11 +508,20 @@ func (r *RTreeSpatialDatabase) inflateResults(ctx context.Context, possible []rt
 					return
 				}
 
-				yield(s, nil)
+				spr_ch <- s
 			}(sp)
 		}
 
-		wg.Wait()
+		remaining := len(possible)
+
+		for remaining > 0 {
+			select {
+			case <-done_ch:
+				remaining -= 1
+			case s := <-spr_ch:
+				yield(s, nil)
+			}
+		}
 	}
 }
 
@@ -516,7 +530,6 @@ func (db *RTreeSpatialDatabase) inflateIntersectsResults(ctx context.Context, po
 	return func(yield func(spr.StandardPlacesResult, error) bool) {
 
 		seen := make(map[string]bool)
-
 		mu := new(sync.RWMutex)
 
 		done_ch := make(chan bool)
