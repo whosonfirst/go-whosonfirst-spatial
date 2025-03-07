@@ -14,7 +14,9 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 )
 
+// SpatialFunction in an interface for spatial functions
 type SpatialFunction interface {
+	// Execute performs a specific spatial function
 	Execute(context.Context, database.SpatialDatabase, orb.Geometry, ...spatial.Filter) (spr.StandardPlacesResults, error)
 }
 
