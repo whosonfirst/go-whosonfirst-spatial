@@ -9,28 +9,104 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/paulmach/orb/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/fixtures"
 	"github.com/whosonfirst/go-whosonfirst-spatial/fixtures/microhoods"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 )
 
-type Criteria struct {
+type PointInPolygonCriteria struct {
 	IsCurrent int64
 	Latitude  float64
 	Longitude float64
 }
 
-func TestSpatialDatabase(t *testing.T) {
+func TestSpatialDatabaseIntersects(t *testing.T) {
 
 	ctx := context.Background()
 
 	database_uri := "rtree://"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	db, err := NewSpatialDatabase(ctx, database_uri)
+
+	if err != nil {
+		t.Fatalf("Failed to create new spatial database, %v", err)
+	}
+
+	path_microhoods, err := filepath.Abs("../fixtures/microhoods")
+
+	if err != nil {
+		t.Fatalf("Failed to derive path for microhoods, %v", err)
+	}
+
+	err = IndexDatabaseWithIterator(ctx, db, "directory://", path_microhoods)
+
+	if err != nil {
+		t.Fatalf("Failed to index spatial database, %v", err)
+	}
+
+	path_south_side, err := filepath.Abs("../fixtures/boroughs/958036681.geojson")
+
+	if err != nil {
+		t.Fatalf("Failed to derive absolute path for 958036681.geojson, %v", err)
+	}
+
+	r, err := os.Open(path_south_side)
+
+	if err != nil {
+		t.Fatalf("Failed to open 958036681.geojson for reading, %v", err)
+	}
+
+	defer r.Close()
+
+	body, err := io.ReadAll(r)
+
+	if err != nil {
+		t.Fatalf("Failed to read 958036681.geojson, %v", err)
+	}
+
+	f, err := geojson.UnmarshalFeature(body)
+
+	if err != nil {
+		t.Fatalf("Failed to unmarshal 958036681.geojson, %v", err)
+	}
+
+	orb_geom := f.Geometry
+
+	rsp, err := db.Intersects(ctx, orb_geom)
+
+	if err != nil {
+		t.Fatalf("Failed to perform intersects, %v", err)
+	}
+
+	results := rsp.Results()
+	count := len(results)
+
+	expected := 15
+
+	if count != expected {
+		t.Fatalf("Invalid count (%d), expected %d", count, expected)
+	}
+
+	/*
+		for _, s := range results {
+			fmt.Printf("Match %s %s\n", s.Id(), s.Name())
+		}
+	*/
+
+}
+
+func TestSpatialDatabasePointInPolygon(t *testing.T) {
+
+	ctx := context.Background()
+
+	database_uri := "rtree://"
+
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
@@ -186,10 +262,10 @@ func TestSpatialDatabaseWithFS(t *testing.T) {
 
 	database_uri := "rtree://?dsn=:memory:"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
@@ -254,10 +330,10 @@ func TestSpatialDatabaseWithFeatureCollection(t *testing.T) {
 
 	database_uri := "rtree://?dsn=:memory:"
 
-	tests := map[int64]Criteria{
-		1108712253: Criteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
-		420561633:  Criteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
-		420780729:  Criteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
+	tests := map[int64]PointInPolygonCriteria{
+		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
+		420561633:  PointInPolygonCriteria{Longitude: -122.395268, Latitude: 37.794893, IsCurrent: 0},  // Superbowl City
+		420780729:  PointInPolygonCriteria{Longitude: -122.421529, Latitude: 37.743168, IsCurrent: -1}, // Liminal Zone of Deliciousness
 	}
 
 	db, err := NewSpatialDatabase(ctx, database_uri)

@@ -8,6 +8,7 @@ require (
 	github.com/dhconnelly/rtreego v1.2.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/paulmach/orb v0.11.1
+	github.com/peterstace/simplefeatures v0.53.0
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-sfomuseum-mapshaper v0.0.3
 	github.com/sfomuseum/go-timings v1.4.0
@@ -17,7 +18,7 @@ require (
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-http v0.3.1
 	github.com/whosonfirst/go-sanitize v0.1.0
-	github.com/whosonfirst/go-whosonfirst-export/v2 v2.8.3
+	github.com/whosonfirst/go-whosonfirst-export/v2 v2.8.4
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.28
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0
@@ -37,7 +38,7 @@ require (
 	github.com/aaronland/go-string v1.0.0 // indirect
 	github.com/aaronland/go-uid v0.4.0 // indirect
 	github.com/aaronland/go-uid-artisanal v0.0.4 // indirect
-	github.com/aaronland/go-uid-proxy v0.3.0 // indirect
+	github.com/aaronland/go-uid-proxy v0.3.1 // indirect
 	github.com/aaronland/go-uid-whosonfirst v0.0.5 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
@@ -52,7 +53,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-format v0.4.1 // indirect
-	github.com/whosonfirst/go-whosonfirst-id v1.2.5 // indirect
+	github.com/whosonfirst/go-whosonfirst-id v1.2.6 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/walk v0.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.11.4 // indirect
