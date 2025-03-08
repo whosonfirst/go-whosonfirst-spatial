@@ -8,6 +8,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 )
 
+// TBD - Should this be remove in favour of IndexDatabaseWithIterators or does it just supplement it?
+
 // IndexDatabaseWithIterator is a general-purpose method for indexing a `database.Spatial.Database` instance with a
 // whosonfirst/go-whosonfirst-iterate/v2 iterator. Only records whose geometry type are 'Polygon' or 'MultiPolygon'
 // will be indexed.
