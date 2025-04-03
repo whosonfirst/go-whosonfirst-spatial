@@ -68,6 +68,8 @@ github.com/paulmach/orb
 github.com/paulmach/orb/encoding/wkt
 github.com/paulmach/orb/geojson
 github.com/paulmach/orb/internal/length
+github.com/paulmach/orb/internal/mercator
+github.com/paulmach/orb/maptile
 github.com/paulmach/orb/planar
 # github.com/peterstace/simplefeatures v0.53.0
 ## explicit; go 1.17
