@@ -16,7 +16,7 @@ require (
 	github.com/tidwall/sjson v1.2.5
 	github.com/whosonfirst/go-ioutil v1.0.2
 	github.com/whosonfirst/go-reader v1.0.2
-	github.com/whosonfirst/go-reader-http v0.3.1
+	github.com/whosonfirst/go-reader-http v0.3.2
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-export/v2 v2.8.4
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.28

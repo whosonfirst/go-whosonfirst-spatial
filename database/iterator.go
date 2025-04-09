@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 )
@@ -24,6 +25,7 @@ func IndexDatabaseWithIterator(ctx context.Context, db SpatialDatabase, iterator
 			// pass
 		}
 
+		slog.Debug("Index", "path", path)
 		return IndexDatabaseWithReader(ctx, db, r)
 	}
 
