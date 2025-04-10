@@ -72,7 +72,7 @@ func TestPointInPolygonCandidateFeaturessFromTile(t *testing.T) {
 
 		spatial_q := &query.SpatialQuery{}
 
-		fc, err := PointInPolygonCandidateFeaturessFromTile(ctx, db, spatial_q, &map_t)
+		fc, err := PointInPolygonCandidateFeaturesFromTile(ctx, db, spatial_q, &map_t)
 
 		if err != nil {
 			t.Fatalf("Failed to derive feature collection from tile query, %v", err)
