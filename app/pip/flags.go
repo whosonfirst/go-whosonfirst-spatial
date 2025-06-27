@@ -9,8 +9,8 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	iter_flags "github.com/whosonfirst/go-whosonfirst-iterate/v3/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 )
 
 var spatial_database_uri string
