@@ -40,7 +40,7 @@ func TestSpatialDatabaseIntersects(t *testing.T) {
 		t.Fatalf("Failed to derive path for microhoods, %v", err)
 	}
 
-	err = IndexDatabaseWithIterator(ctx, db, "directory://", path_microhoods)
+	err = IndexDatabaseWithIterator(ctx, db, "directory://?_include=.*.geojson", path_microhoods)
 
 	if err != nil {
 		t.Fatalf("Failed to index spatial database, %v", err)
@@ -121,7 +121,7 @@ func TestSpatialDatabasePointInPolygon(t *testing.T) {
 		t.Fatalf("Failed to derive path for microhoods, %v", err)
 	}
 
-	err = IndexDatabaseWithIterator(ctx, db, "directory://", path_microhoods)
+	err = IndexDatabaseWithIterator(ctx, db, "directory://?_include=.*.geojson", path_microhoods)
 
 	if err != nil {
 		t.Fatalf("Failed to index spatial database, %v", err)
