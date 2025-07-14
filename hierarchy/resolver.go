@@ -11,7 +11,7 @@ import (
 	"github.com/sfomuseum/go-sfomuseum-mapshaper"
 	"github.com/tidwall/gjson"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-export/v2"
+	"github.com/whosonfirst/go-whosonfirst-export/v3"
 	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
