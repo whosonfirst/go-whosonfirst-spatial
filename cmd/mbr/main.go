@@ -9,14 +9,12 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/whosonfirst/go-reader-http"
-
 	"github.com/paulmach/orb"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/multi"
-	"github.com/whosonfirst/go-reader"
+	"github.com/whosonfirst/go-reader/v2"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
-	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
+	wof_reader "github.com/whosonfirst/go-whosonfirst-reader/v2"
 )
 
 func main() {
