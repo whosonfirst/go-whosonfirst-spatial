@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-// NewStdinReader returns a new `FileReader` instance for reading documents from STDIN,
+// NewStdinReader returns a new `Reader` instance for reading documents from STDIN,
 // configured by 'uri' in the form of:
 //
 //	stdin://
@@ -40,6 +40,11 @@ func NewStdinReader(ctx context.Context, uri string) (Reader, error) {
 // Read will open a `io.ReadSeekCloser` instance wrapping `os.Stdin`.
 func (r *StdinReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, error) {
 	return ioutil.NewReadSeekCloser(os.Stdin)
+}
+
+// Exists returns a boolean value indicating whether 'path' already exists (meaning it will always return false).
+func (r *StdinReader) Exists(ctx context.Context, path string) (bool, error) {
+	return false, nil
 }
 
 // ReaderURI will return the value of the `STDIN` constant.

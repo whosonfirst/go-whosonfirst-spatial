@@ -4,7 +4,7 @@ There are many interfaces for reading files. This one is ours. It returns `io.Re
 
 ## Documentation
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/whosonfirst/go-reader.svg)](https://pkg.go.dev/github.com/whosonfirst/go-reader)
+[![Go Reference](https://pkg.go.dev/badge/github.com/whosonfirst/go-reader.svg)](https://pkg.go.dev/github.com/whosonfirst/go-reader/v2)
 
 ### Example
 
@@ -17,9 +17,10 @@ package main
 
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
 	"io"
 	"os"
+
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -38,9 +39,10 @@ package main
 
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
 	"io"
 	"os"
+
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -57,8 +59,13 @@ func main() {
 ### reader.Reader
 
 ```
+// Reader is an interface for reading data from multiple sources or targets.
 type Reader interface {
+	// Reader returns a `io.ReadSeekCloser` instance for a URI resolved by the instance implementing the `Reader` interface.
 	Read(context.Context, string) (io.ReadSeekCloser, error)
+	// Exists returns a boolean value indicating whether a URI already exists.
+	Exists(context.Context, string) (bool, error)
+	// The absolute path for the file is determined by the instance implementing the `Reader` interface.
 	ReaderURI(context.Context, string) string
 }
 ```
@@ -70,28 +77,28 @@ Custom readers need to:
 1. Implement the interface above.
 2. Announce their availability using the `go-reader.RegisterReader` method on initialization, passing in an initialization function implementing the `go-reader.ReaderInitializationFunc` interface.
 
-For example, this is how the [go-reader-http](https://github.com/whosonfirst/go-reader-http) reader is implemented:
+For example, this is how the [http://](http.go) reader is implemented:
 
 ```
 package reader
 
 import (
 	"context"
-	"errors"
-	wof_reader "github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-ioutil"
+	"fmt"
 	"io"
-	_ "log"
 	"net/http"
 	"net/url"
 	"path/filepath"
 	"time"
+
+	"github.com/whosonfirst/go-ioutil"
 )
 
 type HTTPReader struct {
-	wof_reader.Reader
-	url      *url.URL
-	throttle <-chan time.Time
+	Reader
+	url        *url.URL
+	throttle   <-chan time.Time
+	user_agent string
 }
 
 func init() {
@@ -105,7 +112,7 @@ func init() {
 
 	for _, s := range schemes {
 
-		err := wof_reader.RegisterReader(ctx, s, NewHTTPReader)
+		err := RegisterReader(ctx, s, NewHTTPReader)
 
 		if err != nil {
 			panic(err)
@@ -113,7 +120,7 @@ func init() {
 	}
 }
 
-func NewHTTPReader(ctx context.Context, uri string) (wof_reader.Reader, error) {
+func NewHTTPReader(ctx context.Context, uri string) (Reader, error) {
 
 	u, err := url.Parse(uri)
 
@@ -129,7 +136,50 @@ func NewHTTPReader(ctx context.Context, uri string) (wof_reader.Reader, error) {
 		url:      u,
 	}
 
+	q := u.Query()
+	ua := q.Get("user-agent")
+
+	if ua != "" {
+		r.user_agent = ua
+	}
+
 	return &r, nil
+}
+
+func (r *HTTPReader) Exists(ctx context.Context, uri string) (bool, error) {
+
+	<-r.throttle
+
+	u, _ := url.Parse(r.url.String())
+	u.Path = filepath.Join(u.Path, uri)
+
+	url := u.String()
+
+	req, err := http.NewRequest(http.MethodHead, url, nil)
+
+	if err != nil {
+		return false, fmt.Errorf("Failed to create new request, %w", err)
+	}
+
+	if r.user_agent != "" {
+		req.Header.Set("User-Agent", r.user_agent)
+	}
+
+	cl := &http.Client{}
+
+	rsp, err := cl.Do(req)
+
+	if err != nil {
+		return false, err
+	}
+
+	defer rsp.Body.Close()
+
+	if rsp.StatusCode != http.StatusOK {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (r *HTTPReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, error) {
@@ -141,20 +191,32 @@ func (r *HTTPReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, e
 
 	url := u.String()
 
-	rsp, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create new request, %w", err)
+	}
+
+	if r.user_agent != "" {
+		req.Header.Set("User-Agent", r.user_agent)
+	}
+
+	cl := &http.Client{}
+
+	rsp, err := cl.Do(req)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to execute request, %w", err)
 	}
 
 	if rsp.StatusCode != 200 {
-		return nil, errors.New(rsp.Status)
+		return nil, fmt.Errorf("Unexpected status code: %s", rsp.Status)
 	}
 
 	fh, err := ioutil.NewReadSeekCloser(rsp.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create new ReadSeekCloser, %w", err)
 	}
 
 	return fh, nil
@@ -172,10 +234,10 @@ package main
 
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-http"	
 	"io"
 	"os"
+
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -196,9 +258,11 @@ Read files from any registered [Go Cloud](https://gocloud.dev/howto/blob/) `Blob
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-blob"
+
+	_ "github.com/whosonfirst/go-reader-blob/v2"
 	_ "gocloud.dev/blob/s3blob"	
+
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -209,6 +273,32 @@ func main() {
 
 * https://github.com/whosonfirst/go-reader-blob
 
+### findingaid://
+
+Read files derived from a [Who's On First style findingaid](https://github.com/whosonfirst/go-whosonfirst-findingaid) endpoint.
+
+```
+import (
+       "context"
+       "fmt"
+
+	_ "github.com/whosonfirst/go-reader-findingaid/v2"
+
+	"github.com/whosonfirst/go-reader/v2"
+)
+
+func main() {
+
+	cwd, _ := os.Getwd()
+	template := fmt.Sprintf("fs://%s/fixtures/{repo}/data", cwd)
+	reader_uri := fmt.Sprintf("findingaid://sqlite?dsn=fixtures/sfomuseum-data-maps.db&template=%s", template)
+
+	ctx := context.Background()
+	r, _ := reader.NewReader(ctx, reader_uri)
+}	
+
+* https://github.com/whosonfirst/go-reader-findingaid
+
 ### github://
 
 Read files from a GitHub repository.
@@ -216,8 +306,10 @@ Read files from a GitHub repository.
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-github"
+
+	_ "github.com/whosonfirst/go-reader-github/v2"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -238,8 +330,10 @@ Read files from a GitHub repository using the GitHub API.
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-github"
+
+	_ "github.com/whosonfirst/go-reader-github/v2"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -260,8 +354,8 @@ Read files from an HTTP(S) endpoint.
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-http"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -279,7 +373,8 @@ Read files from a local filesystem.
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -303,7 +398,8 @@ Pretend to read files.
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
@@ -321,12 +417,32 @@ It will update a URI by appending a `data` directory to its path and changing it
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
 	ctx := context.Background()
 	r, _ := reader.NewReader(ctx, "repo:///usr/local/data/whosonfirst-data-admin-ca")
+}
+```
+
+### sql://
+
+Read "files" from a `database/sql` database driver.
+
+```
+import (
+	"context"
+
+	_ "github.com/mattn/go-sqlite3"
+	
+	"github.com/whosonfirst/go-reader/v2"
+)
+
+func main() {
+	ctx := context.Background()
+	r, _ := reader.NewReader(ctx, "sql://sqlite3/geojson/id/body?dsn=example.db")
 }
 ```
 
@@ -337,7 +453,8 @@ Read "files" from `STDIN`
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {

@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/hashicorp/go-multierror"
 	"io"
-	_ "log"
 	"sync"
+
+	"github.com/hashicorp/go-multierror"
 )
+
+var missing = errors.New("Unable to read URI")
 
 // MultiReader is a struct that implements the `Reader` interface for reading documents from one or more `Reader` instances.
 type MultiReader struct {
@@ -54,11 +56,40 @@ func NewMultiReader(ctx context.Context, readers ...Reader) (Reader, error) {
 	return &mr, nil
 }
 
+// Exists returns a boolean value indicating whether 'path' already exists.
+func (mr *MultiReader) Exists(ctx context.Context, path string) (bool, error) {
+
+	var errors error
+	exists := 0
+
+	for _, r := range mr.readers {
+
+		r_exists, err := r.Exists(ctx, path)
+
+		if err != nil {
+			errors = multierror.Append(fmt.Errorf("Failed to read %s with %T, %w", path, r, err))
+			continue
+		}
+
+		if r_exists {
+			exists += 1
+		}
+	}
+
+	if errors != nil {
+		return false, errors
+	}
+
+	if exists != len(mr.readers) {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 // Read will open an `io.ReadSeekCloser` for a file matching 'path'. In the case of multiple underlying
 // `Reader` instances the first instance to successfully load 'path' will be returned.
 func (mr *MultiReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, error) {
-
-	missing := errors.New("Unable to read URI")
 
 	mr.mu.RLock()
 
@@ -93,12 +124,9 @@ func (mr *MultiReader) Read(ctx context.Context, path string) (io.ReadSeekCloser
 
 			fh = rsp
 			idx = i
-
 			break
 		}
 	}
-
-	// log.Printf("SET MULTIREADER LOOKUP INDEX FOR %s AS %d\n", path, idx)
 
 	mr.mu.Lock()
 	mr.lookup[path] = idx

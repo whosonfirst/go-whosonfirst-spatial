@@ -79,6 +79,25 @@ func NewFileReader(ctx context.Context, uri string) (Reader, error) {
 	return r, nil
 }
 
+// Exists returns a boolean value indicating whether 'path' already exists.
+func (r *FileReader) Exists(ctx context.Context, path string) (bool, error) {
+
+	abs_path := r.ReaderURI(ctx, path)
+
+	_, err := os.Stat(abs_path)
+
+	if err != nil {
+
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+
+		return false, fmt.Errorf("Failed to stat %s, %v", abs_path, err)
+	}
+
+	return true, nil
+}
+
 // Read will open an `io.ReadSeekCloser` for a file matching 'path'.
 func (r *FileReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, error) {
 

@@ -15,10 +15,11 @@ _Note that error handling has been removed for the sake of brevity._
 ```
 import (
 	"context"
-	"github.com/whosonfirst/go-reader"
-	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
 	"io"
 	"os"
+
+	"github.com/whosonfirst/go-reader/v2"
+	wof_reader "github.com/whosonfirst/go-whosonfirst-reader/v2"
 )
 
 func main() {
@@ -40,8 +41,9 @@ func main() {
 import (
 	"context"
 	"fmt"
-	"github.com/whosonfirst/go-reader"
-	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
+	
+	"github.com/whosonfirst/go-reader/v2"
+	wof_reader "github.com/whosonfirst/go-whosonfirst-reader/v2"
 )
 
 func main() {
@@ -63,8 +65,9 @@ func main() {
 import (
 	"context"
 	"fmt"
-	"github.com/whosonfirst/go-reader"
-	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"	
+	
+	"github.com/whosonfirst/go-reader/v2"
+	wof_reader "github.com/whosonfirst/go-whosonfirst-reader/v2"	
 )
 
 func main() {

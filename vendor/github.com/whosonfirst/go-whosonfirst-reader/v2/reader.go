@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/paulmach/orb/geojson"
-	go_reader "github.com/whosonfirst/go-reader"
+	go_reader "github.com/whosonfirst/go-reader/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 )
 

@@ -15,18 +15,17 @@ require (
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
 	github.com/whosonfirst/go-ioutil v1.0.2
-	github.com/whosonfirst/go-reader v1.1.0
-	github.com/whosonfirst/go-reader-http v0.3.2
+	github.com/whosonfirst/go-reader/v2 v2.0.0
 	github.com/whosonfirst/go-sanitize v0.1.0
 	github.com/whosonfirst/go-whosonfirst-export/v3 v3.0.1
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.29
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2
 	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
-	github.com/whosonfirst/go-whosonfirst-reader v1.0.2
+	github.com/whosonfirst/go-whosonfirst-reader/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
-	github.com/whosonfirst/go-whosonfirst-writer/v3 v3.1.5
+	github.com/whosonfirst/go-whosonfirst-writer/v3 v3.1.6
 	github.com/whosonfirst/go-writer/v3 v3.1.1
 )
 

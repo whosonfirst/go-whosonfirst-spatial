@@ -40,6 +40,11 @@ func (r *NullReader) Read(ctx context.Context, path string) (io.ReadSeekCloser, 
 	return ioutil.NewReadSeekCloser(br)
 }
 
+// Exists returns a boolean value indicating whether 'path' already exists (meaning it will always return false).
+func (r *NullReader) Exists(ctx context.Context, path string) (bool, error) {
+	return false, nil
+}
+
 // ReaderURI returns the value of 'path'.
 func (r *NullReader) ReaderURI(ctx context.Context, path string) string {
 	return path
