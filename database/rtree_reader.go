@@ -75,6 +75,32 @@ func (r *RTreeSpatialDatabase) Read(ctx context.Context, str_uri string) (io.Rea
 	return ioutil.NewReadSeekCloser(br)
 }
 
+func (r *RTreeSpatialDatabase) Exists(ctx context.Context, str_uri string) (bool, error) {
+
+	id, _, err := uri.ParseURI(str_uri)
+
+	if err != nil {
+		return false, fmt.Errorf("Failed to parse URI %s, %w", str_uri, err)
+	}
+
+	// TO DO : ALT STUFF HERE
+
+	str_id := strconv.FormatInt(id, 10)
+
+	sp := &RTreeSpatialIndex{
+		FeatureId: str_id,
+		AltLabel:  "",
+	}
+
+	_, err = r.retrieveCache(ctx, sp)
+
+	if err != nil {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func (r *RTreeSpatialDatabase) ReaderURI(ctx context.Context, str_uri string) string {
 	return str_uri
 }
