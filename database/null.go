@@ -22,14 +22,13 @@ func NewNullSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, e
 
 type NullResults struct {
 	spr.StandardPlacesResults `json:",omitempty"`
-	Places                    []spr.StandardPlacesResult `json:"places"`
+}
+
+func (r *NullResults) Results() []spr.StandardPlacesResult {
+	return make([]spr.StandardPlacesResult, 0)
 }
 
 func NewNullResults() spr.StandardPlacesResults {
-
-	r := &NullResults{
-		Places: make([]spr.StandardPlacesResult, 0),
-	}
-
+	r := &NullResults{}
 	return r
 }
