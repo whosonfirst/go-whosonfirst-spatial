@@ -1,6 +1,6 @@
 package database
 
-// Implement the whosonfirst/go-reader/v2 interface.
+// Implement the whosonfirst/go-reader/v2.Reader interface.
 
 import (
 	"context"

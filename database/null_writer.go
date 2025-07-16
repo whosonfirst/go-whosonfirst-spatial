@@ -1,6 +1,6 @@
 package database
 
-// Implement the whosonfirst/go-writer/v3 interface.
+// Implement the whosonfirst/go-writer/v3.Writer interface.
 
 import (
 	"context"

@@ -22,7 +22,7 @@ type PointInPolygonCriteria struct {
 	Longitude float64
 }
 
-func TestSpatialDatabaseIntersects(t *testing.T) {
+func TestRTreeSpatialDatabaseIntersects(t *testing.T) {
 
 	ctx := context.Background()
 
@@ -97,7 +97,7 @@ func TestSpatialDatabaseIntersects(t *testing.T) {
 
 }
 
-func TestSpatialDatabasePointInPolygon(t *testing.T) {
+func TestRTreeSpatialDatabasePointInPolygon(t *testing.T) {
 
 	ctx := context.Background()
 
@@ -175,7 +175,7 @@ func TestSpatialDatabasePointInPolygon(t *testing.T) {
 // with a feature is created. The way we're doing things in database.RemoveFeature using a comparator
 // doesn't actually work...
 
-func TestSpatialDatabaseRemoveFeature(t *testing.T) {
+func TestRTreeSpatialDatabaseRemoveFeature(t *testing.T) {
 
 	t.Skip()
 
@@ -256,7 +256,7 @@ func TestSpatialDatabaseRemoveFeature(t *testing.T) {
 	}
 }
 
-func TestSpatialDatabaseWithFS(t *testing.T) {
+func TestRTreeSpatialDatabaseWithFS(t *testing.T) {
 
 	ctx := context.Background()
 
@@ -324,7 +324,7 @@ func TestSpatialDatabaseWithFS(t *testing.T) {
 	}
 }
 
-func TestSpatialDatabaseWithFeatureCollection(t *testing.T) {
+func TestRTreeSpatialDatabaseWithFeatureCollection(t *testing.T) {
 
 	ctx := context.Background()
 
