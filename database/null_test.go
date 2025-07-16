@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strconv"
 	"testing"
 
 	"github.com/paulmach/orb/geojson"
@@ -16,17 +15,11 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 )
 
-type PointInPolygonCriteria struct {
-	IsCurrent int64
-	Latitude  float64
-	Longitude float64
-}
-
-func TestRTreeSpatialDatabaseIntersects(t *testing.T) {
+func TestNullSpatialDatabaseIntersects(t *testing.T) {
 
 	ctx := context.Background()
 
-	database_uri := "rtree://"
+	database_uri := "null://"
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
 
@@ -83,25 +76,18 @@ func TestRTreeSpatialDatabaseIntersects(t *testing.T) {
 	results := rsp.Results()
 	count := len(results)
 
-	expected := 15
+	expected := 0
 
 	if count != expected {
 		t.Fatalf("Invalid count (%d), expected %d", count, expected)
 	}
-
-	/*
-		for _, s := range results {
-			fmt.Printf("Match %s %s\n", s.Id(), s.Name())
-		}
-	*/
-
 }
 
-func TestRTreeSpatialDatabasePointInPolygon(t *testing.T) {
+func TestNullSpatialDatabasePointInPolygon(t *testing.T) {
 
 	ctx := context.Background()
 
-	database_uri := "rtree://"
+	database_uri := "null://"
 
 	tests := map[int64]PointInPolygonCriteria{
 		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
@@ -159,14 +145,8 @@ func TestRTreeSpatialDatabasePointInPolygon(t *testing.T) {
 		results := spr.Results()
 		count := len(results)
 
-		if count != 1 {
+		if count > 0 {
 			t.Fatalf("Expected 1 result but got %d for '%d'", count, expected)
-		}
-
-		first := results[0]
-
-		if first.Id() != strconv.FormatInt(expected, 10) {
-			t.Fatalf("Expected %d but got %s", expected, first.Id())
 		}
 	}
 }
@@ -175,13 +155,13 @@ func TestRTreeSpatialDatabasePointInPolygon(t *testing.T) {
 // with a feature is created. The way we're doing things in database.RemoveFeature using a comparator
 // doesn't actually work...
 
-func TestRTreeSpatialDatabaseRemoveFeature(t *testing.T) {
+func TestNullSpatialDatabaseRemoveFeature(t *testing.T) {
 
 	t.Skip()
 
 	ctx := context.Background()
 
-	database_uri := "rtree://"
+	database_uri := "null://"
 
 	db, err := NewSpatialDatabase(ctx, database_uri)
 
@@ -232,8 +212,8 @@ func TestRTreeSpatialDatabaseRemoveFeature(t *testing.T) {
 	results := spr.Results()
 	count := len(results)
 
-	if count != 1 {
-		t.Fatalf("Expected 1 result but got %d", count)
+	if count > 0 {
+		t.Fatalf("Expected 0 results but got %d", count)
 	}
 
 	err = db.RemoveFeature(ctx, "101737491")
@@ -256,11 +236,11 @@ func TestRTreeSpatialDatabaseRemoveFeature(t *testing.T) {
 	}
 }
 
-func TestRTreeSpatialDatabaseWithFS(t *testing.T) {
+func TestNullSpatialDatabaseWithFS(t *testing.T) {
 
 	ctx := context.Background()
 
-	database_uri := "rtree://?dsn=:memory:"
+	database_uri := "null://"
 
 	tests := map[int64]PointInPolygonCriteria{
 		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
@@ -312,23 +292,17 @@ func TestRTreeSpatialDatabaseWithFS(t *testing.T) {
 		results := spr.Results()
 		count := len(results)
 
-		if count != 1 {
-			t.Fatalf("Expected 1 result but got %d for '%d'", count, expected)
-		}
-
-		first := results[0]
-
-		if first.Id() != strconv.FormatInt(expected, 10) {
-			t.Fatalf("Expected %d but got %s", expected, first.Id())
+		if count > 0 {
+			t.Fatalf("Expected 0 results but got %d for '%d'", count, expected)
 		}
 	}
 }
 
-func TestRTreeSpatialDatabaseWithFeatureCollection(t *testing.T) {
+func TestNullSpatialDatabaseWithFeatureCollection(t *testing.T) {
 
 	ctx := context.Background()
 
-	database_uri := "rtree://?dsn=:memory:"
+	database_uri := "null://"
 
 	tests := map[int64]PointInPolygonCriteria{
 		1108712253: PointInPolygonCriteria{Longitude: -71.120168, Latitude: 42.376015, IsCurrent: 1},   // Old Cambridge
@@ -380,14 +354,8 @@ func TestRTreeSpatialDatabaseWithFeatureCollection(t *testing.T) {
 		results := spr.Results()
 		count := len(results)
 
-		if count != 1 {
-			t.Fatalf("Expected 1 result but got %d for '%d'", count, expected)
-		}
-
-		first := results[0]
-
-		if first.Id() != strconv.FormatInt(expected, 10) {
-			t.Fatalf("Expected %d but got %s", expected, first.Id())
+		if count > 0 {
+			t.Fatalf("Expected 0 results but got %d for '%d'", count, expected)
 		}
 	}
 }
