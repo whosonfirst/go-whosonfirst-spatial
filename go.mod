@@ -17,7 +17,7 @@ require (
 	github.com/whosonfirst/go-ioutil v1.0.2
 	github.com/whosonfirst/go-reader/v2 v2.0.0
 	github.com/whosonfirst/go-sanitize v0.1.0
-	github.com/whosonfirst/go-whosonfirst-export/v3 v3.0.4
+	github.com/whosonfirst/go-whosonfirst-export/v3 v3.1.0
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.29
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2
 	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.2.0
@@ -59,7 +59,7 @@ require (
 	github.com/whosonfirst/go-whosonfirst-id v1.3.1 // indirect
 	github.com/whosonfirst/go-whosonfirst-names v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
-	github.com/whosonfirst/go-whosonfirst-validate v0.6.1 // indirect
+	github.com/whosonfirst/go-whosonfirst-validate v0.6.2 // indirect
 	go.mongodb.org/mongo-driver v1.11.4 // indirect
 	go.uber.org/ratelimit v0.3.1 // indirect
 )
