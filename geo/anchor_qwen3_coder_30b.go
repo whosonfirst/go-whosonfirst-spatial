@@ -7,14 +7,20 @@ import (
 	"github.com/paulmach/orb/planar"
 )
 
-// FindAnchorPoint finds a point inside a polygon that is away from the polygon edge
+// FindAnchorPoint finds a point inside a polygon or multipolygon that is away from the polygon edge
 func FindAnchorPoint(g orb.Geometry) (orb.Point, error) {
-	// Convert geometry to polygon if needed
-	poly, ok := g.(orb.Polygon)
-	if !ok {
+	switch geom := g.(type) {
+	case orb.Polygon:
+		return findAnchorPointInPolygon(geom)
+	case orb.MultiPolygon:
+		return findAnchorPointInMultiPolygon(geom)
+	default:
 		return orb.Point{}, nil // Return empty point for non-polygon geometries
 	}
+}
 
+// findAnchorPointInPolygon finds anchor point in a single polygon
+func findAnchorPointInPolygon(poly orb.Polygon) (orb.Point, error) {
 	if len(poly) == 0 {
 		return orb.Point{}, nil
 	}
@@ -39,6 +45,52 @@ func FindAnchorPoint(g orb.Geometry) (orb.Point, error) {
 
 	// Find anchor point in simplified polygon
 	return findAnchorPoint2(simplified, bounds)
+}
+
+// findAnchorPointInMultiPolygon finds anchor point in a multipolygon
+func findAnchorPointInMultiPolygon(multiPoly orb.MultiPolygon) (orb.Point, error) {
+	if len(multiPoly) == 0 {
+		return orb.Point{}, nil
+	}
+
+	// Find the largest polygon in the multipolygon
+	var largestPoly orb.Polygon
+	var maxArea float64
+
+	for _, poly := range multiPoly {
+		if len(poly) == 0 {
+			continue
+		}
+
+		// Get the largest ring (outer ring)
+		maxPath := getLargestRing(poly)
+		if len(maxPath) < 3 {
+			continue
+		}
+
+		// Calculate area of this polygon
+		area := getPlanarPathArea(maxPath)
+		if area > maxArea {
+			maxArea = area
+			largestPoly = poly
+		}
+	}
+
+	// If we found a valid polygon, process it
+	if len(largestPoly) > 0 {
+		return findAnchorPointInPolygon(largestPoly)
+	}
+
+	// Fallback: return centroid of first polygon if no valid polygon found
+	if len(multiPoly) > 0 && len(multiPoly[0]) > 0 {
+		maxPath := getLargestRing(multiPoly[0])
+		if len(maxPath) >= 3 {
+			centroid := getCentroid(maxPath)
+			return centroid, nil
+		}
+	}
+
+	return orb.Point{}, nil
 }
 
 // findAnchorPoint2 is the main implementation for finding anchor point
