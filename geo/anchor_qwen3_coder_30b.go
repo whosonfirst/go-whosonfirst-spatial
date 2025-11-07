@@ -1,3 +1,5 @@
+//go:build qwen
+
 package geo
 
 // Correct:
