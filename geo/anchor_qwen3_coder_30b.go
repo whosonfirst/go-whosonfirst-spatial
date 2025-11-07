@@ -1,5 +1,13 @@
 package geo
 
+// Correct:
+// mapshaper -i /usr/local/data/sfomuseum-data-whosonfirst/data/856/886/37/85688637.geojson -points inner -o -
+// "geometry": {"type":"Point","coordinates":[-119.58616773283674,36.53154412128562]}
+
+// Wrong:
+// go run cmd/anchor/main.go /usr/local/data/sfomuseum-data-whosonfirst/data/856/886/37/85688637.geojson
+// "geometry": {"type":"Point","coordinates":[-119.0413633896104,33.48935415584416]}
+
 import (
 	"math"
 
@@ -377,16 +385,42 @@ func getAdjustedPoint(x, y float64, path orb.Ring, vstep float64, weight func(or
 
 // scanForBetterPoint tries to find a better point by scanning vertically
 func scanForBetterPoint(p *Candidate, path orb.Ring, vstep float64, weight func(orb.Point) float64) {
-	// Simplified implementation
-	// In a full implementation, this would scan up and down
-	// and check if points are inside polygon and improve distance
+
+	// Get the current candidate point
+	currentPoint := orb.Point{p.X, p.Y}
+
+	// Get the bounding box of the polygon
+	bounds := path.Bound()
+
+	// Start scanning from a bit below the current point
+	minY := bounds.Min.Y() - vstep
+	maxY := bounds.Max.Y() + vstep
+
+	// Scan vertically from bottom to top
+	for y := minY; y <= maxY; y += vstep {
+		// Create a point at current y coordinate, using the same x as current point
+		testPoint := orb.Point{currentPoint.X(), y}
+
+		// Check if the point is inside the polygon
+		if planar.RingContains(path, testPoint) {
+			// Calculate the weight/distance for this point
+			newWeight := weight(testPoint)
+
+			// If this point has a better weight (lower distance, higher score, etc.)
+			// Update the candidate if it's better than current
+			if newWeight < p.Distance {
+				p.X = testPoint.X()
+				p.Y = testPoint.Y()
+				p.Distance = newWeight
+			}
+		}
+	}
 }
 
 // getPointToShapeDistance calculates distance from point to polygon
 func getPointToShapeDistance(x, y float64, path orb.Ring) float64 {
-	// Simplified implementation - would use actual distance calculation
-	// This would need to be replaced with actual orb library functions
-	return 0
+	pt := orb.Point{x, y}
+	return planar.DistanceFrom(path, pt)
 }
 
 // getInnerTics generates evenly spaced points between min and max
