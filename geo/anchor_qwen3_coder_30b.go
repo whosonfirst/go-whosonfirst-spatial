@@ -288,10 +288,74 @@ func findAnchorPointCandidates(path orb.Ring, tics []float64) []Candidate {
 
 // findHitCandidates returns points at midpoints of line segments formed by intersection
 func findHitCandidates(x float64, path orb.Ring) []Candidate {
-	// This is a simplified version - actual implementation would require
-	// intersection logic with segments
-	// For now, return empty slice
-	return []Candidate{}
+
+	if len(path) < 2 {
+		return []Candidate{}
+	}
+
+	var candidates []Candidate
+
+	// Iterate through consecutive pairs of points in the ring
+	for i := 0; i < len(path)-1; i++ {
+		point1 := path[i]
+		point2 := path[i+1]
+
+		// Check if the x-coordinate falls within the range of this segment
+		minX := math.Min(point1.X(), point2.X())
+		maxX := math.Max(point1.X(), point2.X())
+
+		if x >= minX && x <= maxX {
+			// Calculate the y-coordinate at x using linear interpolation
+			// Only proceed if we have a valid segment (not vertical)
+			if point2.X() != point1.X() {
+				// Linear interpolation formula: y = y1 + (y2-y1)/(x2-x1) * (x-x1)
+				y := point1.Y() + (point2.Y()-point1.Y())/(point2.X()-point1.X())*(x-point1.X())
+
+				// Calculate midpoint of the segment
+				midX := (point1.X() + point2.X()) / 2.0
+				midY := (point1.Y() + point2.Y()) / 2.0
+
+				// Calculate distance from midpoint to the given x coordinate
+				distance := math.Sqrt(math.Pow(midX-x, 2) + math.Pow(midY-y, 2))
+
+				candidates = append(candidates, Candidate{
+					X:        midX,
+					Y:        midY,
+					Interval: math.Abs(point2.X() - point1.X()),
+					Distance: distance,
+				})
+			}
+		}
+	}
+
+	// Handle the case where the path is a closed ring (last point connects to first)
+	if len(path) > 2 {
+		point1 := path[len(path)-1]
+		point2 := path[0]
+
+		minX := math.Min(point1.X(), point2.X())
+		maxX := math.Max(point1.X(), point2.X())
+
+		if x >= minX && x <= maxX {
+			if point2.X() != point1.X() {
+				y := point1.Y() + (point2.Y()-point1.Y())/(point2.X()-point1.X())*(x-point1.X())
+
+				midX := (point1.X() + point2.X()) / 2.0
+				midY := (point1.Y() + point2.Y()) / 2.0
+
+				distance := math.Sqrt(math.Pow(midX-x, 2) + math.Pow(midY-y, 2))
+
+				candidates = append(candidates, Candidate{
+					X:        midX,
+					Y:        midY,
+					Interval: math.Abs(point2.X() - point1.X()),
+					Distance: distance,
+				})
+			}
+		}
+	}
+
+	return candidates
 }
 
 // getAdjustedPoint tries to move point farther from polygon edge
