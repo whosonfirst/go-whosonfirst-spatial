@@ -10,7 +10,7 @@ import (
 
 // UpdateLineStringIfCrossingAntimeridian will rewrite GeoJSON geometry LineString coordinates as MultiLineString
 // coordinates with (2) or more LineString elements if the origin path crosses the antimeridian. For example: flights
-// from Hong Kong to San Francisco.
+// From Hong Kong to San Francisco.
 func UpdateLineStringIfCrossingAntimeridian(body []byte) (bool, []byte, error) {
 
 	type_rsp := gjson.GetBytes(body, "geometry.type")
