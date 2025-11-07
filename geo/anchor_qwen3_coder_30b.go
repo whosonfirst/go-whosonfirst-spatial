@@ -5,6 +5,7 @@ import (
 
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/planar"
+	"github.com/paulmach/orb/simplify"
 )
 
 // FindAnchorPoint finds a point inside a polygon or multipolygon that is away from the polygon edge
@@ -32,7 +33,9 @@ func findAnchorPointInPolygon(poly orb.Polygon) (orb.Point, error) {
 	}
 
 	// Calculate bounds
-	bounds := getBounds(maxPath)
+	// bounds := getBounds(maxPath)
+	bounds := maxPath.Bound()
+
 	if bounds.Min[0] == bounds.Max[0] && bounds.Min[1] == bounds.Max[1] {
 		return orb.Point{}, nil
 	}
@@ -156,7 +159,9 @@ func getLargestRing(poly orb.Polygon) orb.Ring {
 }
 
 // getBounds returns the bounding box of a ring
+/*
 func getBounds(ring orb.Ring) orb.Bound {
+
 	if len(ring) == 0 {
 		return orb.Bound{}
 	}
@@ -183,6 +188,7 @@ func getBounds(ring orb.Ring) orb.Bound {
 
 	return bounds
 }
+*/
 
 // getCentroid calculates the centroid of a ring
 func getCentroid(ring orb.Ring) orb.Point {
@@ -228,9 +234,7 @@ func simplifyPolygon(path orb.Ring, bounds orb.Bound) orb.Ring {
 		return path
 	}
 
-	// For now, return the original path
-	// In a real implementation, you'd use a proper simplification algorithm
-	return path
+	return simplify.DouglasPeucker(0.0).Ring(path.Clone())
 }
 
 // probeForBestAnchorPoint finds the best anchor point by probing candidates

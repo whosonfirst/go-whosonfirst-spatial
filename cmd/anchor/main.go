@@ -37,7 +37,7 @@ func main() {
 		}
 
 		f2 := geojson.NewFeature(pt)
-		
+
 		f2.Properties = map[string]any{
 			"feature": path,
 		}
