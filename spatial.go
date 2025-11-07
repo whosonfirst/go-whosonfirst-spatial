@@ -5,9 +5,9 @@ import (
 	"iter"
 
 	"github.com/paulmach/orb"
-	"github.com/whosonfirst/go-reader/v2"
+	_ "github.com/whosonfirst/go-reader/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
-	"github.com/whosonfirst/go-writer/v3"
+	_ "github.com/whosonfirst/go-writer/v3"
 )
 
 // SpatialAPI defines an interface for performing spatial operations on a collection of Who's On First GeoJSON features.
@@ -31,13 +31,4 @@ type SpatialIndex interface {
 	RemoveFeature(context.Context, string) error
 	// Disconnect closes any underlying connections used by the index.
 	Disconnect(context.Context) error
-}
-
-// SpatialDatabase is an interface for databases of Who's On First records. It defines no methods
-// of its own but wrap three other interfaces: `whosonfirst/go-reader.Reader`, `whosonfirst/go-writer.Writer`
-// and `whosonfirst/go-whosonfirst-spatial.SpatialIndex`.`
-type SpatialDatabase interface {
-	SpatialIndex
-	reader.Reader
-	writer.Writer
 }
