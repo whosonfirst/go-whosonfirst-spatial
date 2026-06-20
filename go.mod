@@ -60,6 +60,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-names v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-validate v0.7.0 // indirect
-	go.mongodb.org/mongo-driver v1.11.4 // indirect
+	go.mongodb.org/mongo-driver v1.17.7 // indirect
 	go.uber.org/ratelimit v0.3.1 // indirect
 )
